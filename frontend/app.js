@@ -53,6 +53,12 @@ const state = {
   rerouteTimer: null,
   returnFromReport: "plan",
   pendingAfterDemo: null,
+  preferences: {
+    profile: localStorage.getItem("navi.profile") || "wheelchair",
+    voice: localStorage.getItem("navi.setting.voice") !== "false",
+    haptics: localStorage.getItem("navi.setting.haptics") !== "false",
+    contrast: localStorage.getItem("navi.setting.contrast") === "true",
+  },
 };
 
 const elements = {};
@@ -60,6 +66,7 @@ const elements = {};
 document.addEventListener("DOMContentLoaded", () => {
   cacheElements();
   bindEvents();
+  restorePreferences();
   initialize().catch(showError);
 });
 
@@ -78,7 +85,7 @@ function cacheElements() {
 function bindEvents() {
   elements["enter-app-button"].addEventListener("click", () => {
     sessionStorage.setItem("navi.welcomed", "true");
-    go("plan");
+    go("home");
   });
 
   elements["route-form"].addEventListener("submit", async (event) => {
@@ -90,8 +97,14 @@ function bindEvents() {
   document.querySelectorAll("[data-go]").forEach((button) => {
     button.addEventListener("click", () => go(button.dataset.go));
   });
+  document.querySelectorAll("[data-open-report]").forEach((button) => {
+    button.addEventListener("click", () => openReport(button.dataset.openReport));
+  });
   document.querySelectorAll("[data-profile]").forEach((button) => {
     button.addEventListener("click", () => selectProfile(button.dataset.profile));
+  });
+  document.querySelectorAll("[data-setting]").forEach((button) => {
+    button.addEventListener("click", () => toggleSetting(button.dataset.setting));
   });
   document.querySelectorAll("[data-route-layer]").forEach((button) => {
     button.addEventListener("click", () => selectRouteLayer(button.dataset.routeLayer));
@@ -114,6 +127,7 @@ function bindEvents() {
   elements["report-form"].addEventListener("submit", saveReportDraft);
   elements["continue-demo-button"].addEventListener("click", continueWithDemo);
   elements["retry-api-button"].addEventListener("click", retryApi);
+  elements["replay-onboarding-button"].addEventListener("click", replayOnboarding);
   window.addEventListener("popstate", () => renderView(viewFromLocation(), { fromHistory: true }));
   window.addEventListener("pagehide", stopCamera);
 }
@@ -121,10 +135,57 @@ function bindEvents() {
 async function initialize() {
   const welcomed = sessionStorage.getItem("navi.welcomed") === "true";
   const requested = viewFromLocation();
-  const initial = requested === "welcome" && welcomed ? "plan" : requested;
+  const initial = requested === "welcome" && welcomed ? "home" : requested;
   elements["enter-app-button"].disabled = true;
   renderView(initial, { replace: true });
   await loadLiveData();
+}
+
+function restorePreferences() {
+  document.querySelectorAll("[data-setting]").forEach((button) => {
+    const enabled = Boolean(state.preferences[button.dataset.setting]);
+    button.classList.toggle("is-on", enabled);
+    button.setAttribute("aria-checked", String(enabled));
+  });
+  elements["mobile-app"].classList.toggle("high-contrast-route", state.preferences.contrast);
+  if (elements["audio-button"]) {
+    elements["audio-button"].setAttribute("aria-pressed", String(state.preferences.voice));
+    elements["audio-button"].setAttribute("aria-label", `음성 안내 ${state.preferences.voice ? "켜짐" : "꺼짐"}`);
+  }
+}
+
+function toggleSetting(key) {
+  if (!(key in state.preferences)) return;
+  state.preferences[key] = !state.preferences[key];
+  localStorage.setItem(`navi.setting.${key}`, String(state.preferences[key]));
+  restorePreferences();
+  if (key === "voice") elements["audio-button"].setAttribute("aria-pressed", String(state.preferences.voice));
+}
+
+function replayOnboarding() {
+  sessionStorage.removeItem("navi.welcomed");
+  go("welcome");
+}
+
+function syncNavigation(view) {
+  document.querySelectorAll("[data-nav]").forEach((item) => {
+    const selected = item.dataset.nav === view;
+    item.classList.toggle("is-active", selected);
+    if (selected) item.setAttribute("aria-current", "page");
+    else item.removeAttribute("aria-current");
+  });
+}
+
+function renderHomeSummary() {
+  if (!state.comparison) {
+    elements["home-recent-route"].dataset.go = "plan";
+    return;
+  }
+  const destination = state.nodes.get(elements["destination-select"].value);
+  elements["home-route-title"].textContent = destination?.properties?.name || "최근 접근 경로";
+  elements["home-route-meta"].textContent = `${formatDistance(state.comparison.accessible.distance_m)} · 약 ${state.comparison.accessible.estimated_minutes}분`;
+  elements["home-recent-route"].querySelector("small").textContent = "최근에 확인한 접근 경로";
+  elements["home-recent-route"].dataset.go = "route";
 }
 
 async function loadLiveData() {
@@ -231,10 +292,13 @@ function populateControls() {
     elements["origin-select"].value = demo.origin_node;
     elements["destination-select"].value = demo.destination_node;
   }
+  selectProfile(state.preferences.profile);
   updateDestinationTitle();
 }
 
 function selectProfile(profile) {
+  state.preferences.profile = profile;
+  localStorage.setItem("navi.profile", profile);
   elements["profile-select"].value = profile;
   document.querySelectorAll("[data-profile]").forEach((button) => {
     const selected = button.dataset.profile === profile;
@@ -244,6 +308,8 @@ function selectProfile(profile) {
   elements["condition-list"].innerHTML = profile === "wheelchair"
     ? '<span><i aria-hidden="true"></i>계단 제외</span><span><i aria-hidden="true"></i>높은 턱 제외</span><span><i aria-hidden="true"></i>차단 구간 제외</span>'
     : '<span><i aria-hidden="true"></i>거리 중심</span><span><i aria-hidden="true"></i>차단 구간 제외</span>';
+  elements["home-profile-name"].textContent = profile === "wheelchair" ? "휠체어 접근" : "기본 이동";
+  elements["home-profile-detail"].textContent = profile === "wheelchair" ? "계단 · 높은 턱 · 차단 구간 제외" : "거리 · 차단 상태 우선";
 }
 
 function swapLocations() {
@@ -255,8 +321,8 @@ function swapLocations() {
 }
 
 function viewFromLocation() {
-  const view = window.location.hash.replace(/^#\/?/, "") || (sessionStorage.getItem("navi.welcomed") === "true" ? "plan" : "welcome");
-  return ["welcome", "plan", "route", "explain", "navigate", "report"].includes(view) ? view : "plan";
+  const view = window.location.hash.replace(/^#\/?/, "") || (sessionStorage.getItem("navi.welcomed") === "true" ? "home" : "welcome");
+  return ["welcome", "home", "plan", "route", "explain", "navigate", "report", "settings"].includes(view) ? view : "home";
 }
 
 function go(view, { replace = false } = {}) {
@@ -272,6 +338,7 @@ function renderView(view, options = {}) {
   if (view !== "navigate") stopCamera();
   document.querySelectorAll(".app-view[data-view]").forEach((screen) => { screen.hidden = screen.dataset.view !== view; });
   elements["mobile-app"].dataset.mode = view;
+  syncNavigation(view);
 
   if (view === "route") {
     ensureMap();
@@ -284,6 +351,7 @@ function renderView(view, options = {}) {
     startCamera();
   }
   if (view === "report") prepareReport();
+  if (view === "home") renderHomeSummary();
   if (!options.fromHistory) window.scrollTo({ top: 0, behavior: "auto" });
 }
 
@@ -412,6 +480,7 @@ function renderComparison() {
   renderMapRoutes();
   renderExplain();
   syncObstacleState();
+  renderHomeSummary();
 }
 
 function collectReasons() {
@@ -483,13 +552,20 @@ function renderMapRoutes() {
   state.mapLayers = [];
   const { standard, accessible } = state.comparison;
   const accessibleFirst = state.routeLayer === "accessible";
-  drawRoute(standard, { color: accessibleFirst ? "#64748b" : "#172554", weight: accessibleFirst ? 4 : 7, opacity: accessibleFirst ? .52 : .96, dashArray: "9 8", label: "일반 최단경로" });
-  if (state.previousRoute) drawRoute(state.previousRoute, { color: "#7c3aed", weight: 6, opacity: .62, dashArray: "3 8", label: "변경 전 접근 경로" });
-  drawRoute(accessible, { color: "#2563eb", weight: accessibleFirst ? 7 : 4, opacity: accessibleFirst ? .96 : .42, label: "접근 가능 경로" });
+  const colors = {
+    ink: cssToken("--color-ink"),
+    unknown: cssToken("--color-unknown"),
+    violet: cssToken("--color-violet"),
+    accent: cssToken("--color-accent"),
+    danger: cssToken("--color-danger"),
+  };
+  drawRoute(standard, { color: accessibleFirst ? colors.unknown : colors.ink, weight: accessibleFirst ? 4 : 7, opacity: accessibleFirst ? .52 : .96, dashArray: "9 8", label: "일반 최단경로" });
+  if (state.previousRoute) drawRoute(state.previousRoute, { color: colors.violet, weight: 6, opacity: .62, dashArray: "3 8", label: "변경 전 접근 경로" });
+  drawRoute(accessible, { color: colors.accent, weight: accessibleFirst ? 7 : 4, opacity: accessibleFirst ? .96 : .42, label: "접근 가능 경로" });
 
   const demoEdge = state.edges.get(state.graph.metadata.demo.block_edge);
   if (demoEdge?.properties.blocked || state.demoBlocked) {
-    const blocked = L.polyline(toLatLngs(demoEdge.geometry.coordinates), { color: "#dc2626", weight: 9, opacity: .95, dashArray: "8 6" }).addTo(state.map).bindTooltip("공사로 통행 제한", { sticky: true });
+    const blocked = L.polyline(toLatLngs(demoEdge.geometry.coordinates), { color: colors.danger, weight: 9, opacity: .95, dashArray: "8 6" }).addTo(state.map).bindTooltip("공사로 통행 제한", { sticky: true });
     state.mapLayers.push(blocked);
   }
   [[accessible.origin_node, "A"], [accessible.destination_node, "B"]].forEach(([nodeId, label]) => {
@@ -507,7 +583,7 @@ function renderMapRoutes() {
 
 function drawRoute(route, style) {
   const latLngs = toLatLngs(route.geometry);
-  const casing = L.polyline(latLngs, { color: "#ffffff", weight: style.weight + 4, opacity: .86, interactive: false }).addTo(state.map);
+  const casing = L.polyline(latLngs, { color: cssToken("--color-surface"), weight: style.weight + 4, opacity: .86, interactive: false }).addTo(state.map);
   const line = L.polyline(latLngs, style).addTo(state.map).bindTooltip(`${style.label} · ${formatDistance(route.distance_m)}`);
   state.mapLayers.push(casing, line);
 }
@@ -611,10 +687,12 @@ function renderArState() {
 }
 
 function toggleAudio() {
-  const enabled = elements["audio-button"].getAttribute("aria-pressed") === "true";
-  elements["audio-button"].setAttribute("aria-pressed", String(!enabled));
-  elements["audio-button"].setAttribute("aria-label", `음성 안내 ${enabled ? "꺼짐" : "켜짐"}`);
-  showToast(`음성 안내를 ${enabled ? "껐습니다" : "켰습니다"}.`);
+  state.preferences.voice = !state.preferences.voice;
+  localStorage.setItem("navi.setting.voice", String(state.preferences.voice));
+  restorePreferences();
+  elements["audio-button"].setAttribute("aria-pressed", String(state.preferences.voice));
+  elements["audio-button"].setAttribute("aria-label", `음성 안내 ${state.preferences.voice ? "켜짐" : "꺼짐"}`);
+  showToast(`음성 안내를 ${state.preferences.voice ? "켰습니다" : "껐습니다"}.`);
 }
 
 function openReport(returnView) {
@@ -647,7 +725,7 @@ function previewReportPhoto() {
   }
   const reader = new FileReader();
   reader.addEventListener("load", () => {
-    preview.style.backgroundImage = `linear-gradient(rgb(9 22 61 / .12), rgb(9 22 61 / .12)), url("${reader.result}")`;
+    preview.style.backgroundImage = `url("${reader.result}")`;
     preview.classList.add("has-image");
   });
   reader.readAsDataURL(file);
@@ -723,3 +801,4 @@ function formatSignedDistance(value) { const rounded = Math.round(Number(value))
 function arrivalClock(minutes) { return new Intl.DateTimeFormat("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(Date.now() + minutes * 60000)); }
 function humanize(value) { return String(value).replaceAll("_", " "); }
 function escapeHtml(value) { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
+function cssToken(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }

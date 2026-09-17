@@ -1,4 +1,4 @@
-package kr.co.navi.mobility.sensors
+package kr.co.navi.mobility.ar.sensors
 
 import android.content.Context
 import android.hardware.Sensor

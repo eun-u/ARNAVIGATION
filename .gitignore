@@ -10,6 +10,8 @@ data/runtime/
 backend/.runtime/
 data/raw/*.cache
 data/raw/osmnx_cache/
+# Large NGII downloads are local-only; some accompanying metadata forbids redistribution.
+data/raw/ngii/
 android/.gradle/
 android/local.properties
 android/**/build/

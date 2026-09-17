@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-17",
+  "framework": "vanilla-html-css-js",
+  "entry": "frontend/index.html",
+  "tokens": "frontend/tokens.css",
+  "styles": ["frontend/mobile.css", "frontend/styles.css"],
+  "motion": "css-only",
+  "assets": [
+    "frontend/assets/최종컨셉이미지_스테인드글라스.png",
+    "frontend/assets/참고컨셉이미지.png",
+    "frontend/assets/NaVi_Concept_Boards"
+  ],
+  "preserve": ["backend API integration", "route comparison", "Leaflet map", "camera demo", "local report draft"]
+}

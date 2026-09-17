@@ -1,5 +1,7 @@
 # NaVi Android PoC 아키텍처
 
+AR과 AI를 독립 Gradle 모듈로 분리하는 목표 구조, 공통 계약과 마일스톤은 [AR·AI 모듈화 및 개발 계획](ar_ai_modularization_plan.md)을 기준으로 합니다. M0에서 Gradle 모듈 골격과 기존 카메라 HUD·heading 코드의 AR 모듈 이동을 완료했습니다.
+
 ## 목적
 
 시민용 화면을 모바일 웹이 아닌 Android 네이티브 앱으로 제공한다. 이번 범위는 자동차 내비게이션처럼 `지도 안내 ↔ 카메라 안내`를 전환하고, 사용자가 앞 구간의 장애를 입력하면 현재 세션의 접근 가능 경로가 즉시 바뀌는 것을 증명하는 것이다.
@@ -13,11 +15,17 @@ Android App
 ├─ Compose UI
 │  ├─ 경로 설정 / 비교 / 판단 근거
 │  ├─ MapLibre 지도 안내
-│  ├─ CameraX 카메라 HUD
 │  └─ 현장 장애 제보 / 재탐색 결과
 ├─ ViewModel + NaviSessionStore
 ├─ NaviRepository
-└─ HTTP API Client
+├─ HTTP API Client
+├─ core:guidance-contract
+├─ feature:ar-navigation
+│  └─ CameraX 카메라 HUD + heading
+├─ feature:ai-perception
+│  └─ 인식 계약 골격, 실제 모델 미연결
+└─ feature:guidance-fusion
+   └─ 공간·인식 융합 계약, 실제 융합 미연결
           │
           ▼
 FastAPI
@@ -69,7 +77,11 @@ Android 앱의 기본 서버 주소는 에뮬레이터 호스트 별칭인 `http
 - `ui/NaviApp.kt`: 화면 Navigation과 공유 ViewModel 수명
 - `ui/screens/NaviScreens.kt`: 7개 시민 화면
 - `ui/components/RouteMap.kt`: MapLibre 경로 레이어와 오프라인 Canvas 폴백
-- `ui/components/CameraHud.kt`: CameraX 미리보기와 프리즘 경로 HUD
+- `feature/ar-navigation/.../ui/CameraHud.kt`: CameraX 미리보기와 프리즘 경로 HUD
+- `feature/ar-navigation/.../sensors/HeadingTracker.kt`: 기존 방향 센서 fallback
+- `core/guidance-contract/`: AR·AI·융합 공통 모델과 순수 경로 수학
+- `feature/ai-perception/`: 이미지 좌표 인식 엔진 경계
+- `feature/guidance-fusion/`: 동일 frame의 공간·인식 결과 결합 경계
 - `ui/NaviViewModels.kt`: API 호출, 센서 수명, 제보/재탐색 상태
 - `data/remote/NaviApiClient.kt`: FastAPI 계약
 - `data/NaviSessionStore.kt`: 현재 여정의 단일 메모리 상태

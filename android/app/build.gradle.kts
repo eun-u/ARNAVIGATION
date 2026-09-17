@@ -74,7 +74,11 @@ kotlin {
 
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.08.01")
-    val cameraXVersion = "1.6.1"
+
+    implementation(project(":core:guidance-contract"))
+    implementation(project(":feature:ar-navigation"))
+    implementation(project(":feature:ai-perception"))
+    implementation(project(":feature:guidance-fusion"))
 
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.activity:activity-compose:1.11.0")
@@ -87,10 +91,6 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.camera:camera-core:$cameraXVersion")
-    implementation("androidx.camera:camera-camera2:$cameraXVersion")
-    implementation("androidx.camera:camera-lifecycle:$cameraXVersion")
-    implementation("androidx.camera:camera-view:$cameraXVersion")
     // The explicit OpenGL flavor has the widest device/emulator compatibility.
     implementation("org.maplibre.gl:android-sdk-opengl:13.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")

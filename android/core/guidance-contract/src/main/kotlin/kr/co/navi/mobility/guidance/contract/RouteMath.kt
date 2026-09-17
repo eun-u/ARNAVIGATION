@@ -1,4 +1,4 @@
-package kr.co.navi.mobility.navigation
+package kr.co.navi.mobility.guidance.contract
 
 import kotlin.math.PI
 import kotlin.math.atan2

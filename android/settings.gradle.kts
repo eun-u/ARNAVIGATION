@@ -16,3 +16,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "navi-mobility"
 include(":app")
+include(":core:guidance-contract")
+include(":feature:ar-navigation")
+include(":feature:ai-perception")
+include(":feature:guidance-fusion")

@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-09-17",
+    "scope": "app",
+    "macrostructure": "Stained-glass threshold + mobile workbench",
+    "theme": "custom",
+    "theme_axes": "warm light / roman serif display / cobalt-violet",
+    "enrichment": "supplied concept-board assets + CSS geometry",
+    "brief": "Rebuild NaVi landing, home, route flow, report, and settings around stained glass and geometric abstraction"
+  }
+]

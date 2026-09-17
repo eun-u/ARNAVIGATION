@@ -1,4 +1,4 @@
-package kr.co.navi.mobility.ui.components
+package kr.co.navi.mobility.ar.ui
 
 import android.content.Context
 import androidx.camera.core.CameraSelector
@@ -22,10 +22,11 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import kr.co.navi.mobility.ui.theme.NaviBlue
-import kr.co.navi.mobility.ui.theme.NaviCameraScrim
-import kr.co.navi.mobility.ui.theme.NaviViolet
 import kotlin.math.max
+
+private val RouteBlue = Color(0xFF2563EB)
+private val RouteViolet = Color(0xFF7C3AED)
+private val CameraScrim = Color(0xFF081633)
 
 @Composable
 fun CameraHud(
@@ -72,10 +73,10 @@ fun CameraHud(
 
 @Composable
 private fun CameraFallback(modifier: Modifier = Modifier) {
-    Canvas(modifier.background(NaviCameraScrim)) {
+    Canvas(modifier.background(CameraScrim)) {
         drawRect(
             brush = Brush.verticalGradient(
-                listOf(Color(0xFF132A58), NaviCameraScrim),
+                listOf(Color(0xFF132A58), CameraScrim),
             ),
         )
         repeat(10) { index ->
@@ -116,7 +117,7 @@ private fun PrismaticRouteRibbon(
                 )
                 drawPath(
                     prism,
-                    if (index % 2 == 0) NaviBlue.copy(alpha = alpha) else NaviViolet.copy(alpha = alpha),
+                    if (index % 2 == 0) RouteBlue.copy(alpha = alpha) else RouteViolet.copy(alpha = alpha),
                     style = Stroke(width = max(5f, width * 0.075f)),
                 )
                 drawPath(

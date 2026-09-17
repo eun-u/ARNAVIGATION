@@ -95,6 +95,7 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 ## 클라이언트 구조
 
 - [Android 아키텍처와 화면 흐름](docs/android_architecture.md)
+- [AR·AI 모듈화 및 개발 계획](docs/ar_ai_modularization_plan.md)
 - [Android 현장 검증 절차](docs/android_field_test.md)
 - [Prismatic Wayfinding 디자인 시스템](docs/frontend_design_system.md)
 - 기존 웹 IA·유즈케이스 문서는 초기 탐색 기록으로 `docs/frontend_ia.md`, `docs/use_cases.md`, `docs/page_structure.md`에 보존

@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#172554" />
+    <meta name="theme-color" content="#163A99" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="description" content="접근 가능한 경로와 카메라 기반 AR 안내 흐름을 시연하는 NaVi 모바일 PoC" />
-    <title>NaVi · 갈 수 있는 길을, 눈앞에서</title>
+    <meta name="description" content="모든 걸음을 더 가깝고 자유롭게 만드는 접근성 경로 및 AR 내비게이션 NaVi" />
+    <title>NaVi · 모든 걸음을 더 가깝고, 더 자유롭게</title>
+    <link rel="preload" as="image" href="/static/assets/최종컨셉이미지_스테인드글라스.png" fetchpriority="high" />
     <link rel="manifest" href="/static/manifest.webmanifest" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/static/tokens.css" />
@@ -18,45 +19,93 @@
   <body>
     <main id="mobile-app" class="mobile-app" data-mode="welcome" data-source="loading">
       <section id="welcome-screen" class="app-view welcome-screen" data-view="welcome" aria-labelledby="welcome-title">
-        <div class="welcome-prism" aria-hidden="true">
-          <span class="prism-pane pane-a"></span><span class="prism-pane pane-b"></span>
-          <span class="prism-pane pane-c"></span><span class="prism-pane pane-d"></span>
+        <header class="landing-header">
+          <span class="brand-lockup" aria-label="NaVi">
+            <svg class="brand-symbol" viewBox="0 0 48 40" aria-hidden="true"><path class="wing wing-blue" d="M22 18C14 1 1 5 5 20c2 7 10 8 17 3Z"/><path class="wing wing-violet" d="M26 18C34 1 47 5 43 20c-2 7-10 8-17 3Z"/><path class="pin" d="M24 12a6 6 0 1 0 0 .1M24 18v14m-5-5 5 6 5-6"/></svg>
+            <strong>NaVi</strong>
+          </span>
+          <span class="landing-place">안양에서 시작하는<br />더 나은 이동</span>
+        </header>
+
+        <div class="welcome-visual" aria-hidden="true">
+          <img src="/static/assets/최종컨셉이미지_스테인드글라스.png" alt="" width="1536" height="1024" fetchpriority="high" />
+          <span class="glass-shard shard-one"></span>
+          <span class="glass-shard shard-two"></span>
+          <span class="glass-shard shard-three"></span>
         </div>
-        <div class="welcome-copy">
-          <svg class="welcome-mark" viewBox="0 0 120 104" aria-hidden="true">
-            <defs>
-              <linearGradient id="welcome-blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#38BDF8"/><stop offset="1" stop-color="#2563EB"/></linearGradient>
-              <linearGradient id="welcome-violet" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#C4B5FD"/><stop offset="1" stop-color="#7C3AED"/></linearGradient>
-            </defs>
-            <path fill="url(#welcome-blue)" d="M54 48C35 5 2 14 11 55c5 20 25 22 43 9Z"/>
-            <path fill="url(#welcome-violet)" d="M66 48c19-43 52-34 43 7-5 20-25 22-43 9Z"/>
-            <circle cx="60" cy="32" r="8" fill="#2563EB"/>
-            <path d="M60 46v42m-13-13 13 16 13-16" fill="none" stroke="#172554" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p class="welcome-wordmark">NaVi</p>
-          <h1 id="welcome-title">갈 수 있는 길을,<br />눈앞에서.</h1>
-          <p>당신의 이동 조건에 맞는 경로를 찾고<br />카메라 기반 AR 안내 흐름을 시연합니다.</p>
+
+        <div class="welcome-copy display-copy">
+          <p class="welcome-note">접근성 경로 · AR 길안내</p>
+          <h1 id="welcome-title">모든 걸음을<br />더 가깝고,<br /><span>더 자유롭게.</span></h1>
+          <p>내 이동 조건에 맞는 길을 찾고,<br />왜 이 길인지 확인하며 이동하세요.</p>
         </div>
+
         <div class="welcome-actions">
-          <div class="trust-line"><span aria-hidden="true">◇</span> 미검증 정보는 숨기지 않습니다.</div>
-          <button id="enter-app-button" class="primary-button" type="button">경로 찾기 시작<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 7 7-7 7" /></svg></button>
+          <div class="journey-rail" aria-label="앱 이용 흐름"><span>경로 계획</span><i></i><span>AR 안내</span><i></i><span>근거 확인</span></div>
+          <button id="enter-app-button" class="primary-button" type="button"><span>NaVi 시작하기</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 7 7-7 7" /></svg></button>
+          <p class="trust-line"><span aria-hidden="true">◆</span> 확인되지 않은 정보는 명확히 표시합니다.</p>
         </div>
+      </section>
+
+      <section id="home-screen" class="app-view home-screen" data-view="home" aria-labelledby="home-title" hidden>
+        <header class="app-header home-header">
+          <a class="brand-lockup" href="#/home" aria-label="NaVi 홈">
+            <svg class="brand-symbol" viewBox="0 0 48 40" aria-hidden="true"><path class="wing wing-blue" d="M22 18C14 1 1 5 5 20c2 7 10 8 17 3Z"/><path class="wing wing-violet" d="M26 18C34 1 47 5 43 20c-2 7-10 8-17 3Z"/><path class="pin" d="M24 12a6 6 0 1 0 0 .1M24 18v14m-5-5 5 6 5-6"/></svg>
+            <strong>NaVi</strong>
+          </a>
+          <button class="icon-button" type="button" data-go="settings" aria-label="설정 열기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM19 12l2-1-2-4-2 .5-1.5-1L15 4h-6L8.5 6.5l-1.5 1L5 7l-2 4 2 1v2l-2 1 2 4 2-.5 1.5 1L9 22h6l.5-2.5 1.5-1 2 .5 2-4-2-1Z"/></svg></button>
+        </header>
+
+        <div class="home-content">
+          <section class="home-intro">
+            <p class="section-kicker">오늘의 이동</p>
+            <h1 id="home-title">안녕하세요.<br />오늘도 갈 수 있는 길부터 볼게요.</h1>
+          </section>
+
+          <button class="route-portal" type="button" data-go="plan">
+            <span class="portal-copy"><small>새로운 이동</small><strong>어디로 갈까요?</strong><b>경로 찾기 <span aria-hidden="true">→</span></b></span>
+            <span class="portal-glass" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          </button>
+
+          <section class="home-status" aria-labelledby="home-status-title">
+            <div class="section-label-row"><h2 id="home-status-title">내 이동 기준</h2><button type="button" data-go="settings">수정</button></div>
+            <div class="mobility-profile-line"><span class="profile-glyph" aria-hidden="true">♿</span><span><strong id="home-profile-name">휠체어 접근</strong><small id="home-profile-detail">계단 · 높은 턱 · 차단 구간 제외</small></span><i class="verified-dot" aria-label="적용 중"></i></div>
+          </section>
+
+          <section class="recent-route" aria-labelledby="recent-route-title">
+            <div class="section-label-row"><h2 id="recent-route-title">최근 경로</h2><button type="button" data-go="plan">새 경로</button></div>
+            <button id="home-recent-route" class="recent-route-card" type="button" data-go="plan">
+              <span class="route-node" aria-hidden="true"><i></i><b></b></span>
+              <span><small>아직 이동 기록이 없어요</small><strong id="home-route-title">첫 경로를 찾아보세요</strong><b id="home-route-meta">이동 조건에 맞춰 비교합니다</b></span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+            </button>
+          </section>
+
+          <aside class="data-covenant"><span aria-hidden="true">◇</span><p><strong>길의 상태를 투명하게 보여드려요.</strong><br />검증 구간과 미확인 구간을 구분하고, 추천 이유를 숨기지 않습니다.</p></aside>
+        </div>
+
+        <nav class="bottom-nav" aria-label="주요 화면">
+          <button class="nav-item" type="button" data-go="home" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7v9h-6v-6h-4v6H4Z"/></svg><span>홈</span></button>
+          <button class="nav-item" type="button" data-go="plan" data-nav="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V6l5-2 6 2 5-2v13l-5 2-6-2Zm5-15v13m6-11v13"/></svg><span>길찾기</span></button>
+          <button class="nav-item" type="button" data-open-report="home" data-nav="report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4m0 1h11l-2 4 2 4H5"/></svg><span>제보</span></button>
+          <button class="nav-item" type="button" data-go="settings" data-nav="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM19 12l2-1-2-4-2 .5-1.5-1L15 4h-6L8.5 6.5l-1.5 1L5 7l-2 4 2 1v2l-2 1 2 4 2-.5 1.5 1L9 22h6l.5-2.5 1.5-1 2 .5 2-4-2-1Z"/></svg><span>설정</span></button>
+        </nav>
       </section>
 
       <section id="plan-screen" class="app-view plan-screen" data-view="plan" aria-labelledby="plan-title" hidden>
         <header class="app-header plan-header">
-          <a class="brand-lockup" href="#/plan" aria-label="NaVi 경로 계획">
+          <a class="brand-lockup" href="#/home" aria-label="NaVi 홈">
             <svg class="brand-symbol" viewBox="0 0 48 40" aria-hidden="true"><path class="wing wing-blue" d="M22 18C14 1 1 5 5 20c2 7 10 8 17 3Z"/><path class="wing wing-violet" d="M26 18C34 1 47 5 43 20c-2 7-10 8-17 3Z"/><path class="pin" d="M24 12a6 6 0 1 0 0 .1M24 18v14m-5-5 5 6 5-6"/></svg>
             <strong>NaVi</strong>
           </a>
           <div class="header-actions">
             <span class="data-mode-pill"><i aria-hidden="true"></i><span class="data-mode-copy">연결 확인 중</span></span>
-            <a class="icon-button" href="/review" aria-label="현장 데이터 검수"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11.5 11 13.5 15.5 9M5 4.5h14v15H5zM8 2.5h8v4H8z"/></svg></a>
+            <button class="icon-button" type="button" data-go="settings" aria-label="설정 열기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM19 12l2-1-2-4-2 .5-1.5-1L15 4h-6L8.5 6.5l-1.5 1L5 7l-2 4 2 1v2l-2 1 2 4 2-.5 1.5 1L9 22h6l.5-2.5 1.5-1 2 .5 2-4-2-1Z"/></svg></button>
           </div>
         </header>
 
         <div class="plan-content">
-          <div class="plan-heading"><p class="section-kicker">PLAN</p><h1 id="plan-title">어디로 이동할까요?</h1><p>빠른 길보다, 지금 통과할 수 있는 길을 먼저 찾습니다.</p></div>
+          <div class="plan-heading"><p class="section-kicker">경로 계획</p><h1 id="plan-title">어디로 이동할까요?</h1><p>빠른 길보다, 지금 통과할 수 있는 길을 먼저 찾습니다.</p></div>
           <form id="route-form" class="plan-form">
             <section class="location-card" aria-label="출발지와 목적지">
               <div class="location-rail" aria-hidden="true"><i></i><span></span><b></b></div>
@@ -80,6 +129,12 @@
           </form>
           <button id="open-report-from-plan" class="text-action" type="button">현장 상태를 제보하고 싶어요</button>
         </div>
+        <nav class="bottom-nav" aria-label="주요 화면">
+          <button class="nav-item" type="button" data-go="home" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7v9h-6v-6h-4v6H4Z"/></svg><span>홈</span></button>
+          <button class="nav-item" type="button" data-go="plan" data-nav="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V6l5-2 6 2 5-2v13l-5 2-6-2Zm5-15v13m6-11v13"/></svg><span>길찾기</span></button>
+          <button class="nav-item" type="button" data-open-report="plan" data-nav="report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4m0 1h11l-2 4 2 4H5"/></svg><span>제보</span></button>
+          <button class="nav-item" type="button" data-go="settings" data-nav="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM19 12l2-1-2-4-2 .5-1.5-1L15 4h-6L8.5 6.5l-1.5 1L5 7l-2 4 2 1v2l-2 1 2 4 2-.5 1.5 1L9 22h6l.5-2.5 1.5-1 2 .5 2-4-2-1Z"/></svg><span>설정</span></button>
+        </nav>
       </section>
 
       <section id="route-screen" class="app-view route-screen" data-view="route" aria-label="접근 가능한 경로 결과" hidden>
@@ -108,7 +163,7 @@
       <section id="explain-screen" class="app-view detail-screen" data-view="explain" aria-labelledby="explain-title" hidden>
         <header class="detail-header"><button class="icon-button" type="button" data-go="route" aria-label="경로 결과로 돌아가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><strong>경로 추천 근거</strong><span class="status-dot-label"><i aria-hidden="true"></i>설명 가능</span></header>
         <div class="detail-content">
-          <section class="explain-hero"><div class="mini-prism" aria-hidden="true"><i></i><i></i><i></i></div><p class="section-kicker">EXPLAIN</p><h1 id="explain-title">이 경로는 이런 이유로 추천했어요.</h1><p>결과만 보여주지 않고, 경로가 달라진 이유와 데이터의 신뢰 수준을 함께 표시합니다.</p></section>
+          <section class="explain-hero"><div class="mini-prism" aria-hidden="true"><i></i><i></i><i></i></div><p class="section-kicker">추천 근거</p><h1 id="explain-title">이 경로를 고른 이유,<br />함께 확인해요.</h1><p>결과만 보여주지 않고, 경로가 달라진 이유와 데이터의 신뢰 수준을 함께 표시합니다.</p></section>
           <section class="comparison-board" aria-label="일반 경로와 접근 경로 비교"><div><span>일반 경로</span><strong id="explain-standard-distance">—</strong><small>거리 기준</small></div><span class="comparison-arrow" aria-hidden="true">→</span><div class="recommended"><span>접근 가능</span><strong id="explain-accessible-distance">—</strong><small id="explain-delta">—</small></div></section>
           <section class="detail-section" aria-labelledby="reason-list-title"><div class="section-label-row"><h2 id="reason-list-title">우회 판단</h2><span>필수 통과 조건</span></div><div id="evidence-reasons" class="evidence-list"></div></section>
           <section class="detail-section provenance-section" aria-labelledby="provenance-title"><div class="section-label-row"><h2 id="provenance-title">데이터 신뢰도</h2><span>출처 분리</span></div><div class="verification-counts"><div><span>검증 구간</span><strong id="verified-count">—</strong></div><div><span>미검증 구간</span><strong id="unverified-count">—</strong></div></div><div id="provenance-sources" class="source-list"></div><p class="policy-note">합성 또는 추정 데이터는 실제 현장 검증 데이터처럼 표시하지 않습니다.</p></section>
@@ -127,7 +182,7 @@
         <div id="perception-state" class="perception-state"><span class="scan-dot" aria-hidden="true"></span><span id="perception-copy">온디바이스 인식 시뮬레이션</span></div>
         <div class="ar-profile-badge"><span aria-hidden="true"></span><b id="ar-profile-copy">휠체어 · 계단 제외 · 현장 미검증</b></div>
         <svg id="prism-route" class="prism-route" viewBox="0 0 390 560" preserveAspectRatio="none" aria-hidden="true">
-          <defs><linearGradient id="route-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60A5FA" stop-opacity=".7"/><stop offset="1" stop-color="#2563EB" stop-opacity=".94"/></linearGradient><linearGradient id="route-violet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A78BFA" stop-opacity=".72"/><stop offset="1" stop-color="#7C3AED" stop-opacity=".96"/></linearGradient><filter id="route-glow"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <defs><linearGradient id="route-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--color-cyan)" stop-opacity=".72"/><stop offset="1" stop-color="var(--color-accent)" stop-opacity=".95"/></linearGradient><linearGradient id="route-violet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--color-violet-soft)" stop-opacity=".75"/><stop offset="1" stop-color="var(--color-violet)" stop-opacity=".96"/></linearGradient><filter id="route-glow"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
           <g class="prism-path" filter="url(#route-glow)"><polygon points="145,560 245,560 229,492 161,492"/><polygon points="161,482 229,482 218,430 172,430"/><polygon points="172,420 218,420 210,382 180,382"/><polygon points="180,372 210,372 205,345 185,345"/><polygon class="prism-arrow" points="195,292 226,344 207,338 207,360 183,360 183,338 164,344"/></g>
           <g class="blocked-fragments"><polygon points="164,430 193,402 205,433 185,452"/><polygon points="207,402 230,430 207,451 196,428"/><path d="M172 414 219 448M218 412l-43 40"/></g>
         </svg>
@@ -142,7 +197,7 @@
       <section id="report-screen" class="app-view detail-screen report-screen" data-view="report" aria-labelledby="report-title" hidden>
         <header class="detail-header"><button id="close-report-button" class="icon-button" type="button" aria-label="이전 화면으로 돌아가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><strong>현장 상태 제보</strong><span class="local-only-badge">기기 임시 저장</span></header>
         <div class="detail-content">
-          <section class="report-intro"><span class="report-prism" aria-hidden="true"></span><p class="section-kicker">HUMAN INPUT</p><h1 id="report-title">길의 변화를 알려주세요.</h1><p>제보는 검수 후보로만 취급되며, 승인 전에는 공유 경로나 그래프에 반영되지 않습니다.</p></section>
+          <section class="report-intro"><span class="report-prism" aria-hidden="true"></span><p class="section-kicker">현장 제보</p><h1 id="report-title">길의 변화를 알려주세요.</h1><p>제보는 검수 후보로만 취급되며, 승인 전에는 공유 경로나 그래프에 반영되지 않습니다.</p></section>
           <form id="report-form" class="report-form">
             <fieldset><legend>어떤 상황인가요?</legend><div class="report-types"><label><input type="radio" name="report-type" value="construction" required/><span><b aria-hidden="true">△</b>공사</span></label><label><input type="radio" name="report-type" value="high_curb"/><span><b aria-hidden="true">▰</b>높은 턱</span></label><label><input type="radio" name="report-type" value="stairs"/><span><b aria-hidden="true">▟</b>계단</span></label><label><input type="radio" name="report-type" value="blocked"/><span><b aria-hidden="true">×</b>통행 불가</span></label></div></fieldset>
             <label class="report-field photo-field"><span>현장 사진 <small>선택</small></span><input id="report-photo" type="file" accept="image/*" capture="environment"/><span id="photo-preview" class="photo-preview"><b>+</b>카메라 또는 사진 선택</span></label>
@@ -152,6 +207,52 @@
           </form>
           <section id="report-complete" class="report-complete" hidden aria-live="polite"><span aria-hidden="true">✓</span><strong class="draft-status">로컬 초안 · 미검증</strong><h2>기기에 임시 저장했습니다.</h2><p>서버로 전송하거나 경로에 반영하지 않았습니다. 제보 API가 연결되면 사람 검수 대기열로 전송할 수 있습니다.</p><button id="return-after-report" class="secondary-button" type="button">이전 화면으로 돌아가기</button></section>
         </div>
+      </section>
+
+      <section id="settings-screen" class="app-view detail-screen settings-screen" data-view="settings" aria-labelledby="settings-title" hidden>
+        <header class="detail-header settings-header"><button class="icon-button" type="button" data-go="home" aria-label="홈으로 돌아가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><strong>설정</strong><span class="save-state"><i aria-hidden="true"></i>자동 저장</span></header>
+        <div class="detail-content settings-content">
+          <section class="settings-intro">
+            <span class="settings-glass" aria-hidden="true"><i></i><i></i><i></i></span>
+            <p class="section-kicker">나의 이동 기준</p>
+            <h1 id="settings-title">길이 나에게<br />맞춰지도록.</h1>
+            <p>이 설정은 경로 검색과 AR 안내에 함께 적용됩니다.</p>
+          </section>
+
+          <section class="settings-group" aria-labelledby="mobility-settings-title">
+            <div class="section-label-row"><h2 id="mobility-settings-title">이동 프로필</h2><span>경로 계산 기준</span></div>
+            <div class="settings-profile-list" role="radiogroup" aria-label="기본 이동 프로필">
+              <button class="settings-profile is-selected" type="button" role="radio" aria-checked="true" data-profile="wheelchair"><span aria-hidden="true">♿</span><span><strong>휠체어 접근</strong><small>계단·높은 턱·좁은 폭을 피합니다.</small></span><i></i></button>
+              <button class="settings-profile" type="button" role="radio" aria-checked="false" data-profile="default"><span aria-hidden="true">◇</span><span><strong>기본 이동</strong><small>거리와 차단 상태를 우선합니다.</small></span><i></i></button>
+            </div>
+          </section>
+
+          <section class="settings-group" aria-labelledby="guidance-settings-title">
+            <div class="section-label-row"><h2 id="guidance-settings-title">안내 방식</h2><span>기기 저장</span></div>
+            <div class="settings-list">
+              <div class="setting-row"><span class="setting-icon" aria-hidden="true">◖</span><span><strong>음성 안내</strong><small>회전과 재탐색을 소리로 알려요.</small></span><button class="switch-control is-on" type="button" role="switch" aria-checked="true" data-setting="voice" aria-label="음성 안내"><i></i></button></div>
+              <div class="setting-row"><span class="setting-icon" aria-hidden="true">⌁</span><span><strong>진동 안내</strong><small>중요한 방향 전환 전에 진동해요.</small></span><button class="switch-control is-on" type="button" role="switch" aria-checked="true" data-setting="haptics" aria-label="진동 안내"><i></i></button></div>
+              <div class="setting-row"><span class="setting-icon" aria-hidden="true">◐</span><span><strong>고대비 경로</strong><small>지도 위 경로선을 더 굵게 표시해요.</small></span><button class="switch-control" type="button" role="switch" aria-checked="false" data-setting="contrast" aria-label="고대비 경로"><i></i></button></div>
+            </div>
+          </section>
+
+          <section class="settings-group" aria-labelledby="data-settings-title">
+            <div class="section-label-row"><h2 id="data-settings-title">데이터와 신뢰</h2><span>투명성</span></div>
+            <div class="settings-links">
+              <a href="/review"><span><strong>현장 정보 검수</strong><small>후보 데이터를 확인하고 승인합니다.</small></span><b aria-hidden="true">→</b></a>
+              <button id="replay-onboarding-button" type="button"><span><strong>시작 화면 다시 보기</strong><small>NaVi의 안내 흐름을 다시 확인합니다.</small></span><b aria-hidden="true">→</b></button>
+            </div>
+            <p class="settings-policy">NaVi는 합성·추정·미검증 데이터를 현장 검증 정보와 구분해 표시합니다.</p>
+          </section>
+
+          <footer class="settings-footer"><svg class="brand-symbol" viewBox="0 0 48 40" aria-hidden="true"><path class="wing wing-blue" d="M22 18C14 1 1 5 5 20c2 7 10 8 17 3Z"/><path class="wing wing-violet" d="M26 18C34 1 47 5 43 20c-2 7-10 8-17 3Z"/><path class="pin" d="M24 12a6 6 0 1 0 0 .1M24 18v14m-5-5 5 6 5-6"/></svg><span><strong>NaVi PoC</strong><small>안양 · 접근성 경로 실험 0.2</small></span></footer>
+        </div>
+        <nav class="bottom-nav" aria-label="주요 화면">
+          <button class="nav-item" type="button" data-go="home" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7v9h-6v-6h-4v6H4Z"/></svg><span>홈</span></button>
+          <button class="nav-item" type="button" data-go="plan" data-nav="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V6l5-2 6 2 5-2v13l-5 2-6-2Zm5-15v13m6-11v13"/></svg><span>길찾기</span></button>
+          <button class="nav-item" type="button" data-open-report="settings" data-nav="report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4m0 1h11l-2 4 2 4H5"/></svg><span>제보</span></button>
+          <button class="nav-item" type="button" data-go="settings" data-nav="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM19 12l2-1-2-4-2 .5-1.5-1L15 4h-6L8.5 6.5l-1.5 1L5 7l-2 4 2 1v2l-2 1 2 4 2-.5 1.5 1L9 22h6l.5-2.5 1.5-1 2 .5 2-4-2-1Z"/></svg><span>설정</span></button>
+        </nav>
       </section>
 
       <section id="system-fallback" class="system-fallback" hidden role="dialog" aria-modal="true" aria-labelledby="fallback-title"><div class="fallback-panel"><span class="fallback-symbol" aria-hidden="true">?</span><h2 id="fallback-title">연결 상태를 확인해 주세요.</h2><p id="fallback-copy">실제 데이터를 불러오지 못했습니다.</p><button id="continue-demo-button" class="primary-button" type="button">데모 데이터로 계속</button><button id="retry-api-button" class="secondary-button" type="button">다시 연결</button></div></section>

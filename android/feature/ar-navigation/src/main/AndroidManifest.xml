@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- AR is optional because navigation must keep working through the 2D HUD fallback. -->
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="optional" />
+    </application>
+</manifest>

@@ -3,6 +3,8 @@ package kr.co.navi.mobility.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kr.co.navi.mobility.ar.sensors.HeadingState
+import kr.co.navi.mobility.ar.sensors.HeadingTracker
 import kr.co.navi.mobility.data.NaviSessionState
 import kr.co.navi.mobility.data.NaviSessionStore
 import kr.co.navi.mobility.data.model.CoordinateDto
@@ -11,8 +13,6 @@ import kr.co.navi.mobility.data.model.SessionRerouteResponseDto
 import kr.co.navi.mobility.data.repository.NaviRepository
 import kr.co.navi.mobility.location.LocationState
 import kr.co.navi.mobility.location.LocationTracker
-import kr.co.navi.mobility.sensors.HeadingState
-import kr.co.navi.mobility.sensors.HeadingTracker
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow

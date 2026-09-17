@@ -1,4 +1,4 @@
-package kr.co.navi.mobility.navigation
+package kr.co.navi.mobility.guidance.contract
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

@@ -1,5 +1,7 @@
 # NaVi PoC 아키텍처
 
+ARCore 공간 안내와 온디바이스 인식을 도입하기 위한 차기 모듈 경계와 단계별 계획은 [AR·AI 모듈화 및 개발 계획](ar_ai_modularization_plan.md)에 정의합니다. 현재 문서는 구현되어 있는 PoC 기준선입니다.
+
 ## 실행 흐름
 
 ```text

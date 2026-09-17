@@ -1,39 +1,120 @@
+/* Hallmark · genre: atmospheric utility · macrostructure: mobile workbench · design-system: design.md · designed-as-app
+ * pre-emit critique: P5 H5 E4 S5 R4 V5
+ */
 :root {
   color-scheme: light;
-  --navi-ink: #172554;
-  --navi-ink-soft: #475569;
-  --navi-ink-muted: #526174;
-  --navi-canvas: #f5f8fc;
-  --navi-surface: #ffffff;
-  --navi-surface-soft: #eef4fb;
-  --navi-line: #d8e2ee;
-  --navi-line-strong: #b7c6d9;
-  --navi-blue: #2563eb;
-  --navi-blue-deep: #1d4ed8;
-  --navi-blue-light: #60a5fa;
-  --navi-violet: #7c3aed;
-  --navi-violet-light: #a78bfa;
-  --navi-pass: #00866a;
-  --navi-pass-soft: #e8f8f3;
-  --navi-warning: #b45309;
-  --navi-warning-soft: #fff7df;
-  --navi-block: #dc2626;
-  --navi-block-soft: #fff0f0;
-  --navi-unknown: #64748b;
-  --navi-glass-dark: rgb(9 22 61 / 0.84);
-  --navi-glass-light: rgb(255 255 255 / 0.9);
-  --navi-shadow-sheet: 0 -18px 50px rgb(23 37 84 / 0.16);
-  --navi-shadow-float: 0 14px 38px rgb(10 28 70 / 0.2);
-  --navi-radius-shell: 34px;
-  --navi-radius-sheet: 28px;
-  --navi-radius-control: 16px;
-  --navi-space-1: 4px;
-  --navi-space-2: 8px;
-  --navi-space-3: 12px;
-  --navi-space-4: 16px;
-  --navi-space-5: 20px;
-  --navi-space-6: 24px;
-  --navi-space-8: 32px;
-  --navi-font-ui: Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  --navi-font-data: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --color-paper: oklch(98% 0.012 92);
+  --color-paper-2: oklch(95.5% 0.019 92);
+  --color-paper-3: oklch(92% 0.028 88);
+  --color-surface: oklch(99.5% 0.006 90);
+  --color-surface-glass: oklch(99.5% 0.006 90 / 0.9);
+  --color-ink: oklch(23% 0.09 266);
+  --color-ink-2: oklch(40% 0.065 263);
+  --color-muted: oklch(46% 0.04 260);
+  --color-rule: oklch(83% 0.04 258);
+  --color-rule-strong: oklch(68% 0.075 258);
+  --color-lead: oklch(29% 0.07 266);
+  --color-accent: oklch(55% 0.225 258);
+  --color-accent-deep: oklch(49% 0.235 263);
+  --color-accent-soft: oklch(92% 0.05 257);
+  --color-violet: oklch(55% 0.225 297);
+  --color-violet-soft: oklch(92% 0.055 297);
+  --color-cyan: oklch(77% 0.15 221);
+  --color-cyan-soft: oklch(94% 0.045 221);
+  --color-success: oklch(49% 0.135 169);
+  --color-success-soft: oklch(94% 0.045 169);
+  --color-warning: oklch(51% 0.15 68);
+  --color-warning-soft: oklch(95% 0.05 77);
+  --color-danger: oklch(52% 0.22 25);
+  --color-danger-soft: oklch(95% 0.045 25);
+  --color-unknown: oklch(57% 0.035 257);
+  --color-focus: oklch(57% 0.235 255);
+  --color-on-accent: oklch(99% 0.004 90);
+  --color-accent-ink: var(--color-on-accent);
+  --color-night: oklch(18% 0.07 266 / 0.9);
+  --color-shadow: oklch(24% 0.08 266 / 0.18);
+  --color-shadow-soft: oklch(24% 0.08 266 / 0.1);
+
+  --font-display: "MaruBuri", "Noto Serif KR", Georgia, serif;
+  --font-body: Pretendard, SUIT, "Apple SD Gothic Neo", system-ui, sans-serif;
+  --font-data: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --text-2xs: 0.75rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.18rem;
+  --text-xl: 1.48rem;
+  --text-2xl: 2rem;
+  --text-display-s: clamp(2rem, 8vw, 3.4rem);
+  --text-display: clamp(2.55rem, 12vw, 4.8rem);
+
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 7rem;
+
+  --radius-xs: 0.35rem;
+  --radius-sm: 0.65rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-sheet: 1.75rem;
+  --radius-pill: 999px;
+
+  --rule-thin: 1px;
+  --rule-strong: 2px;
+  --shadow-card: 0 0.75rem 2.5rem var(--color-shadow-soft);
+  --shadow-float: 0 1.25rem 3rem var(--color-shadow);
+  --shadow-sheet: 0 -1.25rem 3rem var(--color-shadow-soft);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 420ms;
+
+  /* Compatibility aliases for the review tool and legacy route modules. */
+  --navi-ink: var(--color-ink);
+  --navi-ink-soft: var(--color-ink-2);
+  --navi-ink-muted: var(--color-muted);
+  --navi-canvas: var(--color-paper-2);
+  --navi-surface: var(--color-surface);
+  --navi-surface-soft: var(--color-accent-soft);
+  --navi-line: var(--color-rule);
+  --navi-line-strong: var(--color-rule-strong);
+  --navi-blue: var(--color-accent);
+  --navi-blue-deep: var(--color-accent-deep);
+  --navi-blue-light: var(--color-cyan);
+  --navi-violet: var(--color-violet);
+  --navi-violet-light: var(--color-violet-soft);
+  --navi-pass: var(--color-success);
+  --navi-pass-soft: var(--color-success-soft);
+  --navi-warning: var(--color-warning);
+  --navi-warning-soft: var(--color-warning-soft);
+  --navi-block: var(--color-danger);
+  --navi-block-soft: var(--color-danger-soft);
+  --navi-unknown: var(--color-unknown);
+  --navi-glass-dark: var(--color-night);
+  --navi-glass-light: var(--color-surface-glass);
+  --navi-shadow-sheet: var(--shadow-sheet);
+  --navi-shadow-float: var(--shadow-float);
+  --navi-radius-shell: var(--radius-sheet);
+  --navi-radius-sheet: var(--radius-sheet);
+  --navi-radius-control: var(--radius-md);
+  --navi-space-1: var(--space-3xs);
+  --navi-space-2: var(--space-2xs);
+  --navi-space-3: var(--space-xs);
+  --navi-space-4: var(--space-sm);
+  --navi-space-5: 1.25rem;
+  --navi-space-6: var(--space-md);
+  --navi-space-8: var(--space-lg);
+  --navi-font-ui: var(--font-body);
+  --navi-font-data: var(--font-data);
 }
