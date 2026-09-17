@@ -1,0 +1,6766 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9225,
+            37.40222
+          ],
+          [
+            126.9231873,
+            37.3986986
+          ],
+          [
+            126.9241,
+            37.3945
+          ],
+          [
+            126.92548,
+            37.389999
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "corridor_centerline",
+        "name": "안양역–안양청년1번가–안양1동 남부 생활권",
+        "status": "analysis_boundary_not_official_route"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9226883,
+          37.40242493
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW01",
+        "management_id": "2024121199",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W589960556_S7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9216164,
+          37.40225438
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW02",
+        "management_id": "2024121207",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W844180368_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9222916,
+          37.40302041
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW03",
+        "management_id": "2024121198",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W589960556_S7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9214135,
+          37.40225822
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW04",
+        "management_id": "2024121191",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W915477947_S2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9229561,
+          37.40217779
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW05",
+        "management_id": "2024121201",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W589960556_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.921626,
+          37.40180602
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW06",
+        "management_id": "2024121072",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W837321098_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9217644,
+          37.40173706
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW07",
+        "management_id": "2024121209",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W318729249_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9234847,
+          37.40153402
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW08",
+        "management_id": "2024121206",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W589960556_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9222862,
+          37.40126888
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW09",
+        "management_id": "2024121203",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W554922640_S1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9237238,
+          37.40125246
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW10",
+        "management_id": "2024121208",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W589960556_S5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9227142,
+          37.40103172
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW11",
+        "management_id": "2024121196",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W837321092_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9226606,
+          37.40100243
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW12",
+        "management_id": "2024121197",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W837321092_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9218769,
+          37.400866
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW13",
+        "management_id": "2024121190",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W318729204_S2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9238808,
+          37.39955921
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW14",
+        "management_id": "2024120086",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W318729248_S38"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9242529,
+          37.39838246
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW15",
+        "management_id": "2024122521",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W380073444_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9227402,
+          37.39758646
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW16",
+        "management_id": "2024122517",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W863717799_S8"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9233629,
+          37.39670022
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW17",
+        "management_id": "2024122512",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W380063841_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9240758,
+          37.39585333
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW18",
+        "management_id": "2024122514",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609253_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9240285,
+          37.39567724
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW19",
+        "management_id": "2024120083",
+        "public_state": "unknown",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609408_S8"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9251215,
+          37.39440509
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW20",
+        "management_id": "2024120362",
+        "public_state": "unknown",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609408_S9"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.923197,
+          37.39307064
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW21",
+        "management_id": "2025085034",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609292_S2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9236939,
+          37.39217999
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW22",
+        "management_id": "2025085029",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S14"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9238653,
+          37.39213835
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW23",
+        "management_id": "2025085023",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W379904072_S3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9236588,
+          37.39205273
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW24",
+        "management_id": "2025085028",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S14"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9238204,
+          37.39202055
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW25",
+        "management_id": "2025085030",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S13"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9244155,
+          37.39133025
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW26",
+        "management_id": "2025085031",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9251204,
+          37.39049146
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW27",
+        "management_id": "2025085009",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9253042,
+          37.3904547
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW28",
+        "management_id": "2025085010",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609193_S10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9250655,
+          37.39035668
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW29",
+        "management_id": "2025085011",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W82908648_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9241116,
+          37.39016544
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW30",
+        "management_id": "2025085027",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W82908648_S1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9252755,
+          37.39034431
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW31",
+        "management_id": "2025085012",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9242767,
+          37.39008527
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW32",
+        "management_id": "2025085025",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W82908648_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9254801,
+          37.389999
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW33",
+        "management_id": "2025085001",
+        "public_state": "public_explicit_risk",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W379904040_S0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92555,
+          37.38963959
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW34",
+        "management_id": "2025085002",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9256616,
+          37.38960031
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW35",
+        "management_id": "2025085003",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609212_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9254971,
+          37.38949465
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW36",
+        "management_id": "2025085005",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W814055256_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.925658,
+          37.38944098
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW37",
+        "management_id": "2025085004",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W38609097_S1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9251698,
+          37.38927498
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW38",
+        "management_id": "2025085007",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": true,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W814055256_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.925062,
+          37.38927212
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW39",
+        "management_id": "2025085006",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W814055256_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.925032,
+          37.38917431
+        ]
+      },
+      "properties": {
+        "feature_type": "crosswalk_center",
+        "sample_id": "CW40",
+        "management_id": "2025085008",
+        "public_state": "public_explicit_present",
+        "double_review_crosswalk": false,
+        "geometry_quality": "provisional_high",
+        "osm_proxy_edge_id": "W814055256_S6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92264614190194,
+          37.40240149538004
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW01-A",
+        "sample_id": "CW01",
+        "management_id": "2024121199",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4024015,126.9226461"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92273045809807,
+          37.40244836461997
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW01-B",
+        "sample_id": "CW01",
+        "management_id": "2024121199",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4024484,126.9227305"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9216533145511,
+          37.402241089845866
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW02-A",
+        "sample_id": "CW02",
+        "management_id": "2024121207",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4022411,126.9216533"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92157948544892,
+          37.40226767015414
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW02-B",
+        "sample_id": "CW02",
+        "management_id": "2024121207",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4022677,126.9215795"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92225900640435,
+          37.40300229204492
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW03-A",
+        "sample_id": "CW03",
+        "management_id": "2024121198",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4030023,126.9222590"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92232419359563,
+          37.40303852795509
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW03-B",
+        "sample_id": "CW03",
+        "management_id": "2024121198",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4030385,126.9223242"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92134421014717,
+          37.402219732308936
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW04-A",
+        "sample_id": "CW04",
+        "management_id": "2024121191",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4022197,126.9213442"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92148278985283,
+          37.402296707691065
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW04-B",
+        "sample_id": "CW04",
+        "management_id": "2024121191",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4022967,126.9214828"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92291684588432,
+          37.40215763504363
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW05-A",
+        "sample_id": "CW05",
+        "management_id": "2024121201",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4021576,126.9229168"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92299535411566,
+          37.40219794495638
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW05-B",
+        "sample_id": "CW05",
+        "management_id": "2024121201",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4021979,126.9229954"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92166571676718,
+          37.4017671465952
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW06-A",
+        "sample_id": "CW06",
+        "management_id": "2024121072",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4017671,126.9216657"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92158628323284,
+          37.401844893404814
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW06-B",
+        "sample_id": "CW06",
+        "management_id": "2024121072",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4018449,126.9215863"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92173024130342,
+          37.40172334566271
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW07-A",
+        "sample_id": "CW07",
+        "management_id": "2024121209",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4017233,126.9217302"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9217985586966,
+          37.4017507743373
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW07-B",
+        "sample_id": "CW07",
+        "management_id": "2024121209",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4017508,126.9217986"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92345020395895,
+          37.40151630806864
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW08-A",
+        "sample_id": "CW08",
+        "management_id": "2024121206",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4015163,126.9234502"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92351919604104,
+          37.401551731931356
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW08-B",
+        "sample_id": "CW08",
+        "management_id": "2024121206",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4015517,126.9235192"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92224733040224,
+          37.4012455863223
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW09-A",
+        "sample_id": "CW09",
+        "management_id": "2024121203",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4012456,126.9222473"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92232506959778,
+          37.40129217367772
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW09-B",
+        "sample_id": "CW09",
+        "management_id": "2024121203",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4012922,126.9223251"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92368033197005,
+          37.40122776316556
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW10-A",
+        "sample_id": "CW10",
+        "management_id": "2024121208",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4012278,126.9236803"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92376726802996,
+          37.40127715683444
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW10-B",
+        "sample_id": "CW10",
+        "management_id": "2024121208",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4012772,126.9237673"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92269349040264,
+          37.401019360005925
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW11-A",
+        "sample_id": "CW11",
+        "management_id": "2024121196",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4010194,126.9226935"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92273490959737,
+          37.40104407999407
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW11-B",
+        "sample_id": "CW11",
+        "management_id": "2024121196",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4010441,126.9227349"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92264523773848,
+          37.40099326142671
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW12-A",
+        "sample_id": "CW12",
+        "management_id": "2024121197",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4009933,126.9226452"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92267596226152,
+          37.401011598573284
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW12-B",
+        "sample_id": "CW12",
+        "management_id": "2024121197",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4010116,126.9226760"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92194039159135,
+          37.40083738053178
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW13-A",
+        "sample_id": "CW13",
+        "management_id": "2024121190",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4008374,126.9219404"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92181340840867,
+          37.40089461946822
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW13-B",
+        "sample_id": "CW13",
+        "management_id": "2024121190",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.4008946,126.9218134"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92380849157105,
+          37.39951423562795
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW14-A",
+        "sample_id": "CW14",
+        "management_id": "2024120086",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3995142,126.9238085"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92395310842896,
+          37.399604184372045
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW14-B",
+        "sample_id": "CW14",
+        "management_id": "2024120086",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3996042,126.9239531"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92430267046433,
+          37.398330514879135
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW15-A",
+        "sample_id": "CW15",
+        "management_id": "2024122521",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3983305,126.9243027"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92420312953567,
+          37.39843440512087
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW15-B",
+        "sample_id": "CW15",
+        "management_id": "2024122521",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3984344,126.9242031"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92279839429749,
+          37.39751862266188
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW16-A",
+        "sample_id": "CW16",
+        "management_id": "2024122517",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3975186,126.9227984"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92268200570251,
+          37.397654297338114
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW16-B",
+        "sample_id": "CW16",
+        "management_id": "2024122517",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3976543,126.9226820"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92338647331106,
+          37.39667273168306
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW17-A",
+        "sample_id": "CW17",
+        "management_id": "2024122512",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3966727,126.9233865"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92333932668895,
+          37.396727708316945
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW17-B",
+        "sample_id": "CW17",
+        "management_id": "2024122512",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3967277,126.9233393"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9241050997271,
+          37.39581829178769
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW18-A",
+        "sample_id": "CW18",
+        "management_id": "2024122514",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3958183,126.9241051"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92404650027288,
+          37.39588836821232
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW18-B",
+        "sample_id": "CW18",
+        "management_id": "2024122514",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3958884,126.9240465"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9239184646548,
+          37.39561913411808
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW19-A",
+        "sample_id": "CW19",
+        "management_id": "2024120083",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3956191,126.9239185"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92413853534521,
+          37.39573534588192
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW19-B",
+        "sample_id": "CW19",
+        "management_id": "2024120083",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3957353,126.9241385"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92501464784056,
+          37.39434797316774
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW20-A",
+        "sample_id": "CW20",
+        "management_id": "2024120362",
+        "side_label": "A",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3943480,126.9250146"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92522835215944,
+          37.39446220683226
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW20-B",
+        "sample_id": "CW20",
+        "management_id": "2024120362",
+        "side_label": "B",
+        "public_state": "unknown",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3944622,126.9252284"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92322375721096,
+          37.39303756607922
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW21-A",
+        "sample_id": "CW21",
+        "management_id": "2025085034",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3930376,126.9232238"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92317024278903,
+          37.39310371392077
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW21-B",
+        "sample_id": "CW21",
+        "management_id": "2025085034",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3931037,126.9231702"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92361853491747,
+          37.39214078880838
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW22-A",
+        "sample_id": "CW22",
+        "management_id": "2025085029",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3921408,126.9236185"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92376926508251,
+          37.39221919119162
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW22-B",
+        "sample_id": "CW22",
+        "management_id": "2025085029",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3922192,126.9237693"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92388323781566,
+          37.39211628056607
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW23-A",
+        "sample_id": "CW23",
+        "management_id": "2025085023",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3921163,126.9238832"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92384736218435,
+          37.39216041943393
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW23-B",
+        "sample_id": "CW23",
+        "management_id": "2025085023",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3921604,126.9238474"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92359267780495,
+          37.3920183365017
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW24-A",
+        "sample_id": "CW24",
+        "management_id": "2025085028",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3920183,126.9235927"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92372492219503,
+          37.392087123498314
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW24-B",
+        "sample_id": "CW24",
+        "management_id": "2025085028",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3920871,126.9237249"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9237435785561,
+          37.3919801552276
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW25-A",
+        "sample_id": "CW25",
+        "management_id": "2025085030",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3919802,126.9237436"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9238972214439,
+          37.3920609447724
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW25-B",
+        "sample_id": "CW25",
+        "management_id": "2025085030",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3920609,126.9238972"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9243625992532,
+          37.39130366285457
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW26-A",
+        "sample_id": "CW26",
+        "management_id": "2025085031",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3913037,126.9243626"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92446840074679,
+          37.39135683714544
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW26-B",
+        "sample_id": "CW26",
+        "management_id": "2025085031",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3913568,126.9244684"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92505581204853,
+          37.39045684884471
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW27-A",
+        "sample_id": "CW27",
+        "management_id": "2025085009",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3904568,126.9250558"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92518498795148,
+          37.390526071155286
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW27-B",
+        "sample_id": "CW27",
+        "management_id": "2025085009",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3905261,126.9251850"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92534644316888,
+          37.39040313736469
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW28-A",
+        "sample_id": "CW28",
+        "management_id": "2025085010",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3904031,126.9253464"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92526195683112,
+          37.390506262635306
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW28-B",
+        "sample_id": "CW28",
+        "management_id": "2025085010",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3905063,126.9252620"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92508866166824,
+          37.39031011408944
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW29-A",
+        "sample_id": "CW29",
+        "management_id": "2025085011",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3903101,126.9250887"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92504233833175,
+          37.390403245910555
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW29-B",
+        "sample_id": "CW29",
+        "management_id": "2025085011",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3904032,126.9250423"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92409457142617,
+          37.39012616733453
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW30-A",
+        "sample_id": "CW30",
+        "management_id": "2025085027",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3901262,126.9240946"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92412862857385,
+          37.390204712665465
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW30-B",
+        "sample_id": "CW30",
+        "management_id": "2025085027",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3902047,126.9241286"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92520600321222,
+          37.39032369675492
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW31-A",
+        "sample_id": "CW31",
+        "management_id": "2025085012",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3903237,126.9252060"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92534499678776,
+          37.39036492324509
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW31-B",
+        "sample_id": "CW31",
+        "management_id": "2025085012",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3903649,126.9253450"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9242948447004,
+          37.390048790568265
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW32-A",
+        "sample_id": "CW32",
+        "management_id": "2025085025",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3900488,126.9242948"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92425855529957,
+          37.39012174943174
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW32-B",
+        "sample_id": "CW32",
+        "management_id": "2025085025",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3901217,126.9242586"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9254940088399,
+          37.389982227292826
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW33-A",
+        "sample_id": "CW33",
+        "management_id": "2025085001",
+        "side_label": "A",
+        "public_state": "public_explicit_risk",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3899822,126.9254940"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9254661911601,
+          37.39001577270718
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW33-B",
+        "sample_id": "CW33",
+        "management_id": "2025085001",
+        "side_label": "B",
+        "public_state": "public_explicit_risk",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3900158,126.9254662"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92548561896953,
+          37.389622186729625
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW34-A",
+        "sample_id": "CW34",
+        "management_id": "2025085002",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3896222,126.9254856"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92561438103047,
+          37.38965699327038
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW34-B",
+        "sample_id": "CW34",
+        "management_id": "2025085002",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3896570,126.9256144"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92568254442703,
+          37.38956545502662
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW35-A",
+        "sample_id": "CW35",
+        "management_id": "2025085003",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3895655,126.9256825"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92564065557295,
+          37.38963516497338
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW35-B",
+        "sample_id": "CW35",
+        "management_id": "2025085003",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3896352,126.9256407"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92553763921738,
+          37.389460889905884
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW36-A",
+        "sample_id": "CW36",
+        "management_id": "2025085005",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3894609,126.9255376"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92545656078262,
+          37.389528410094115
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW36-B",
+        "sample_id": "CW36",
+        "management_id": "2025085005",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3895284,126.9254566"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92561176972762,
+          37.38942767602712
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW37-A",
+        "sample_id": "CW37",
+        "management_id": "2025085004",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3894277,126.9256118"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92570423027236,
+          37.38945428397289
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW37-B",
+        "sample_id": "CW37",
+        "management_id": "2025085004",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3894543,126.9257042"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92520180052233,
+          37.389248330727646
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW38-A",
+        "sample_id": "CW38",
+        "management_id": "2025085007",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3892483,126.9252018"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.9251377994777,
+          37.38930162927237
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW38-B",
+        "sample_id": "CW38",
+        "management_id": "2025085007",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": true,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3893016,126.9251378"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92509509723544,
+          37.38924455741109
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW39-A",
+        "sample_id": "CW39",
+        "management_id": "2025085006",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3892446,126.9250951"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92502890276454,
+          37.38929968258892
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW39-B",
+        "sample_id": "CW39",
+        "management_id": "2025085006",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3892997,126.9250289"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92506392218567,
+          37.38914772596454
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW40-A",
+        "sample_id": "CW40",
+        "management_id": "2025085008",
+        "side_label": "A",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3891477,126.9250639"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.92500007781435,
+          37.38920089403547
+        ]
+      },
+      "properties": {
+        "feature_type": "approach",
+        "approach_id": "CW40-B",
+        "sample_id": "CW40",
+        "management_id": "2025085008",
+        "side_label": "B",
+        "public_state": "public_explicit_present",
+        "double_review_required": false,
+        "review_status": "pending_human_review",
+        "geometry_quality": "provisional_high",
+        "evidence_url": "https://map.kakao.com/link/roadview/37.3892009,126.9250001"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9210475,
+            37.3992233
+          ],
+          [
+            126.9217873,
+            37.3983458
+          ],
+          [
+            126.9225349,
+            37.3974588
+          ],
+          [
+            126.9232367,
+            37.3966289
+          ],
+          [
+            126.9235435,
+            37.3962683
+          ],
+          [
+            126.9236105,
+            37.3961905
+          ],
+          [
+            126.9237404,
+            37.396034
+          ],
+          [
+            126.9239527,
+            37.3957781
+          ],
+          [
+            126.9245579,
+            37.3950445
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD01",
+        "mode": "A",
+        "distance_m": 1109.1,
+        "weighted_cost_m": 1109.1,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206989,
+            37.4008089
+          ],
+          [
+            126.9207176,
+            37.4006994
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9213284,
+            37.3999618
+          ],
+          [
+            126.9216779,
+            37.3995506
+          ],
+          [
+            126.9221134,
+            37.3990521
+          ],
+          [
+            126.9224283,
+            37.3986669
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD01",
+        "mode": "B",
+        "distance_m": 1115.8,
+        "weighted_cost_m": 1127.4,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206989,
+            37.4008089
+          ],
+          [
+            126.9207176,
+            37.4006994
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9213284,
+            37.3999618
+          ],
+          [
+            126.9216779,
+            37.3995506
+          ],
+          [
+            126.9221134,
+            37.3990521
+          ],
+          [
+            126.9224283,
+            37.3986669
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD01",
+        "mode": "C",
+        "distance_m": 1115.8,
+        "weighted_cost_m": 1127.4,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9228879,
+            37.3988907
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9232367,
+            37.3966289
+          ],
+          [
+            126.9235435,
+            37.3962683
+          ],
+          [
+            126.9236105,
+            37.3961905
+          ],
+          [
+            126.9237404,
+            37.396034
+          ],
+          [
+            126.9239527,
+            37.3957781
+          ],
+          [
+            126.9245579,
+            37.3950445
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD02",
+        "mode": "A",
+        "distance_m": 652.8,
+        "weighted_cost_m": 652.8,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9228879,
+            37.3988907
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD02",
+        "mode": "B",
+        "distance_m": 656.2,
+        "weighted_cost_m": 656.2,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9228879,
+            37.3988907
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD02",
+        "mode": "C",
+        "distance_m": 656.2,
+        "weighted_cost_m": 656.2,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9218805,
+            37.400902
+          ],
+          [
+            126.9218386,
+            37.4008425
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9213284,
+            37.3999618
+          ],
+          [
+            126.9216779,
+            37.3995506
+          ],
+          [
+            126.9221134,
+            37.3990521
+          ],
+          [
+            126.9224283,
+            37.3986669
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9232367,
+            37.3966289
+          ],
+          [
+            126.9235435,
+            37.3962683
+          ],
+          [
+            126.9236105,
+            37.3961905
+          ],
+          [
+            126.9237404,
+            37.396034
+          ],
+          [
+            126.9239527,
+            37.3957781
+          ],
+          [
+            126.9245579,
+            37.3950445
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD03",
+        "mode": "A",
+        "distance_m": 945.3,
+        "weighted_cost_m": 945.3,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9218805,
+            37.400902
+          ],
+          [
+            126.9218386,
+            37.4008425
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9213284,
+            37.3999618
+          ],
+          [
+            126.9216779,
+            37.3995506
+          ],
+          [
+            126.9221134,
+            37.3990521
+          ],
+          [
+            126.9224283,
+            37.3986669
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD03",
+        "mode": "B",
+        "distance_m": 948.7,
+        "weighted_cost_m": 949.9,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9218805,
+            37.400902
+          ],
+          [
+            126.9218386,
+            37.4008425
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9213284,
+            37.3999618
+          ],
+          [
+            126.9216779,
+            37.3995506
+          ],
+          [
+            126.9221134,
+            37.3990521
+          ],
+          [
+            126.9224283,
+            37.3986669
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD03",
+        "mode": "C",
+        "distance_m": 948.7,
+        "weighted_cost_m": 949.9,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9237004,
+            37.4012578
+          ],
+          [
+            126.9237699,
+            37.4011795
+          ],
+          [
+            126.923945,
+            37.4009268
+          ],
+          [
+            126.9241564,
+            37.4005791
+          ],
+          [
+            126.9245965,
+            37.4004483
+          ],
+          [
+            126.9247983,
+            37.4001289
+          ],
+          [
+            126.9249585,
+            37.4000616
+          ],
+          [
+            126.9253544,
+            37.3995109
+          ],
+          [
+            126.925357,
+            37.3994031
+          ],
+          [
+            126.9252453,
+            37.3993909
+          ],
+          [
+            126.9247225,
+            37.3990857
+          ],
+          [
+            126.92456,
+            37.3990593
+          ],
+          [
+            126.924444,
+            37.3989891
+          ],
+          [
+            126.9247058,
+            37.3987249
+          ],
+          [
+            126.9240936,
+            37.3983755
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9232367,
+            37.3966289
+          ],
+          [
+            126.9235435,
+            37.3962683
+          ],
+          [
+            126.9236105,
+            37.3961905
+          ],
+          [
+            126.9237404,
+            37.396034
+          ],
+          [
+            126.9239527,
+            37.3957781
+          ],
+          [
+            126.9245579,
+            37.3950445
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD04",
+        "mode": "A",
+        "distance_m": 1068.7,
+        "weighted_cost_m": 1068.7,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9237004,
+            37.4012578
+          ],
+          [
+            126.9237699,
+            37.4011795
+          ],
+          [
+            126.923945,
+            37.4009268
+          ],
+          [
+            126.9241564,
+            37.4005791
+          ],
+          [
+            126.9245965,
+            37.4004483
+          ],
+          [
+            126.9247983,
+            37.4001289
+          ],
+          [
+            126.9249585,
+            37.4000616
+          ],
+          [
+            126.9253544,
+            37.3995109
+          ],
+          [
+            126.925357,
+            37.3994031
+          ],
+          [
+            126.9252453,
+            37.3993909
+          ],
+          [
+            126.9247225,
+            37.3990857
+          ],
+          [
+            126.92456,
+            37.3990593
+          ],
+          [
+            126.924444,
+            37.3989891
+          ],
+          [
+            126.9247058,
+            37.3987249
+          ],
+          [
+            126.9240936,
+            37.3983755
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD04",
+        "mode": "B",
+        "distance_m": 1072.1,
+        "weighted_cost_m": 1073.7,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9237004,
+            37.4012578
+          ],
+          [
+            126.9237699,
+            37.4011795
+          ],
+          [
+            126.923945,
+            37.4009268
+          ],
+          [
+            126.9241564,
+            37.4005791
+          ],
+          [
+            126.9245965,
+            37.4004483
+          ],
+          [
+            126.9247983,
+            37.4001289
+          ],
+          [
+            126.9249585,
+            37.4000616
+          ],
+          [
+            126.9253544,
+            37.3995109
+          ],
+          [
+            126.925357,
+            37.3994031
+          ],
+          [
+            126.9252453,
+            37.3993909
+          ],
+          [
+            126.9247225,
+            37.3990857
+          ],
+          [
+            126.92456,
+            37.3990593
+          ],
+          [
+            126.924444,
+            37.3989891
+          ],
+          [
+            126.9247058,
+            37.3987249
+          ],
+          [
+            126.9240936,
+            37.3983755
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD04",
+        "mode": "C",
+        "distance_m": 1072.1,
+        "weighted_cost_m": 1073.7,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9227919,
+            37.4023904
+          ],
+          [
+            126.9237004,
+            37.4012578
+          ],
+          [
+            126.9237699,
+            37.4011795
+          ],
+          [
+            126.923945,
+            37.4009268
+          ],
+          [
+            126.9241564,
+            37.4005791
+          ],
+          [
+            126.9245965,
+            37.4004483
+          ],
+          [
+            126.9247983,
+            37.4001289
+          ],
+          [
+            126.9249585,
+            37.4000616
+          ],
+          [
+            126.9253544,
+            37.3995109
+          ],
+          [
+            126.925357,
+            37.3994031
+          ],
+          [
+            126.9252453,
+            37.3993909
+          ],
+          [
+            126.9247225,
+            37.3990857
+          ],
+          [
+            126.92456,
+            37.3990593
+          ],
+          [
+            126.924444,
+            37.3989891
+          ],
+          [
+            126.9247058,
+            37.3987249
+          ],
+          [
+            126.9240936,
+            37.3983755
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9232367,
+            37.3966289
+          ],
+          [
+            126.9235435,
+            37.3962683
+          ],
+          [
+            126.9236105,
+            37.3961905
+          ],
+          [
+            126.9237404,
+            37.396034
+          ],
+          [
+            126.9239527,
+            37.3957781
+          ],
+          [
+            126.9245579,
+            37.3950445
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD05",
+        "mode": "A",
+        "distance_m": 1217.4,
+        "weighted_cost_m": 1217.4,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9227919,
+            37.4023904
+          ],
+          [
+            126.9237004,
+            37.4012578
+          ],
+          [
+            126.9237699,
+            37.4011795
+          ],
+          [
+            126.923945,
+            37.4009268
+          ],
+          [
+            126.9241564,
+            37.4005791
+          ],
+          [
+            126.9245965,
+            37.4004483
+          ],
+          [
+            126.9247983,
+            37.4001289
+          ],
+          [
+            126.9249585,
+            37.4000616
+          ],
+          [
+            126.9253544,
+            37.3995109
+          ],
+          [
+            126.925357,
+            37.3994031
+          ],
+          [
+            126.9252453,
+            37.3993909
+          ],
+          [
+            126.9247225,
+            37.3990857
+          ],
+          [
+            126.92456,
+            37.3990593
+          ],
+          [
+            126.924444,
+            37.3989891
+          ],
+          [
+            126.9247058,
+            37.3987249
+          ],
+          [
+            126.9240936,
+            37.3983755
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD05",
+        "mode": "B",
+        "distance_m": 1220.8,
+        "weighted_cost_m": 1244.7,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9227919,
+            37.4023904
+          ],
+          [
+            126.9237004,
+            37.4012578
+          ],
+          [
+            126.9237699,
+            37.4011795
+          ],
+          [
+            126.923945,
+            37.4009268
+          ],
+          [
+            126.9241564,
+            37.4005791
+          ],
+          [
+            126.9245965,
+            37.4004483
+          ],
+          [
+            126.9247983,
+            37.4001289
+          ],
+          [
+            126.9249585,
+            37.4000616
+          ],
+          [
+            126.9253544,
+            37.3995109
+          ],
+          [
+            126.925357,
+            37.3994031
+          ],
+          [
+            126.9252453,
+            37.3993909
+          ],
+          [
+            126.9247225,
+            37.3990857
+          ],
+          [
+            126.92456,
+            37.3990593
+          ],
+          [
+            126.924444,
+            37.3989891
+          ],
+          [
+            126.9247058,
+            37.3987249
+          ],
+          [
+            126.9240936,
+            37.3983755
+          ],
+          [
+            126.9235396,
+            37.3980942
+          ],
+          [
+            126.9232825,
+            37.3978691
+          ],
+          [
+            126.923159,
+            37.3978015
+          ],
+          [
+            126.9235261,
+            37.3973457
+          ],
+          [
+            126.9238375,
+            37.3969587
+          ],
+          [
+            126.9241871,
+            37.3965494
+          ],
+          [
+            126.9245666,
+            37.3961067
+          ],
+          [
+            126.9251636,
+            37.3953758
+          ],
+          [
+            126.9254829,
+            37.3949943
+          ],
+          [
+            126.9259031,
+            37.3944919
+          ],
+          [
+            126.9252795,
+            37.3941804
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD05",
+        "mode": "C",
+        "distance_m": 1220.8,
+        "weighted_cost_m": 1244.7,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ],
+          [
+            126.9254587,
+            37.3898923
+          ],
+          [
+            126.9255973,
+            37.3895641
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD06",
+        "mode": "A",
+        "distance_m": 1754.3,
+        "weighted_cost_m": 1754.3,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ],
+          [
+            126.9254587,
+            37.3898923
+          ],
+          [
+            126.9255973,
+            37.3895641
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD06",
+        "mode": "B",
+        "distance_m": 1754.3,
+        "weighted_cost_m": 1765.9,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ],
+          [
+            126.9254587,
+            37.3898923
+          ],
+          [
+            126.9255973,
+            37.3895641
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD06",
+        "mode": "C",
+        "distance_m": 1754.3,
+        "weighted_cost_m": 1765.9,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD07",
+        "mode": "A",
+        "distance_m": 1707.6,
+        "weighted_cost_m": 1707.6,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD07",
+        "mode": "B",
+        "distance_m": 1707.6,
+        "weighted_cost_m": 1719.2,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD07",
+        "mode": "C",
+        "distance_m": 1707.6,
+        "weighted_cost_m": 1719.2,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9241707,
+            37.3900653
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD08",
+        "mode": "A",
+        "distance_m": 1757.1,
+        "weighted_cost_m": 1757.1,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9241707,
+            37.3900653
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD08",
+        "mode": "B",
+        "distance_m": 1757.1,
+        "weighted_cost_m": 1768.7,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9241707,
+            37.3900653
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD08",
+        "mode": "C",
+        "distance_m": 1757.1,
+        "weighted_cost_m": 1768.7,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD09",
+        "mode": "A",
+        "distance_m": 1656.1,
+        "weighted_cost_m": 1656.1,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD09",
+        "mode": "B",
+        "distance_m": 1656.1,
+        "weighted_cost_m": 1667.7,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9213177,
+            37.4022938
+          ],
+          [
+            126.9215172,
+            37.4020639
+          ],
+          [
+            126.9217083,
+            37.4018435
+          ],
+          [
+            126.9213008,
+            37.401577
+          ],
+          [
+            126.9209165,
+            37.4013287
+          ],
+          [
+            126.9208258,
+            37.4011442
+          ],
+          [
+            126.9206777,
+            37.400919
+          ],
+          [
+            126.9206181,
+            37.4009133
+          ],
+          [
+            126.9205724,
+            37.400889
+          ],
+          [
+            126.9203954,
+            37.4006944
+          ],
+          [
+            126.9200666,
+            37.4003996
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD09",
+        "mode": "C",
+        "distance_m": 1656.1,
+        "weighted_cost_m": 1667.7,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9218805,
+            37.400902
+          ],
+          [
+            126.9218386,
+            37.4008425
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ],
+          [
+            126.9254587,
+            37.3898923
+          ],
+          [
+            126.9255973,
+            37.3895641
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD10",
+        "mode": "A",
+        "distance_m": 1591.7,
+        "weighted_cost_m": 1591.7,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9218805,
+            37.400902
+          ],
+          [
+            126.9218386,
+            37.4008425
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ],
+          [
+            126.9254587,
+            37.3898923
+          ],
+          [
+            126.9255973,
+            37.3895641
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD10",
+        "mode": "B",
+        "distance_m": 1591.7,
+        "weighted_cost_m": 1592.9,
+        "evidence_status": "computed_baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.9218805,
+            37.400902
+          ],
+          [
+            126.9218386,
+            37.4008425
+          ],
+          [
+            126.9209727,
+            37.4003989
+          ],
+          [
+            126.9203617,
+            37.4000676
+          ],
+          [
+            126.9197186,
+            37.3995967
+          ],
+          [
+            126.9192098,
+            37.3992315
+          ],
+          [
+            126.9183771,
+            37.3986291
+          ],
+          [
+            126.9188453,
+            37.3980597
+          ],
+          [
+            126.9195177,
+            37.3972555
+          ],
+          [
+            126.9197783,
+            37.3969387
+          ],
+          [
+            126.9200287,
+            37.3966409
+          ],
+          [
+            126.9203324,
+            37.3962937
+          ],
+          [
+            126.9206787,
+            37.3958674
+          ],
+          [
+            126.9208518,
+            37.3956554
+          ],
+          [
+            126.9213921,
+            37.3950119
+          ],
+          [
+            126.92173,
+            37.3946037
+          ],
+          [
+            126.9220455,
+            37.3942208
+          ],
+          [
+            126.9223478,
+            37.3938669
+          ],
+          [
+            126.9224776,
+            37.3937109
+          ],
+          [
+            126.9226828,
+            37.393462
+          ],
+          [
+            126.9230706,
+            37.3930088
+          ],
+          [
+            126.9232679,
+            37.3927772
+          ],
+          [
+            126.9234547,
+            37.3925426
+          ],
+          [
+            126.9236625,
+            37.392287
+          ],
+          [
+            126.9238043,
+            37.3921125
+          ],
+          [
+            126.9241195,
+            37.3917288
+          ],
+          [
+            126.9242717,
+            37.3915519
+          ],
+          [
+            126.9244013,
+            37.3914009
+          ],
+          [
+            126.9244934,
+            37.3912836
+          ],
+          [
+            126.924989,
+            37.3906933
+          ],
+          [
+            126.9250613,
+            37.3906071
+          ],
+          [
+            126.925232,
+            37.3904032
+          ],
+          [
+            126.9253193,
+            37.3902148
+          ],
+          [
+            126.925356,
+            37.3901304
+          ],
+          [
+            126.9254284,
+            37.3899643
+          ],
+          [
+            126.9254587,
+            37.3898923
+          ],
+          [
+            126.9255973,
+            37.3895641
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "route",
+        "od_id": "OD10",
+        "mode": "C",
+        "distance_m": 1591.7,
+        "weighted_cost_m": 1592.9,
+        "evidence_status": "baseline_no_approved_ai_candidates"
+      }
+    }
+  ]
+}

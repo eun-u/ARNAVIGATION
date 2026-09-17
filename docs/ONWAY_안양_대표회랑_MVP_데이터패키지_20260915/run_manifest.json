@@ -1,0 +1,67 @@
+{
+  "as_of": "2026-09-15",
+  "corridor_name": "안양역–안양청년1번가–안양1동 남부 생활권",
+  "corridor_length_m": 1377.3,
+  "selected_crosswalks": 40,
+  "explicit_crosswalks": 20,
+  "unknown_crosswalks": 20,
+  "explicit_risk_crosswalks": 1,
+  "approaches": 80,
+  "double_review_required_approaches": 40,
+  "completed_human_reviews": 0,
+  "approved_ai_candidates": 0,
+  "od_pairs": 10,
+  "route_rows": 30,
+  "b_changed_routes": 5,
+  "b_median_distance_delta_pct": 0.14,
+  "b_max_distance_delta_pct": 0.6,
+  "unknown_edge_factor": 1.15,
+  "c_equals_b_reason": "AI 사전판독 후보 5건이 있으나 사람 승인 0건이므로 공식 C는 B와 동일.",
+  "map_example_od": "OD01",
+  "source_hashes": {
+    "anyang_crosswalk_csv_sha256": "9275a45ef21d700be25c0d436b91ce0b6a46e1cd034f2a6ba2493d63a7b030b4",
+    "osm_extract_sha256": "93f6592339f5259b5e118bf940cbc9c53172106d3784812cdd6c3531bb6bd293"
+  },
+  "sources": {
+    "crosswalk": "https://www.data.go.kr/data/15042415/fileData.do",
+    "osm": "https://api.openstreetmap.org/api/0.6/map?bbox=126.9185,37.3885,126.9312,37.4035",
+    "anyang_poi": "https://www.anyang.go.kr/tour/selectTourCntntsWebView.do?tourNo=10&key=1863",
+    "youth": "https://www.anyang.go.kr/youth/contents.do?key=5623"
+  },
+  "limitations": [
+    "접근부 좌표는 공공 횡단보도 길이와 인접 OSM 자동차도로 방향에서 추정한 미검수 지오메트리다.",
+    "공공 접근성 값은 자산 단위이며 양단 접근부의 확인값이 아니다.",
+    "OSM 중심선은 실제 보도 그래프가 아닌 기술 대체망이다.",
+    "로드뷰 80건은 AI 사전판독에 사용했지만 사람 1차/2차 검수는 0건이다.",
+    "카카오 로드뷰 이미지는 수동 판독 참고용이며 패키지에 재배포하지 않는다.",
+    "AI 후보는 사람이 승인하기 전 공식 C 경로를 변경하지 않는다."
+  ],
+  "roadview_approach_evidence_downloaded": 80,
+  "ai_precheck_first_pass_completed": 80,
+  "ai_precheck_second_pass_completed": 40,
+  "ai_precheck_pass_count": 25,
+  "ai_precheck_block_candidate_count": 5,
+  "ai_precheck_unknown_count": 50,
+  "ai_repeatability_agreement": 0.95,
+  "ai_repeatability_kappa": 0.9065,
+  "candidate_scenario": {
+    "candidate_block_samples": [
+      "CW01",
+      "CW04",
+      "CW10",
+      "CW13",
+      "CW18"
+    ],
+    "candidate_block_proxy_edges": [
+      "W318729204_S2",
+      "W38609253_S0",
+      "W589960556_S5",
+      "W589960556_S7",
+      "W915477947_S2"
+    ],
+    "routes_changed_vs_b": 9,
+    "routes_unavailable": 0,
+    "median_distance_delta_vs_b_pct": 9.09,
+    "max_distance_delta_vs_b_pct": 44.74
+  }
+}

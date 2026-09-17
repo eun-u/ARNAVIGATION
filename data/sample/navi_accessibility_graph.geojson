@@ -1,0 +1,114 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "NaVi Anyang accessibility routing demo graph",
+    "area": "안양역 인근 소형 PoC 구역",
+    "crs": "EPSG:4326",
+    "source": "derived_from_existing_anyang_corridor_context",
+    "accessibility_attributes": "synthetic",
+    "verified": false,
+    "disclaimer": "좌표는 안양 대표 회랑 맥락을 따른 데모 좌표이며 접근성 속성은 기능 검증용 synthetic 값이다. 법적 기준 또는 현장 실측값이 아니다.",
+    "demo": {
+      "origin_node": "N001",
+      "destination_node": "N010",
+      "block_edge": "E006"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9205, 37.4019]},
+      "properties": {"feature_type": "node", "node_id": "N001", "name": "출발지 A", "node_type": "entrance", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9214, 37.4015]},
+      "properties": {"feature_type": "node", "node_id": "N002", "name": "북측 분기점", "node_type": "intersection", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9223, 37.40135]},
+      "properties": {"feature_type": "node", "node_id": "N003", "name": "계단 진입부", "node_type": "waypoint", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9232, 37.4009]},
+      "properties": {"feature_type": "node", "node_id": "N004", "name": "높은 턱 구간", "node_type": "crosswalk", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9216, 37.4007]},
+      "properties": {"feature_type": "node", "node_id": "N005", "name": "접근 경로 분기", "node_type": "intersection", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9225, 37.40035]},
+      "properties": {"feature_type": "node", "node_id": "N006", "name": "공사 상태 실험 구간", "node_type": "waypoint", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9214, 37.3999]},
+      "properties": {"feature_type": "node", "node_id": "N008", "name": "남측 우회 분기", "node_type": "intersection", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9227, 37.3994]},
+      "properties": {"feature_type": "node", "node_id": "N009", "name": "남측 우회 경유지", "node_type": "waypoint", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [126.9240, 37.4001]},
+      "properties": {"feature_type": "node", "node_id": "N010", "name": "목적지 B", "node_type": "entrance", "source": "synthetic", "confidence": 0.6, "verified": false}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9205, 37.4019], [126.9214, 37.4015]]},
+      "properties": {"feature_type": "edge", "edge_id": "E001", "from_node": "N001", "to_node": "N002", "name": "공통 진입로", "length": 91.1, "stairs": false, "slope": 2.0, "width": 1.8, "curb_height": 0.01, "surface": "asphalt", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9214, 37.4015], [126.9223, 37.40135]]},
+      "properties": {"feature_type": "edge", "edge_id": "E002", "from_node": "N002", "to_node": "N003", "name": "계단 지름길", "length": 81.2, "stairs": true, "slope": 4.0, "width": 1.2, "curb_height": 0.01, "surface": "concrete", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": false, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9223, 37.40135], [126.9232, 37.4009]]},
+      "properties": {"feature_type": "edge", "edge_id": "E003", "from_node": "N003", "to_node": "N004", "name": "북측 지름길", "length": 93.9, "stairs": false, "slope": 3.0, "width": 1.3, "curb_height": 0.01, "surface": "asphalt", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9232, 37.4009], [126.9240, 37.4001]]},
+      "properties": {"feature_type": "edge", "edge_id": "E004", "from_node": "N004", "to_node": "N010", "name": "높은 턱 횡단부", "length": 113.6, "stairs": false, "slope": 3.0, "width": 1.1, "curb_height": 0.055, "surface": "asphalt", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": false, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9214, 37.4015], [126.9216, 37.4007]]},
+      "properties": {"feature_type": "edge", "edge_id": "E005", "from_node": "N002", "to_node": "N005", "name": "접근 가능 연결로", "length": 90.7, "stairs": false, "slope": 3.0, "width": 1.5, "curb_height": 0.01, "surface": "asphalt", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9216, 37.4007], [126.9225, 37.40035]]},
+      "properties": {"feature_type": "edge", "edge_id": "E006", "from_node": "N005", "to_node": "N006", "name": "현장 상태 변경 실험 구간", "length": 88.5, "stairs": false, "slope": 2.5, "width": 1.4, "curb_height": 0.01, "surface": "asphalt", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "demo_block_target": true, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9225, 37.40035], [126.9240, 37.4001]]},
+      "properties": {"feature_type": "edge", "edge_id": "E007", "from_node": "N006", "to_node": "N010", "name": "접근 경로 도착부", "length": 135.4, "stairs": false, "slope": 4.0, "width": 1.3, "curb_height": 0.015, "surface": "asphalt", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9214, 37.4015], [126.9214, 37.3999]]},
+      "properties": {"feature_type": "edge", "edge_id": "E008", "from_node": "N002", "to_node": "N008", "name": "남측 우회 진입로", "length": 177.9, "stairs": false, "slope": 5.0, "width": 1.1, "curb_height": 0.02, "surface": "concrete", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9214, 37.3999], [126.9227, 37.3994]]},
+      "properties": {"feature_type": "edge", "edge_id": "E009", "from_node": "N008", "to_node": "N009", "name": "남측 우회 통로", "length": 127.6, "stairs": false, "slope": 4.5, "width": 1.2, "curb_height": 0.02, "surface": "concrete", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[126.9227, 37.3994], [126.9240, 37.4001]]},
+      "properties": {"feature_type": "edge", "edge_id": "E010", "from_node": "N009", "to_node": "N010", "name": "남측 우회 도착부", "length": 138.7, "stairs": false, "slope": 4.0, "width": 1.3, "curb_height": 0.015, "surface": "asphalt", "elevator_required": false, "elevator_status": null, "blocked": false, "block_reason": null, "wheelchair_accessible": true, "accessibility_status": "unknown", "source": "synthetic", "confidence": 0.6, "verified": false, "updated_at": "2026-09-16T00:00:00+09:00"}
+    }
+  ]
+}

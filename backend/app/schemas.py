@@ -1,0 +1,227 @@
+from __future__ import annotations
+
+from datetime import datetime
+from enum import Enum
+from typing import Any, Literal
+
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+
+class AccessibilityStatus(str, Enum):
+    VERIFIED_PASS = "verified_pass"
+    VERIFIED_BLOCK = "verified_block"
+    CANDIDATE = "candidate"
+    UNKNOWN = "unknown"
+    STALE = "stale"
+
+
+class Coordinate(BaseModel):
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+
+
+class AccessibilityProfile(BaseModel):
+    name: Literal["default", "wheelchair"]
+    description: str
+    max_slope: float | None = None
+    min_width: float | None = None
+    max_curb_height: float | None = None
+    allow_stairs: bool = True
+    allow_unknown: bool = True
+    allow_synthetic: bool = False
+    allowed_unverified_sources: list[str] = Field(default_factory=list)
+
+
+class RouteRequest(BaseModel):
+    origin: Coordinate
+    destination: Coordinate
+    profile: Literal["default", "wheelchair"] = "wheelchair"
+    session_id: str | None = Field(default=None, min_length=8, max_length=80)
+
+
+class ExcludedEdge(BaseModel):
+    edge_id: str
+    name: str
+    reasons: list[str]
+
+
+class ProvenanceSummary(BaseModel):
+    sources: list[str]
+    accessibility_sources: list[str] = Field(default_factory=list)
+    contains_synthetic: bool
+    verified_edges: int
+    unverified_edges: int
+
+
+class RouteResult(BaseModel):
+    status: Literal["ok"] = "ok"
+    distance_m: float
+    estimated_minutes: int
+    route_type: Literal["standard", "accessible"]
+    profile: Literal["default", "wheelchair"]
+    origin_node: str
+    destination_node: str
+    node_ids: list[str]
+    edge_ids: list[str]
+    geometry: list[list[float]]
+    excluded_edges: list[ExcludedEdge] = Field(default_factory=list)
+    reasons: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    provenance: ProvenanceSummary
+    session_id: str | None = None
+    graph_revision: int | None = None
+    expires_at: datetime | None = None
+
+
+class RouteComparison(BaseModel):
+    status: Literal["ok"] = "ok"
+    standard: RouteResult
+    accessible: RouteResult
+    difference_m: float
+    difference_pct: float
+    reasons: list[str]
+    warnings: list[str] = Field(default_factory=list)
+    session_id: str | None = None
+    graph_revision: int | None = None
+    expires_at: datetime | None = None
+
+
+class SessionRerouteRequest(BaseModel):
+    temporary_blocked_edge_ids: list[str] = Field(min_length=1, max_length=20)
+    reason: str = Field(min_length=3, max_length=120)
+
+    @field_validator("temporary_blocked_edge_ids")
+    @classmethod
+    def validate_edge_ids(cls, values: list[str]) -> list[str]:
+        normalized = [value.strip() for value in values]
+        if any(not value for value in normalized):
+            raise ValueError("edge_id는 비어 있을 수 없습니다.")
+        return list(dict.fromkeys(normalized))
+
+
+class SessionRerouteResponse(BaseModel):
+    status: Literal["recalculated", "no_accessible_route"]
+    session_id: str
+    temporary_blocked_edge_ids: list[str]
+    graph_revision: int
+    route_affected: bool
+    route_changed: bool
+    previous_route: RouteResult | None = None
+    recalculated_route: RouteResult | None = None
+    comparison: RouteComparison | None = None
+    warnings: list[str] = Field(default_factory=list)
+
+
+class EdgeStatusUpdate(BaseModel):
+    blocked: bool
+    reason: str | None = Field(default=None, max_length=120)
+    status_source: Literal["manual", "public_data", "approved_observation"] = "manual"
+    verified: bool = False
+    actor: str | None = Field(default=None, max_length=80)
+    session_id: str | None = Field(default=None, min_length=8, max_length=80)
+
+    @model_validator(mode="after")
+    def validate_update(self) -> "EdgeStatusUpdate":
+        if self.blocked and not (self.reason and self.reason.strip()):
+            raise ValueError("차단 상태에는 reason이 필요합니다.")
+        if not self.blocked:
+            self.reason = None
+        if self.verified and not (self.actor and self.actor.strip()):
+            raise ValueError("verified 상태에는 확인자 actor가 필요합니다.")
+        return self
+
+
+class EdgeStatusResponse(BaseModel):
+    status: Literal["updated"] = "updated"
+    edge: dict[str, Any]
+    graph_revision: int
+    affected_session_count: int = 0
+    route_affected: bool
+    route_recalculated: bool
+    route_changed: bool
+    recalculation_status: Literal["not_requested", "recalculated", "no_accessible_route"]
+    previous_route: RouteResult | None = None
+    recalculated_route: RouteResult | None = None
+
+
+class ObservationCandidate(BaseModel):
+    candidate_id: str
+    edge_id: str
+    approach_id: str | None = None
+    sample_id: str | None = None
+    mapping_status: str | None = None
+    type: str
+    source: str
+    confidence: float | None = Field(default=None, ge=0, le=1)
+    status: Literal["pending", "approved", "rejected", "needs_more_evidence"] = "pending"
+    verified: bool = False
+    session_id: str | None = None
+    observed_at: datetime | None = None
+    ai_result: str | None = None
+    ai_note: str | None = None
+    evidence_date: str | None = None
+    evidence_url: str | None = None
+    lat: float | None = None
+    lon: float | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    latest_review: dict[str, Any] | None = None
+
+
+class ObservationCandidateCreate(BaseModel):
+    edge_id: str = Field(min_length=1, max_length=160)
+    type: Literal[
+        "blocked_path",
+        "construction",
+        "high_curb",
+        "stairs",
+        "elevator_outage",
+        "temporary_closure",
+    ] = "blocked_path"
+    source: Literal["manual_camera", "manual"] = "manual_camera"
+    session_id: str | None = Field(default=None, min_length=8, max_length=80)
+    observed_at: datetime | None = None
+    note: str | None = Field(default=None, max_length=300)
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
+
+    @model_validator(mode="after")
+    def validate_location(self) -> "ObservationCandidateCreate":
+        if (self.lat is None) != (self.lon is None):
+            raise ValueError("lat와 lon은 함께 입력해야 합니다.")
+        return self
+
+
+class ObservationReviewRequest(BaseModel):
+    decision: Literal["approved", "rejected", "needs_more_evidence"]
+    result: Literal["verified_pass", "verified_block"] | None = None
+    reviewer: str = Field(min_length=2, max_length=80)
+    observed_at: datetime
+    reason: str = Field(min_length=3, max_length=300)
+    measurements: dict[str, float | str | bool | None] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_approval(self) -> "ObservationReviewRequest":
+        if self.decision == "approved" and self.result is None:
+            raise ValueError("승인에는 verified_pass 또는 verified_block 결과가 필요합니다.")
+        return self
+
+
+class ObservationReviewResponse(BaseModel):
+    status: Literal["reviewed"] = "reviewed"
+    candidate: ObservationCandidate
+    graph_updated: bool
+    graph_revision: int
+    edge: dict[str, Any] | None = None
+
+
+class RouteSessionResponse(BaseModel):
+    session_id: str
+    graph_revision: int
+    created_at: datetime
+    updated_at: datetime
+    expires_at: datetime
+    request: RouteRequest
+    route: RouteResult | None = None
+    comparison: RouteComparison | None = None
+    temporary_blocked_edge_ids: list[str] = Field(default_factory=list)

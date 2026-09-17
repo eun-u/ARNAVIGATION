@@ -1,0 +1,10 @@
+{
+  "name": "NaVi 접근성 내비게이션",
+  "short_name": "NaVi",
+  "description": "카메라와 접근성 경로를 결합한 개인 이동 내비게이션 PoC",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#172554",
+  "orientation": "portrait-primary"
+}

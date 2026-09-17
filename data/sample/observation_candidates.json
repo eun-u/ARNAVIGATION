@@ -1,0 +1,12 @@
+[
+  {
+    "candidate_id": "C001",
+    "edge_id": "E006",
+    "type": "blocked_path",
+    "source": "video",
+    "confidence": 0.81,
+    "status": "pending",
+    "created_at": "2026-09-16T00:00:00+09:00"
+  }
+]
+

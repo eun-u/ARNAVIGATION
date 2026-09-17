@@ -1,0 +1,24 @@
+{
+  "default": {
+    "name": "default",
+    "description": "거리 기반 일반 이동 프로필",
+    "max_slope": null,
+    "min_width": null,
+    "max_curb_height": null,
+    "allow_stairs": true,
+    "allow_unknown": true,
+    "allow_synthetic": true,
+    "allowed_unverified_sources": ["osm"]
+  },
+  "wheelchair": {
+    "name": "wheelchair",
+    "description": "휠체어 경로 비교를 위한 PoC 실험 프로필",
+    "max_slope": 8.0,
+    "min_width": 0.9,
+    "max_curb_height": 0.03,
+    "allow_stairs": false,
+    "allow_unknown": false,
+    "allow_synthetic": true,
+    "allowed_unverified_sources": ["osm"]
+  }
+}

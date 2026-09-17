@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="NaVi AI 접근성 후보 현장 검수 화면" />
+    <title>NaVi 현장 후보 검수</title>
+    <link rel="stylesheet" href="/static/tokens.css" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script defer src="/static/review.js"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="/" aria-label="NaVi 경로 화면으로 이동">
+        <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true">
+          <path d="M21 21C12 7 4 11 7 22c2 7 8 9 14 3Z" />
+          <path d="M23 21c9-14 17-10 14 1-2 7-8 9-14 3Z" />
+          <path d="M22 18v17m-5-5 5 6 5-6" />
+        </svg>
+        <span class="brand-copy"><strong>NaVi</strong><span>현장 후보 검수대</span></span>
+      </a>
+      <nav class="header-state" aria-label="주요 화면">
+        <span class="state-dot" aria-hidden="true"></span>
+        <span>사람 검수 필수</span>
+        <a class="header-link" href="/">경로 비교로 돌아가기</a>
+      </nav>
+    </header>
+
+    <div id="review-status" class="system-status" role="status" aria-live="polite">검수 대기열을 불러오는 중입니다.</div>
+
+    <main class="review-shell">
+      <section class="panel review-queue" aria-labelledby="queue-title">
+        <div class="panel-heading">
+          <span class="step-number">01</span>
+          <div><p class="eyebrow">Triage</p><h1 id="queue-title">AI 후보 대기열</h1></div>
+        </div>
+        <div class="review-policy">
+          <strong>후보 ≠ 확인된 사실</strong>
+          <p>AI 후보는 그래프에 직접 반영되지 않습니다. 현장 근거와 사람의 명시적 판단을 기록해야 합니다.</p>
+        </div>
+        <div class="section-label-row queue-summary">
+          <span id="candidate-count">0건</span>
+          <select id="status-filter" aria-label="검수 상태 필터">
+            <option value="">전체 상태</option>
+            <option value="pending" selected>검수 대기</option>
+            <option value="needs_more_evidence">추가 근거 필요</option>
+            <option value="approved">승인</option>
+            <option value="rejected">기각</option>
+          </select>
+        </div>
+        <div id="candidate-list" class="candidate-list" role="list"></div>
+      </section>
+
+      <section class="panel review-detail" aria-labelledby="detail-title">
+        <div class="panel-heading compact-heading">
+          <span class="step-number">02</span>
+          <div><p class="eyebrow">Verify</p><h2 id="detail-title">근거 확인 및 판정</h2></div>
+        </div>
+        <div id="candidate-empty" class="review-empty">왼쪽 대기열에서 후보를 선택하세요.</div>
+        <div id="candidate-content" hidden>
+          <div class="candidate-heading">
+            <div><p id="candidate-id" class="eyebrow"></p><h3 id="candidate-type"></h3></div>
+            <span id="candidate-status" class="badge badge-neutral"></span>
+          </div>
+          <dl class="candidate-facts">
+            <div><dt>접근 방향</dt><dd id="candidate-approach"></dd></div>
+            <div><dt>매핑 Edge</dt><dd id="candidate-edge"></dd></div>
+            <div><dt>AI 신뢰도</dt><dd id="candidate-confidence"></dd></div>
+            <div><dt>촬영 일시</dt><dd id="candidate-date"></dd></div>
+          </dl>
+          <p id="candidate-age" class="evidence-age"></p>
+          <div class="evidence-box">
+            <span class="eyebrow">AI note</span>
+            <p id="candidate-note"></p>
+            <a id="candidate-evidence" class="button button-secondary" target="_blank" rel="noopener noreferrer">외부 로드뷰 근거 열기</a>
+            <p>이미지는 패키지에 포함되지 않았습니다. 링크의 현재 근거를 직접 확인한 뒤 판정하세요.</p>
+          </div>
+
+          <form id="review-form" class="review-form">
+            <div class="review-grid">
+              <label class="field"><span>검수자 *</span><input id="reviewer" required minlength="2" placeholder="이름 또는 담당자 ID" /></label>
+              <label class="field"><span>관찰 시각 *</span><input id="observed-at" type="datetime-local" required /></label>
+            </div>
+            <label class="field"><span>현장 판정 결과 *</span>
+              <select id="review-result" required>
+                <option value="">선택하세요</option>
+                <option value="verified_block">통행 불가 확인</option>
+                <option value="verified_pass">통행 가능 확인</option>
+              </select>
+            </label>
+            <label class="field"><span>판정 근거 *</span><textarea id="review-reason" required minlength="3" rows="4" placeholder="관찰한 사실을 구체적으로 기록하세요. AI 문구를 그대로 복사하지 마세요."></textarea></label>
+            <details class="measurement-box">
+              <summary>선택 측정값 입력</summary>
+              <div class="review-grid">
+                <label class="field"><span>경사 (%)</span><input id="measure-slope" type="number" min="0" step="0.1" /></label>
+                <label class="field"><span>통행 폭 (m)</span><input id="measure-width" type="number" min="0" step="0.01" /></label>
+                <label class="field"><span>턱 높이 (m)</span><input id="measure-curb" type="number" min="0" step="0.001" /></label>
+              </div>
+            </details>
+            <div class="review-actions">
+              <button class="button button-secondary" type="button" data-decision="needs_more_evidence">추가 근거 요청</button>
+              <button class="button button-danger" type="button" data-decision="rejected">후보 기각</button>
+              <button class="button button-primary" type="submit">검수 승인</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+.venv/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+data/runtime/
+backend/.runtime/
+data/raw/*.cache
+data/raw/osmnx_cache/
+android/.gradle/
+android/local.properties
+android/**/build/
+android/.idea/
+*.iml

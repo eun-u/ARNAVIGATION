@@ -1,0 +1,19 @@
+{
+  "dataset": "NaVi Anyang OSM walking network snapshot",
+  "bbox_left_bottom_right_top": [
+    126.9185,
+    37.3885,
+    126.9312,
+    37.4035
+  ],
+  "as_of": "2026-09-15T23:59:59Z",
+  "fetched_at": "2026-09-16T09:46:09.747748+00:00",
+  "source": "OpenStreetMap via Overpass API",
+  "source_url": "https://www.openstreetmap.org/copyright",
+  "license": "ODbL",
+  "network_type": "walk",
+  "osmnx_version": "2.1.1",
+  "nodes": 504,
+  "edges": 1446,
+  "sha256": "60c4d6fd7a19c4ae03385a1c1380495d1f2c97c49ec314b9ba7b864822804879"
+}

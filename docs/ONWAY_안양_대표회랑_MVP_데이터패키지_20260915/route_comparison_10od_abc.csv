@@ -1,0 +1,31 @@
+﻿od_id,mode,origin,destination,origin_node,destination_node,direct_distance_m,route_distance_m,weighted_cost_m,distance_delta_vs_A_m,distance_delta_vs_A_pct,cost_delta_vs_A_m,route_changed_vs_A,unknown_proxy_edges_used,public_blocked_edges_used,approved_ai_block_edges,evidence_status,interpretation
+OD01,A,북부 서측 표본(CW04),중북부 동측 표본(CW20),13168924058,457320253,928.0,1109.1,1109.1,0.0,0.0,0.0,False,4,0,0,computed_baseline,distance-only OSM centerline proxy
+OD01,B,북부 서측 표본(CW04),중북부 동측 표본(CW20),13168924058,457320253,928.0,1115.8,1127.4,6.7,0.6,18.3,True,2,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD01,C,북부 서측 표본(CW04),중북부 동측 표본(CW20),13168924058,457320253,928.0,1115.8,1127.4,6.7,0.6,18.3,True,2,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD02,A,안양청년1번가,중북부 동측 표본(CW20),457319377,457320253,504.5,652.8,652.8,0.0,0.0,0.0,False,3,0,0,computed_baseline,distance-only OSM centerline proxy
+OD02,B,안양청년1번가,중북부 동측 표본(CW20),457319377,457320253,504.5,656.2,656.2,3.4,0.52,3.4,True,0,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD02,C,안양청년1번가,중북부 동측 표본(CW20),457319377,457320253,504.5,656.2,656.2,3.4,0.52,3.4,True,0,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD03,A,중북부 서측 표본(CW13),중북부 동측 표본(CW20),7895488095,457320253,769.7,945.3,945.3,0.0,0.0,0.0,False,4,0,0,computed_baseline,distance-only OSM centerline proxy
+OD03,B,중북부 서측 표본(CW13),중북부 동측 표본(CW20),7895488095,457320253,769.7,948.7,949.9,3.4,0.36,4.5,True,1,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD03,C,중북부 서측 표본(CW13),중북부 동측 표본(CW20),7895488095,457320253,769.7,948.7,949.9,3.4,0.36,4.5,True,1,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD04,A,북부 동측 표본(CW10),중북부 동측 표본(CW20),4641716962,457320253,766.9,1068.7,1068.7,0.0,0.0,0.0,False,4,0,0,computed_baseline,distance-only OSM centerline proxy
+OD04,B,북부 동측 표본(CW10),중북부 동측 표본(CW20),4641716962,457320253,766.9,1072.1,1073.7,3.4,0.32,5.0,True,1,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD04,C,북부 동측 표본(CW10),중북부 동측 표본(CW20),4641716962,457320253,766.9,1072.1,1073.7,3.4,0.32,5.0,True,1,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD05,A,안양역,중북부 동측 표본(CW20),8974707420,457320253,894.4,1217.4,1217.4,0.0,0.0,0.0,False,5,0,0,computed_baseline,distance-only OSM centerline proxy
+OD05,B,안양역,중북부 동측 표본(CW20),8974707420,457320253,894.4,1220.8,1244.7,3.4,0.28,27.3,True,2,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD05,C,안양역,중북부 동측 표본(CW20),8974707420,457320253,894.4,1220.8,1244.7,3.4,0.28,27.3,True,2,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD06,A,북부 서측 표본(CW04),남부 동측 표본(CW35),13168924058,457321111,1448.8,1754.3,1754.3,0.0,0.0,0.0,False,2,0,0,computed_baseline,distance-only OSM centerline proxy
+OD06,B,북부 서측 표본(CW04),남부 동측 표본(CW35),13168924058,457321111,1448.8,1754.3,1765.9,0.0,0.0,11.6,False,2,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD06,C,북부 서측 표본(CW04),남부 동측 표본(CW35),13168924058,457321111,1448.8,1754.3,1765.9,0.0,0.0,11.6,False,2,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD07,A,북부 서측 표본(CW04),공공데이터 위험 표본(CW33),13168924058,3832541730,1402.0,1707.6,1707.6,0.0,0.0,0.0,False,2,0,0,computed_baseline,distance-only OSM centerline proxy
+OD07,B,북부 서측 표본(CW04),공공데이터 위험 표본(CW33),13168924058,3832541730,1402.0,1707.6,1719.2,0.0,0.0,11.6,False,2,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD07,C,북부 서측 표본(CW04),공공데이터 위험 표본(CW33),13168924058,3832541730,1402.0,1707.6,1719.2,0.0,0.0,11.6,False,2,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD08,A,북부 서측 표본(CW04),남부 서측 표본(CW32),13168924058,964926008,1369.2,1757.1,1757.1,0.0,0.0,0.0,False,2,0,0,computed_baseline,distance-only OSM centerline proxy
+OD08,B,북부 서측 표본(CW04),남부 서측 표본(CW32),13168924058,964926008,1369.2,1757.1,1768.7,0.0,0.0,11.6,False,2,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD08,C,북부 서측 표본(CW04),남부 서측 표본(CW32),13168924058,964926008,1369.2,1757.1,1768.7,0.0,0.0,11.6,False,2,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD09,A,북부 서측 표본(CW04),중남부 동측 표본(CW28),13168924058,457321139,1349.4,1656.1,1656.1,0.0,0.0,0.0,False,2,0,0,computed_baseline,distance-only OSM centerline proxy
+OD09,B,북부 서측 표본(CW04),중남부 동측 표본(CW28),13168924058,457321139,1349.4,1656.1,1667.7,0.0,0.0,11.6,False,2,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD09,C,북부 서측 표본(CW04),중남부 동측 표본(CW28),13168924058,457321139,1349.4,1656.1,1667.7,0.0,0.0,11.6,False,2,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
+OD10,A,중북부 서측 표본(CW13),남부 동측 표본(CW35),7895488095,457321111,1289.5,1591.7,1591.7,0.0,0.0,0.0,False,1,0,0,computed_baseline,distance-only OSM centerline proxy
+OD10,B,중북부 서측 표본(CW13),남부 동측 표본(CW35),7895488095,457321111,1289.5,1591.7,1592.9,0.0,0.0,1.1,False,1,0,0,computed_baseline,public risk blocked; unknown proxy edges x1.15
+OD10,C,중북부 서측 표본(CW13),남부 동측 표본(CW35),7895488095,457321111,1289.5,1591.7,1592.9,0.0,0.0,1.1,False,1,0,0,baseline_no_approved_ai_candidates,same as B because no AI candidate has human approval
