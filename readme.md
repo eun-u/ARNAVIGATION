@@ -127,6 +127,13 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 - [Android 현장 검증 절차](docs/android_field_test.md)
 - [M1 전북대 정문 로컬 AR 정합 시험](docs/m1_local_field_route_jbnu.md)
 - [Prismatic Wayfinding 디자인 시스템](docs/frontend_design_system.md)
+- [디자인 토큰 명세](docs/design_tokens.md) — Figma Variable ↔ CSS ↔ Compose
+- [최종 와이어프레임 36장](docs/wireframes/final/README.md)
+- [Screen State Matrix](docs/screen_state_matrix.md)
+- [Routing Constraint Model](docs/routing_constraint_model.md)
+- [Data Trust Model](docs/data_trust_model.md)
+- [Interaction Spec — Motion · Haptic · Voice](docs/interaction_spec.md)
+- [접근성 검증 계획](docs/accessibility_validation.md)
 - 기존 웹 IA·유즈케이스 문서는 초기 탐색 기록으로 `docs/frontend_ia.md`, `docs/use_cases.md`, `docs/page_structure.md`에 보존
 
 Android 앱은 Graph 메타데이터의 `synthetic`, `verified=false` 고지를 그대로 표시합니다. 현장 제보는 현재 세션 재탐색에는 즉시 사용하지만, 승인 전까지 공용 Graph를 수정하지 않습니다.

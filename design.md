@@ -1,89 +1,115 @@
 # Design — NaVi
 
-NaVi의 모든 화면이 공유하는 잠금 디자인 시스템이다. 개별 화면에서 새 테마를
-만들지 않고, 이 문서와 `frontend/tokens.css`의 토큰을 확장해 사용한다.
+NaVi의 모든 화면이 공유하는 잠금 디자인 시스템이다.
+개별 화면에서 새 테마를 만들지 않고, 이 문서와 `frontend/tokens.css`의 토큰을 확장해 사용한다.
 
-## Visual philosophy — 빛의 회랑
+수치와 토큰 이름은 [디자인 토큰 명세](docs/design_tokens.md)가 정본이다.
+화면 단위 판단 근거는 [최종 와이어프레임](docs/wireframes/final/README.md)에 있다.
 
-NaVi는 도시를 평면 지도가 아니라 서로 다른 몸과 상황이 통과하는 빛의 회랑으로
-본다. 화면의 검은 구조선은 스테인드글라스의 납선이면서 동시에 경로, 구획,
-판단 근거를 나타낸다. 장식은 기능을 설명할 때만 존재한다.
+## Visual philosophy — Liquid Glass × Stained Glass
 
-색은 성당 유리처럼 면 안에서 깊이를 갖지만 한 화면의 강한 색은 제한한다.
-코발트는 진행, 바이올렛은 브랜드 기억, 청록은 확인, 호박은 주의, 루비는 차단을
-의미한다. 배경은 빛을 받는 석재와 종이 사이의 따뜻한 백색이다.
+NaVi의 인터페이스는 단순한 반투명 UI가 아니라, 빛이 통과하고 굴절되고 색이 겹쳐지며
+사용자의 조작에 반응하는 광학적 인터페이스를 지향한다.
 
-기하학은 완전한 대칭보다 교차로와 우회 경로의 비대칭을 따른다. 큰 다각형 한 개와
-작은 구조선 몇 개로 초점을 만들고, 정보가 많은 앱 화면에서는 장식을 줄여 기능이
-주인공이 되게 한다. 장미창의 방사형 리듬은 직접 묘사하지 않고 경로 노드와 진행
-상태의 배열에만 은근히 남긴다.
+- **Optical Depth** — 여러 투명 레이어가 겹쳐진 공간감
+- **Materiality** — 실제 유리와 같은 재질감. 핵심은 "흐림"이 아니라 "재질"이다
+- **Chromatic Refraction** — 블루·바이올렛이 빛에 의해 분산되는 표현
+- **Fluid Interaction** — 컨트롤이 유연하게 반응하는 움직임
 
-## Genre
+유리는 장식이 아니라 **인터랙션을 나타내는 재질**이고,
+스테인드글라스는 장식이 아니라 **브랜드와 의미를 나타내는 빛의 언어**다.
 
-Atmospheric utility. 감성적 진입과 명확한 작업 화면을 분리한다.
+> Clear when functional. Chromatic when meaningful. Glass when interactive.
 
-## Macrostructure family
+## 3계층 구조
 
-- Marketing / landing: asymmetric stained-glass threshold
-- App pages: mobile workbench with persistent bottom navigation
-- Evidence pages: quiet long-document with pinned primary action
-- Navigation: camera-first full-bleed stage
+| 층 | 내용 | 비중 |
+|---|---|---|
+| L0 Content | 지도 · 카메라 · 경로 · 데이터 — 가장 선명하게, 유리를 씌우지 않는다 | 70% |
+| Liquid Glass UI | 네비게이션 · 버튼 · 툴바 · 플로팅 패널 · 시트 | 20% |
+| Stained Glass Accent | 나비 심볼 · 경로 하이라이트 · 온보딩 · 선택 상태 · AR 인디케이터 | 10% |
+
+스테인드글라스는 희소하게 등장해야 더 강하다.
+모든 것을 스테인드글라스로 만들면 정보 위계가 무너지고 저가형 glassmorphism이 된다.
+
+## Glass Hierarchy
+
+유리는 한 종류만 쓰지 않는다. 조작에 가까워질수록 엣지와 광택이 또렷해진다.
+
+- **L1 Soft Glass** — 카드, 정보 패널, 상태 표시
+- **L2 Interactive Glass** — 버튼, 세그먼트, 툴바, FAB, 바텀시트
+- **L3 Focus Glass** — 활성 버튼, 선택된 경로, 선택된 탭, AR 주요 안내
+
+수치(blur · opacity · edge · specular · shadow)는 [design_tokens.md](docs/design_tokens.md) 2절에 고정되어 있다.
+**한 화면에 L2 이상은 최대 3개.**
 
 ## Theme
 
-- Paper: warm mineral white
-- Ink: leaded navy
-- Accent: cathedral cobalt with restrained violet
-- Semantic glass: peacock teal, amber, ruby
-- Surface: translucent paper, never dark frosted-glass cards
+- Canvas: `#F4F6FA` — 앱 화면의 기본 바탕
+- Ink: `#10131A` / Body `#3D4453` / Muted `#737D8C`
+- Brand: cobalt `#2A5FE8` → violet `#5A3FD6`. Indigo·Cyan은 스테인드글라스 면에서만
+- Semantic glass: pass `#0E8F72`, warning `#A9660B`, danger `#C4283C`, unknown `#6B7480`
+
+**누를 수 있는 것은 brand 하나뿐이다.** 의미색은 상태를 설명만 하고 버튼이 되지 않는다.
 
 ## Typography
 
-- Display: `MaruBuri`, `Noto Serif KR`, Georgia, serif; weight 700; roman only
-- Body: `Pretendard`, `SUIT`, system sans; weight 400–800
-- Data: system monospace only for distances, times, and counts
-- Display tracking: `-0.045em`
-- Display scale anchor: `clamp(2.35rem, 11vw, 4.75rem)`
+- 본문·UI: Pretendard → 시스템 한글 글꼴 폴백. 네트워크 폰트 교체를 방지한다
+- 표제 26 / 700 / `-0.035em`, 본문 15 / 400 / 1.6, 보조 13 / 400
+- 유리 효과가 강할수록 타이포는 단순해야 한다. 재질이 개성을, 타이포는 정보 전달을 담당한다
+- 숫자는 **일반 텍스트와 분리된 4단계**를 쓴다 — Primary Metric / Secondary Metric / Delta / Uncertainty.
+  `22분`과 `+221m`이 같은 체계에 있으면 안 된다. 모두 tabular numeral
 
 ## Spacing
 
-4-point named scale in `frontend/tokens.css`. Pages use named tokens rather than
-inventing local spacing values.
+8pt 기본, 4pt 보조. 화면 좌우 여백 20px 고정, 목록 항목 최소 높이 60px,
+최소 터치 타깃 48×48dp, 안내 중 단일 행동은 56dp 이상.
+
+## Shapes
+
+버튼 18 · 컨트롤 16 · 카드 20 · 시트 26 · 필터 칩만 pill.
+담는 것과 누르는 것의 문법을 섞지 않는다.
 
 ## Motion
 
-- One threshold reveal on landing; peer-screen changes use opacity only
-- Interaction motion: transform and opacity, 180–420ms
-- Reduced motion: opacity-only, at most 120ms
-
-## Microinteractions stance
-
-- Silent persistence for settings
-- Visible pressed/focus/disabled states on every control
-- Status feedback is concise and does not move persistent chrome
+- press 140 · chip 180 · screen 220 · sheet 280 · route 380 (ms), easing `cubic-bezier(.2,.8,.3,1)`
+- 눌림은 `scale(0.985)`
+- 재탐색은 4단계로 나눈다: 기존 경로 fade → 차단 위치 강조 → 새 경로 draw → 거리 변화
+- `prefers-reduced-motion`에서는 opacity만 120ms 이하
 
 ## CTA voice
 
-- Primary: cobalt field with a clipped lower-right facet; never pill-shaped
-- Secondary: paper surface with a leaded 1px boundary
-- Text action: underlined or arrow-linked, no decorative container
+Primary / Secondary / Tertiary / Destructive / Disabled / Loading 6종.
+**한 화면에 Primary는 하나뿐이다.** Primary와 Destructive를 나란히 두지 않는다.
+Disabled는 이유를 옆에 적는다 — 비활성만 두고 침묵하지 않는다.
 
 ## Per-page allowances
 
-- Landing may use the supplied concept board and large geometric glass.
-- App pages use geometry only as orientation or state communication.
-- Settings and evidence pages are typography- and rule-led.
+스테인드글라스 강도는 화면별로 고정한다.
+
+- **High** — 스플래시, 온보딩, 도착. 사용자가 판단하지 않는 순간
+- **Medium** — 홈, 이동 조건, 권한, 빈 상태
+- **Low / None** — 지도, 검색, 경로 결과, 추천 근거, AR, 제보, 설정. **사용자가 판단하는 화면**
+
+감성 화면에서는 브랜드를, 판단 화면에서는 정보를 보여준다.
 
 ## What pages MUST share
 
-- NaVi butterfly/pin mark and wordmark
-- Leaded navy structural lines
-- Cobalt primary action and semantic status colors
-- Bottom navigation geometry and control states
-- Minimum 44px touch targets and explicit data-verification language
+- NaVi 나비 심볼과 워드마크
+- 단일 brand 행동색과 의미색 4종
+- Glass hierarchy와 3계층 비중
+- 하단 목적지 4개(홈 · 길찾기 · 제보 · 내 정보)와 컨트롤 상태
+- 최소 48dp 터치 타깃
+- 명시적인 데이터 검증 고지 — "안전한 경로"가 아니라 "설정한 조건에서 통과 가능한 경로"
+
+## 폴백
+
+흐림과 투명도가 사라져도 **구조와 위계는 그대로 유지되어야 한다.**
+직사광선·고대비·저전력·`backdrop-filter` 미지원에서 불투명 대체값으로 내려간다.
+`frontend/tokens.css`와 `NaviGlass.*Fallback`에 값이 있다.
 
 ## Exports
 
-The canonical implementation is `frontend/tokens.css`, which exposes both the
-portable Hallmark token names and compatibility aliases used by the existing app.
-
+- `frontend/tokens.css` — 웹 정본
+- `android/app/src/main/java/kr/co/navi/mobility/ui/theme/` — Color / Dimens / Type
+- `docs/design_tokens.md` — Figma Variable ↔ CSS ↔ Compose 매핑
