@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>05 홈</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+--brand-primary:#2A5FE8;--brand-violet:#5A3FD6;--brand-cyan:#3FC8E4;--brand-indigo:#4A47E0;
+--sem-pass:#0E8F72;--sem-warn:#A9660B;--sem-block:#C4283C;--sem-unknown:#6B7480;
+--text-strong:#10131A;--text-body:#3D4453;--text-muted:#737D8C;--text-disabled:#A8AFBC;
+--surface-base:#F4F6FA;--surface-solid:#FFFFFF;--line:rgba(16,19,26,.08);
+--radius-sm:10px;--radius-md:16px;--radius-lg:20px;--radius-xl:26px;--radius-pill:999px;
+--motion-press:140ms;--motion-chip:180ms;--motion-screen:220ms;--motion-sheet:280ms;--motion-route:380ms;
+}
+body{margin:0;font-family:Pretendard,"Pretendard Variable",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;background:#EEF1F6;color:#10131A;-webkit-font-smoothing:antialiased;letter-spacing:-0.02em}
+.dis{font-weight:700;letter-spacing:-0.035em}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+/* ── numeric system ─────────────────────────────────────────── */
+.m1{font-variant-numeric:tabular-nums;font-size:40px;font-weight:700;letter-spacing:-0.045em;line-height:1;color:#10131A}
+.m2{font-variant-numeric:tabular-nums;font-size:18px;font-weight:700;letter-spacing:-0.03em;color:#10131A}
+.delta{font-variant-numeric:tabular-nums;font-size:14px;font-weight:700;letter-spacing:-0.02em;color:#A9660B}
+.delta.down{color:#0E8F72}
+.unc{font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;letter-spacing:0;color:#737D8C}
+.ph{width:390px;height:844px;box-sizing:border-box;display:flex;flex-direction:column;background:#F4F6FA;overflow:hidden;position:relative;isolation:isolate}
+.ph>*{position:relative;z-index:1}
+.fieldbg{position:absolute;inset:0;z-index:0}
+.lg,.lg2,.lg3,.cta,.ctaS,.ctaD,.float,.sheet,.card,.chip{position:relative}
+.lg::before,.lg2::before,.lg3::before,.cta::before,.ctaS::before,.float::before,.sheet::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(145deg,rgba(47,107,255,.38),rgba(123,75,232,.20) 38%,rgba(255,255,255,0) 66%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+/* ── glass levels · numeric spec ────────────────────────────── */
+.lg{background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.52));-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(16,19,26,.05),0 0 0 .5px rgba(16,19,26,.06),0 6px 18px rgba(18,24,48,.07)}
+.lg2{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.07),0 8px 22px rgba(18,24,48,.09)}
+.lg3{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(236,241,255,.74));-webkit-backdrop-filter:blur(22px) saturate(190%);backdrop-filter:blur(22px) saturate(190%);box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(47,107,255,.32),0 8px 24px rgba(47,107,255,.15)}
+.inset{height:40px;flex-shrink:0}
+.appbar{height:56px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 8px 0 6px;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.54));-webkit-backdrop-filter:blur(18px) saturate(175%);backdrop-filter:blur(18px) saturate(175%);box-shadow:inset 0 -1px 0 rgba(16,19,26,.07)}
+.iconbtn{width:48px;height:48px;border:none;background:none;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#10131A;cursor:pointer;padding:0}
+.iconbtn:hover{background:rgba(255,255,255,.6)}
+.iconbtn:active{transform:scale(.94)}
+.title{font-size:18px;font-weight:700;letter-spacing:-0.03em}
+.body{flex-grow:1;overflow:hidden;padding:12px 20px 16px;display:flex;flex-direction:column;gap:14px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(255,255,255,.46));-webkit-backdrop-filter:blur(14px) saturate(165%);backdrop-filter:blur(14px) saturate(165%);border:none;border-radius:20px;padding:16px;box-sizing:border-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(16,19,26,.055),0 6px 18px rgba(18,24,48,.06)}
+.lbl{font-size:13px;font-weight:700;letter-spacing:-0.02em;color:#737D8C}
+.sub{margin:0;font-size:13px;color:#737D8C;line-height:1.55;letter-spacing:-0.02em}
+.chip{display:inline-flex;align-items:center;gap:5px;border:none;background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.58));-webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:#3D4453;min-height:38px;box-sizing:border-box;letter-spacing:-0.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 .5px rgba(16,19,26,.07)}
+.chip.on{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(233,239,255,.74));color:#2A5FE8;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(47,107,255,.40),0 6px 16px rgba(47,107,255,.16)}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:9px;padding:4px 9px;font-size:12px;font-weight:700;letter-spacing:-0.02em}
+/* ── CTA system · 6 types ───────────────────────────────────── */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:18px;font-size:17px;font-weight:700;letter-spacing:-0.03em;text-decoration:none;border:none;width:100%;box-sizing:border-box;cursor:pointer;font-family:inherit;transition:transform var(--motion-press) cubic-bezier(.2,.8,.3,1)}
+.cta{background:linear-gradient(140deg,#2A5FE8,#5A3FD6);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(0,0,0,.18),0 10px 26px rgba(42,95,232,.30)}
+.cta::before{background:linear-gradient(150deg,rgba(255,255,255,.55),rgba(123,75,232,.0) 55%)}
+.cta:active{transform:scale(.985);box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 4px 14px rgba(42,95,232,.26)}
+.ctaS{background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);color:#10131A;box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.08),0 6px 18px rgba(18,24,48,.08)}
+.ctaS:active{transform:scale(.985)}
+.ctaT{background:none;color:#2A5FE8;box-shadow:none;height:48px;font-size:15px}
+.ctaT:active{transform:scale(.97)}
+.ctaD{background:rgba(196,40,60,.10);color:#A3222F;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 .5px rgba(196,40,60,.30)}
+.ctaD:active{transform:scale(.985)}
+.ctaX{background:#E7E9EE;color:#A8AFBC;box-shadow:none;cursor:not-allowed}
+.ctaL{background:linear-gradient(140deg,rgba(42,95,232,.55),rgba(90,63,214,.55));color:rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);cursor:progress}
+.cta2{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);color:#10131A;font-size:17px;font-weight:700;letter-spacing:-0.03em;text-decoration:none;border:none;width:100%;box-sizing:border-box;cursor:pointer;font-family:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.07),0 6px 18px rgba(18,24,48,.08)}
+.cta2:active{transform:scale(.985)}
+.tabbar{flex-shrink:0;display:flex;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.86));-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -.5px 0 rgba(16,19,26,.08);padding:6px 0 22px}
+.tab{flex-grow:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;min-height:48px;text-decoration:none;color:#98A1AE;font-size:11px;font-weight:600;letter-spacing:-0.02em}
+.tab.on{color:#2A5FE8}
+.stage{position:relative;flex-grow:1;background:#E9EDF2;overflow:hidden}
+.sheet{background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.92));-webkit-backdrop-filter:blur(26px) saturate(185%);backdrop-filter:blur(26px) saturate(185%);border-radius:26px 26px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 -.5px 0 rgba(16,19,26,.08),0 -14px 40px rgba(18,24,48,.14);padding:8px 20px 0;box-sizing:border-box;flex-shrink:0}
+.hdl{width:40px;height:4px;border-radius:2px;background:rgba(16,19,26,.16);margin:2px auto 12px}
+.float{background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.66));-webkit-backdrop-filter:blur(20px) saturate(185%);backdrop-filter:blur(20px) saturate(185%);border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(16,19,26,.07),0 8px 24px rgba(18,24,48,.14)}
+.note{display:flex;gap:8px;align-items:flex-start;background:rgba(169,102,11,.10);border-radius:14px;padding:11px 13px;font-size:13px;color:#A9660B;line-height:1.5;letter-spacing:-0.02em;box-shadow:inset 0 0 0 .5px rgba(169,102,11,.20)}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(16,19,26,.07);min-height:60px;box-sizing:border-box;text-decoration:none;color:inherit}
+.h3{margin:0 0 4px;font-size:17px;font-weight:700;letter-spacing:-0.03em}
+.band{display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:13px;font-weight:600;box-sizing:border-box;letter-spacing:-0.02em}
+.node{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.60));border-radius:12px;padding:9px 13px;font-size:13px;font-weight:600;white-space:nowrap;letter-spacing:-0.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 .5px rgba(16,19,26,.07)}
+.arr{color:#98A1AE;font-size:14px;flex-shrink:0}
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tree{font-size:13px;line-height:1.95;color:#3D4453;letter-spacing:-0.02em}
+.tree b{color:#10131A}
+/* ── spec-board helpers ─────────────────────────────────────── */
+.doc{box-sizing:border-box;background:#EEF1F6;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.hd{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:14px;box-shadow:0 1px 0 rgba(16,19,26,.08)}
+.kick{font-size:13px;font-weight:700;color:#2A5FE8}
+.tb{width:100%;border-collapse:collapse;font-size:12.5px;letter-spacing:-0.02em}
+.tb th{text-align:left;font-weight:700;color:#737D8C;padding:8px 10px;border-bottom:1px solid rgba(16,19,26,.12);white-space:nowrap}
+.tb td{padding:9px 10px;border-bottom:1px solid rgba(16,19,26,.06);color:#3D4453;vertical-align:top;line-height:1.5}
+.tb td strong{color:#10131A}
+.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:11.5px;letter-spacing:0;color:#3D4453}
+a{color:#2A5FE8}a:hover{color:#1E49BE}
+button:focus-visible,a:focus-visible{outline:2px solid #2F6BFF;outline-offset:2px}
+</style>
+<style>body{display:flex;justify-content:center;padding:24px;background:#DDE2EA}</style>
+</head>
+<body>
+
+<div class="ph">
+  <div class="fieldbg"><svg viewBox="0 0 390 844" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" aria-hidden="true"><rect width="390" height="844" fill="#F4F6FA"/><g><path d="M-40 -60L250 -120L316 150L96 210Z" fill="#2F6BFF" opacity="0.11"/><path d="M170 -40L430 -10L400 220L230 176Z" fill="#7B4BE8" opacity="0.09"/><path d="M-60 560L120 604L84 900L-80 880Z" fill="#3FC8E4" opacity="0.08"/><path d="M250 660L440 620L450 900L288 900Z" fill="#4A47E0" opacity="0.07"/></g></svg></div>
+  <div class="inset"></div>
+  <div class="appbar" style="padding-left: 18px;">
+    <svg width="28" height="28" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M23 22L5 9Q13 2 20 8L23 14Z" fill="#2F6BFF" opacity="0.85"/><path d="M25 22L43 9Q35 2 28 8L25 14Z" fill="#7B4BE8" opacity="0.85"/><path d="M23 24L8 33Q14 41 21 35L23 30Z" fill="#3FC8E4" opacity="0.75"/><path d="M25 24L40 33Q34 41 27 35L25 30Z" fill="#4A47E0" opacity="0.75"/><path d="M24 12L29 23L24 34L19 23Z" fill="#FFFFFF" opacity="0.64"/><path d="M24 34v10" stroke="#10131A" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span class="dis" style="font-size: 20px; font-weight: 700; flex-grow: 1; margin-left: 8px;">NaVi</span>
+    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(14,143,114,.12); border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 700; color: #0E8F72;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #0E8F72;"></span>실데이터 연결</span>
+    <button class="iconbtn" type="button" aria-label="설정"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M2.6 12h2.6M18.8 12h2.6M5.3 5.3l1.9 1.9M16.8 16.8l1.9 1.9M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9"/></svg></button>
+  </div>
+
+  <div class="body" style="gap: 12px;">
+    <a href="fin-10-Navigate-Map.dc.html" style="display: flex; align-items: center; gap: 10px; background: linear-gradient(140deg,#2A5FE8,#5A3FD6); border-radius: 18px; padding: 13px 15px; box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 10px 26px rgba(42,95,232,.26); text-decoration: none; min-height: 56px; box-sizing: border-box;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 11l18-8-8 18-2-8z"/></svg>
+      <div style="flex-grow: 1;"><div style="font-size: 13px; font-weight: 700; color: #FFFFFF;">안내가 진행 중이에요</div><div style="font-size: 12px; color: rgba(255,255,255,.78);">목적지 B · 남은 <span class="num">640m</span></div></div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <div style="padding-top: 2px;">
+      <h1 class="dis" style="margin: 0; font-size: 26px; line-height: 1.42;">오늘도<br>갈 수 있는 길부터 볼게요.</h1>
+    </div>
+
+    <a href="fin-06-Search.dc.html" class="lg2" style="display: flex; align-items: center; gap: 10px; border-radius: 18px; padding: 0 16px; height: 58px; text-decoration: none;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#737D8C" stroke-width="2.2" stroke-linecap="round" style="flex-shrink:0"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <span style="font-size: 17px; font-weight: 600; color: #737D8C; letter-spacing: -0.03em;">어디로 갈까요?</span>
+    </a>
+
+    <div style="display: flex; gap: 7px;">
+      <a href="fin-07-Plan.dc.html" class="chip" style="text-decoration: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>집</a>
+      <a href="fin-07-Plan.dc.html" class="chip" style="text-decoration: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M9 6V4h6v2"/></svg>회사</a>
+      <a href="fin-15-Saved.dc.html" class="chip" style="text-decoration: none; color: #737D8C;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#737D8C" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>추가</a>
+    </div>
+
+    <a href="fin-04-Mobility-Profile.dc.html" class="card" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
+      <div style="width: 40px; height: 40px; border-radius: 14px; background: rgba(47,107,255,.11); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.6" r="2"/><path d="M11 8v6h5l3 6"/><circle cx="10" cy="16" r="5.4"/></svg>
+      </div>
+      <div style="flex-grow: 1;"><div style="font-size: 15px; font-weight: 700;">수동 휠체어 조건</div><div class="sub">계단 제외 · 턱 2cm · 경사 8%</div></div>
+      <span style="font-size: 12px; font-weight: 700; color: #2F6BFF;">수정</span>
+    </a>
+
+    <div style="flex-grow: 1; min-height: 0;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;"><div class="lbl">최근 경로</div><span style="font-size: 12px; font-weight: 700; color: #2F6BFF;">모두 보기</span></div>
+      <a href="fin-08-Route-Result.dc.html" class="row"><div style="width: 8px; height: 8px; border-radius: 4px; background: #2F6BFF; flex-shrink: 0;"></div><div style="flex-grow: 1;"><div style="font-size: 15px; font-weight: 600;">안양역 → 목적지 B</div><div class="sub"><span class="num">1,303m</span> · <span class="num">22분</span> · 어제</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#98A1AE" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="fin-08-Route-Result.dc.html" class="row" style="border-bottom: none;"><div style="width: 8px; height: 8px; border-radius: 4px; background: rgba(16,19,26,.13); flex-shrink: 0;"></div><div style="flex-grow: 1;"><div style="font-size: 15px; font-weight: 600;">중앙시장 → 안양시청</div><div class="sub"><span class="num">870m</span> · <span class="num">15분</span> · 3일 전</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#98A1AE" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    </div>
+
+    <div class="note">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A9660B" stroke-width="2.2" stroke-linecap="round" style="flex-shrink:0;margin-top:1px"><path d="M12 3l9.5 17H2.5z"/><path d="M12 9.5v4.2M12 17.2v.2"/></svg>
+      <span>현재 데이터는 안양 대표 회랑 기준이며 일부는 미검증입니다. <strong style="text-decoration: underline;">신뢰도 보기</strong></span>
+    </div>
+  </div>
+
+  <nav class="tabbar" aria-label="주요 화면">
+    <a class="tab on" href="fin-05-Home.dc.html" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/></svg>홈</a>
+    <a class="tab" href="fin-06-Search.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.6"/><circle cx="18" cy="5" r="2.6"/><path d="M8.6 19H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.4"/></svg>길찾기</a>
+    <a class="tab" href="fin-14-Report.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22V3"/><path d="M5 4h13l-2.2 4L18 12H5"/></svg>제보</a>
+    <a class="tab" href="fin-16-Settings.dc.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 21c0-4 3.4-6 7.5-6s7.5 2 7.5 6"/></svg>내 정보</a>
+  </nav>
+</div>
+
+</body>
+</html>

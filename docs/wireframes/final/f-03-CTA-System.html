@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>F-03 CTA 6종</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+--brand-primary:#2A5FE8;--brand-violet:#5A3FD6;--brand-cyan:#3FC8E4;--brand-indigo:#4A47E0;
+--sem-pass:#0E8F72;--sem-warn:#A9660B;--sem-block:#C4283C;--sem-unknown:#6B7480;
+--text-strong:#10131A;--text-body:#3D4453;--text-muted:#737D8C;--text-disabled:#A8AFBC;
+--surface-base:#F4F6FA;--surface-solid:#FFFFFF;--line:rgba(16,19,26,.08);
+--radius-sm:10px;--radius-md:16px;--radius-lg:20px;--radius-xl:26px;--radius-pill:999px;
+--motion-press:140ms;--motion-chip:180ms;--motion-screen:220ms;--motion-sheet:280ms;--motion-route:380ms;
+}
+body{margin:0;font-family:Pretendard,"Pretendard Variable",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;background:#EEF1F6;color:#10131A;-webkit-font-smoothing:antialiased;letter-spacing:-0.02em}
+.dis{font-weight:700;letter-spacing:-0.035em}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+/* ── numeric system ─────────────────────────────────────────── */
+.m1{font-variant-numeric:tabular-nums;font-size:40px;font-weight:700;letter-spacing:-0.045em;line-height:1;color:#10131A}
+.m2{font-variant-numeric:tabular-nums;font-size:18px;font-weight:700;letter-spacing:-0.03em;color:#10131A}
+.delta{font-variant-numeric:tabular-nums;font-size:14px;font-weight:700;letter-spacing:-0.02em;color:#A9660B}
+.delta.down{color:#0E8F72}
+.unc{font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;letter-spacing:0;color:#737D8C}
+.ph{width:390px;height:844px;box-sizing:border-box;display:flex;flex-direction:column;background:#F4F6FA;overflow:hidden;position:relative;isolation:isolate}
+.ph>*{position:relative;z-index:1}
+.fieldbg{position:absolute;inset:0;z-index:0}
+.lg,.lg2,.lg3,.cta,.ctaS,.ctaD,.float,.sheet,.card,.chip{position:relative}
+.lg::before,.lg2::before,.lg3::before,.cta::before,.ctaS::before,.float::before,.sheet::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(145deg,rgba(47,107,255,.38),rgba(123,75,232,.20) 38%,rgba(255,255,255,0) 66%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+/* ── glass levels · numeric spec ────────────────────────────── */
+.lg{background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.52));-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(16,19,26,.05),0 0 0 .5px rgba(16,19,26,.06),0 6px 18px rgba(18,24,48,.07)}
+.lg2{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.07),0 8px 22px rgba(18,24,48,.09)}
+.lg3{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(236,241,255,.74));-webkit-backdrop-filter:blur(22px) saturate(190%);backdrop-filter:blur(22px) saturate(190%);box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(47,107,255,.32),0 8px 24px rgba(47,107,255,.15)}
+.inset{height:40px;flex-shrink:0}
+.appbar{height:56px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 8px 0 6px;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.54));-webkit-backdrop-filter:blur(18px) saturate(175%);backdrop-filter:blur(18px) saturate(175%);box-shadow:inset 0 -1px 0 rgba(16,19,26,.07)}
+.iconbtn{width:48px;height:48px;border:none;background:none;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#10131A;cursor:pointer;padding:0}
+.iconbtn:hover{background:rgba(255,255,255,.6)}
+.iconbtn:active{transform:scale(.94)}
+.title{font-size:18px;font-weight:700;letter-spacing:-0.03em}
+.body{flex-grow:1;overflow:hidden;padding:12px 20px 16px;display:flex;flex-direction:column;gap:14px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(255,255,255,.46));-webkit-backdrop-filter:blur(14px) saturate(165%);backdrop-filter:blur(14px) saturate(165%);border:none;border-radius:20px;padding:16px;box-sizing:border-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(16,19,26,.055),0 6px 18px rgba(18,24,48,.06)}
+.lbl{font-size:13px;font-weight:700;letter-spacing:-0.02em;color:#737D8C}
+.sub{margin:0;font-size:13px;color:#737D8C;line-height:1.55;letter-spacing:-0.02em}
+.chip{display:inline-flex;align-items:center;gap:5px;border:none;background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.58));-webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:#3D4453;min-height:38px;box-sizing:border-box;letter-spacing:-0.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 .5px rgba(16,19,26,.07)}
+.chip.on{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(233,239,255,.74));color:#2A5FE8;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(47,107,255,.40),0 6px 16px rgba(47,107,255,.16)}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:9px;padding:4px 9px;font-size:12px;font-weight:700;letter-spacing:-0.02em}
+/* ── CTA system · 6 types ───────────────────────────────────── */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:18px;font-size:17px;font-weight:700;letter-spacing:-0.03em;text-decoration:none;border:none;width:100%;box-sizing:border-box;cursor:pointer;font-family:inherit;transition:transform var(--motion-press) cubic-bezier(.2,.8,.3,1)}
+.cta{background:linear-gradient(140deg,#2A5FE8,#5A3FD6);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(0,0,0,.18),0 10px 26px rgba(42,95,232,.30)}
+.cta::before{background:linear-gradient(150deg,rgba(255,255,255,.55),rgba(123,75,232,.0) 55%)}
+.cta:active{transform:scale(.985);box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 4px 14px rgba(42,95,232,.26)}
+.ctaS{background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);color:#10131A;box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.08),0 6px 18px rgba(18,24,48,.08)}
+.ctaS:active{transform:scale(.985)}
+.ctaT{background:none;color:#2A5FE8;box-shadow:none;height:48px;font-size:15px}
+.ctaT:active{transform:scale(.97)}
+.ctaD{background:rgba(196,40,60,.10);color:#A3222F;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 .5px rgba(196,40,60,.30)}
+.ctaD:active{transform:scale(.985)}
+.ctaX{background:#E7E9EE;color:#A8AFBC;box-shadow:none;cursor:not-allowed}
+.ctaL{background:linear-gradient(140deg,rgba(42,95,232,.55),rgba(90,63,214,.55));color:rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);cursor:progress}
+.cta2{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);color:#10131A;font-size:17px;font-weight:700;letter-spacing:-0.03em;text-decoration:none;border:none;width:100%;box-sizing:border-box;cursor:pointer;font-family:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.07),0 6px 18px rgba(18,24,48,.08)}
+.cta2:active{transform:scale(.985)}
+.tabbar{flex-shrink:0;display:flex;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.86));-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -.5px 0 rgba(16,19,26,.08);padding:6px 0 22px}
+.tab{flex-grow:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;min-height:48px;text-decoration:none;color:#98A1AE;font-size:11px;font-weight:600;letter-spacing:-0.02em}
+.tab.on{color:#2A5FE8}
+.stage{position:relative;flex-grow:1;background:#E9EDF2;overflow:hidden}
+.sheet{background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.92));-webkit-backdrop-filter:blur(26px) saturate(185%);backdrop-filter:blur(26px) saturate(185%);border-radius:26px 26px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 -.5px 0 rgba(16,19,26,.08),0 -14px 40px rgba(18,24,48,.14);padding:8px 20px 0;box-sizing:border-box;flex-shrink:0}
+.hdl{width:40px;height:4px;border-radius:2px;background:rgba(16,19,26,.16);margin:2px auto 12px}
+.float{background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.66));-webkit-backdrop-filter:blur(20px) saturate(185%);backdrop-filter:blur(20px) saturate(185%);border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(16,19,26,.07),0 8px 24px rgba(18,24,48,.14)}
+.note{display:flex;gap:8px;align-items:flex-start;background:rgba(169,102,11,.10);border-radius:14px;padding:11px 13px;font-size:13px;color:#A9660B;line-height:1.5;letter-spacing:-0.02em;box-shadow:inset 0 0 0 .5px rgba(169,102,11,.20)}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(16,19,26,.07);min-height:60px;box-sizing:border-box;text-decoration:none;color:inherit}
+.h3{margin:0 0 4px;font-size:17px;font-weight:700;letter-spacing:-0.03em}
+.band{display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:13px;font-weight:600;box-sizing:border-box;letter-spacing:-0.02em}
+.node{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.60));border-radius:12px;padding:9px 13px;font-size:13px;font-weight:600;white-space:nowrap;letter-spacing:-0.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 .5px rgba(16,19,26,.07)}
+.arr{color:#98A1AE;font-size:14px;flex-shrink:0}
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tree{font-size:13px;line-height:1.95;color:#3D4453;letter-spacing:-0.02em}
+.tree b{color:#10131A}
+/* ── spec-board helpers ─────────────────────────────────────── */
+.doc{box-sizing:border-box;background:#EEF1F6;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.hd{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:14px;box-shadow:0 1px 0 rgba(16,19,26,.08)}
+.kick{font-size:13px;font-weight:700;color:#2A5FE8}
+.tb{width:100%;border-collapse:collapse;font-size:12.5px;letter-spacing:-0.02em}
+.tb th{text-align:left;font-weight:700;color:#737D8C;padding:8px 10px;border-bottom:1px solid rgba(16,19,26,.12);white-space:nowrap}
+.tb td{padding:9px 10px;border-bottom:1px solid rgba(16,19,26,.06);color:#3D4453;vertical-align:top;line-height:1.5}
+.tb td strong{color:#10131A}
+.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:11.5px;letter-spacing:0;color:#3D4453}
+a{color:#2A5FE8}a:hover{color:#1E49BE}
+button:focus-visible,a:focus-visible{outline:2px solid #2F6BFF;outline-offset:2px}
+</style>
+<style>body{display:flex;justify-content:center;padding:24px;background:#DDE2EA}</style>
+</head>
+<body>
+
+<div class="doc" style="width: 1240px; height: 900px; padding: 36px 40px; gap: 16px;">
+  <div class="hd">
+    <div><div class="kick">F-03 · UI FINALIZE</div><h1 class="dis" style="margin: 8px 0 0; font-size: 32px;">CTA 6종 × 상태 고정</h1></div>
+    <p class="sub" style="max-width: 500px; text-align: right;">한 화면에 <strong style="color:#10131A">Primary는 하나뿐</strong>이다. 안내 시작 · 새 경로로 계속 · 기존 유지 · 정보가 달라요는 시각적 무게가 달라야 한다.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px;">
+    <div><div class="btn cta" style="height:52px;font-size:15px">안내 시작</div><div style="margin-top:8px;font-size:13px;font-weight:700">Primary</div><p class="sub" style="font-size:12px;margin-top:3px">화면의 주 행동. 한 화면 1개. Brand Glass.</p></div>
+    <div><div class="btn ctaS" style="height:52px;font-size:15px">기존 유지</div><div style="margin-top:8px;font-size:13px;font-weight:700">Secondary</div><p class="sub" style="font-size:12px;margin-top:3px">동등한 대안. Primary와 나란히.</p></div>
+    <div><div class="btn ctaT" style="height:52px">정보가 달라요</div><div style="margin-top:8px;font-size:13px;font-weight:700">Tertiary</div><p class="sub" style="font-size:12px;margin-top:3px">보조 진입. 면 없음. 브랜드 잉크.</p></div>
+    <div><div class="btn ctaD" style="height:52px;font-size:15px">안내 종료</div><div style="margin-top:8px;font-size:13px;font-weight:700">Destructive</div><p class="sub" style="font-size:12px;margin-top:3px">되돌리기 어려운 행동. 빨강은 채우지 않는다.</p></div>
+    <div><div class="btn ctaX" style="height:52px;font-size:15px">경로 찾기</div><div style="margin-top:8px;font-size:13px;font-weight:700">Disabled</div><p class="sub" style="font-size:12px;margin-top:3px">유리도 그림자도 없다. 평면.</p></div>
+    <div><div class="btn ctaL" style="height:52px;font-size:15px"><span style="width:16px;height:16px;border-radius:8px;border:2px solid rgba(255,255,255,.5);border-top-color:#FFF"></span>계산 중</div><div style="margin-top:8px;font-size:13px;font-weight:700">Loading</div><p class="sub" style="font-size:12px;margin-top:3px">Primary의 채도만 낮춘다. 레이아웃 불변.</p></div>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-grow: 1; min-height: 0;">
+    <div style="flex-grow: 1;">
+      <div class="lbl" style="margin-bottom: 8px;">화면별 지정</div>
+      <table class="tb">
+        <tr><th style="width:150px">화면</th><th style="width:170px">Primary</th><th style="width:150px">Secondary</th><th>Tertiary / Destructive</th></tr>
+        <tr><td>04 이동 조건</td><td><strong>이 조건으로 시작하기</strong></td><td>—</td><td>나중에 설정할게요 <span class="sub">(T)</span></td></tr>
+        <tr><td>07 경로 설정</td><td><strong>경로 찾기</strong> · 목적지 없으면 Disabled</td><td>—</td><td>경유지 추가 <span class="sub">(T)</span></td></tr>
+        <tr><td>08 경로 결과</td><td><strong>안내 시작</strong></td><td>—</td><td>왜 이 경로인가요 <span class="sub">(T · 카드형)</span></td></tr>
+        <tr><td>09 추천 근거</td><td><strong>안내 시작</strong></td><td>정보가 달라요</td><td>—</td></tr>
+        <tr><td>10 지도 안내</td><td>—<span class="sub"> 상단 턴 배너가 주 정보</span></td><td>길이 막혔어요</td><td>안내 종료 <span class="sub">(D)</span></td></tr>
+        <tr><td>12 재탐색 확인</td><td><strong>새 경로로 계속</strong></td><td>기존 유지</td><td>—</td></tr>
+        <tr><td>14 현장 제보</td><td><strong>제보하고 다시 길찾기</strong> · 유형 미선택 시 Disabled</td><td>—</td><td>—</td></tr>
+        <tr><td>U-1 경로 없음</td><td><strong>조건 수정하기</strong></td><td>지도에서 직접 확인</td><td>다른 출입구 탐색 <span class="sub">(T)</span></td></tr>
+      </table>
+    </div>
+
+    <div style="width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px;">
+      <div class="card" style="border-radius: 20px;">
+        <div class="h3">상태 전이</div>
+        <table class="tb" style="margin-top: 6px;">
+          <tr><td style="width:88px"><strong>Default</strong></td><td>기준</td></tr>
+          <tr><td><strong>Hover</strong></td><td>색 불변 · 하이라이트와 엣지만 증가</td></tr>
+          <tr><td><strong>Pressed</strong></td><td class="mono">scale(.985) · 140ms</td></tr>
+          <tr><td><strong>Loading</strong></td><td>라벨 교체, 너비 고정</td></tr>
+          <tr><td><strong>Disabled</strong></td><td>유리 제거, 평면 회색</td></tr>
+          <tr><td><strong>Focus</strong></td><td class="mono">2px #2F6BFF outline · offset 2</td></tr>
+        </table>
+      </div>
+      <div class="card" style="border-radius: 20px; flex-grow: 1;">
+        <div class="h3">규칙</div>
+        <p class="sub" style="margin-top: 7px;">① 높이 <strong style="color:#10131A">56dp</strong> 고정(Tertiary만 48). 안내 중 단일 행동은 56 이상.<br>② Primary와 Destructive를 <strong style="color:#10131A">나란히 두지 않는다.</strong> Destructive는 앱바나 시트 하단 우측으로 분리.<br>③ Disabled는 이유를 옆에 적는다 — 비활성만 두고 침묵하지 않는다.<br>④ Loading은 최소 <span class="mono">400ms</span> 유지해 깜빡임을 막는다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
