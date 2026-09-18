@@ -1,0 +1,6 @@
+﻿case,candidate_id,edge_id,before_m,after_status,after_m,difference_m,interpretation
+#1,GEC-61063192388228C2,OSM_E_379904073_9581b7b371,98.1,ok,212.2,114.1,가상 적용 민감도; 성과 측정값 아님; Graph 미반영
+#2,GEC-456C3271E69E7EDF,OSM_E_380194922_e00ee2ab58,140.2,ok,1346.0,1205.8,가상 적용 민감도; 성과 측정값 아님; Graph 미반영
+#3,GEC-4B67AFFBA04FD5B5,OSM_E_60819380_fa291dd1d2,368.2,ok,643.4,275.2,가상 적용 민감도; 성과 측정값 아님; Graph 미반영
+#4,GEC-FEF1A7A50FC72885,OSM_E_82908648_bc495b4b83,288.1,no_accessible_route,,,가상 적용 민감도; 성과 측정값 아님; Graph 미반영
+#5,GEC-2A42B3C84090E7F6,OSM_E_998463214-998463215-998463216_f14383982b,70.4,no_accessible_route,,,가상 적용 민감도; 성과 측정값 아님; Graph 미반영

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="451" viewBox="0 0 1200 451">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text { font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", Arial, sans-serif; }</style>
+<text x="64.0" y="64.0" font-size="32" font-weight="700" fill="#172033" text-anchor="start">Human Review 후보 우선순위 분포</text>
+<text x="64.0" y="100.0" font-size="18" font-weight="400" fill="#667085" text-anchor="start">구조 중요도·공간 불확실성·증거 공백·시점 차이를 합친 미보정 자문 점수</text>
+<text x="64.0" y="172.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">High (60점 이상)</text>
+<rect x="340.0" y="145" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="145" width="171.8" height="38" rx="5" fill="#D95D4F"/>
+<text x="523.8" y="172.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">49건</text>
+<text x="64.0" y="244.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">Medium (35–59점)</text>
+<rect x="340.0" y="217" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="217" width="669.6" height="38" rx="5" fill="#E9A23B"/>
+<text x="1021.6" y="244.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">191건</text>
+<text x="64.0" y="316.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">Low (35점 미만)</text>
+<rect x="340.0" y="289" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="289" width="610.0" height="38" rx="5" fill="#159D9A"/>
+<text x="962.0" y="316.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">174건</text>
+<text x="64.0" y="417.0" font-size="15" font-weight="400" fill="#667085" text-anchor="start">ARNAVIGATION 데이터 분석, 2026-09-18</text>
+</svg>

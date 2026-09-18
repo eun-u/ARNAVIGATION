@@ -1,0 +1,637 @@
+{
+  "generated_at": "2026-09-18T05:23:11.186066+00:00",
+  "scope": "current repository data; report analysis only",
+  "safety": {
+    "graph_sha256_before": "b6c746a47c80d516bc506473335e0177eade52d82b8b635d1cb0f8ce2d9cac78",
+    "graph_sha256_after": "b6c746a47c80d516bc506473335e0177eade52d82b8b635d1cb0f8ce2d9cac78",
+    "graph_unchanged": true,
+    "raw_inputs_mutated": false,
+    "routing_graph_mutated": false,
+    "human_review_decisions_created": false,
+    "candidate_values_promoted_to_verified": false
+  },
+  "crosswalk_accessibility_missingness": {
+    "citywide_crosswalk_count": 2728,
+    "attributes": {
+      "보도턱 낮춤": {
+        "entered": 175,
+        "blank": 2553,
+        "entry_rate_pct": 6.41,
+        "missing_rate_pct": 93.59
+      },
+      "점자블록": {
+        "entered": 175,
+        "blank": 2553,
+        "entry_rate_pct": 6.41,
+        "missing_rate_pct": 93.59
+      }
+    }
+  },
+  "paired_endpoint_ai_precheck": {
+    "scope_warning": "대표 회랑 비무작위 표본의 AI 사전판독 결과이며 안양시 전체 현장 상태로 일반화할 수 없음",
+    "crosswalk_count": 40,
+    "same_count": 21,
+    "different_count": 19,
+    "different_pct": 47.5
+  },
+  "topographic_graph_matching": {
+    "object_count": 1351,
+    "unique_count": 390,
+    "unique_pct": 28.868,
+    "by_object": [
+      {
+        "object_type": "보행공간",
+        "role": "pedestrian_area",
+        "total": 1011,
+        "unique": 263,
+        "ambiguous": 417,
+        "unmatched": 331,
+        "unique_pct": 26.01,
+        "ambiguous_pct": 41.25,
+        "unmatched_pct": 32.74
+      },
+      {
+        "object_type": "횡단보도",
+        "role": "crossing_candidate",
+        "total": 127,
+        "unique": 87,
+        "ambiguous": 18,
+        "unmatched": 22,
+        "unique_pct": 68.5,
+        "ambiguous_pct": 14.17,
+        "unmatched_pct": 17.32
+      },
+      {
+        "object_type": "육교",
+        "role": "grade_separated_crossing_candidate",
+        "total": 5,
+        "unique": 5,
+        "ambiguous": 0,
+        "unmatched": 0,
+        "unique_pct": 100.0,
+        "ambiguous_pct": 0.0,
+        "unmatched_pct": 0.0
+      },
+      {
+        "object_type": "계단",
+        "role": "stairs_candidate",
+        "total": 206,
+        "unique": 35,
+        "ambiguous": 14,
+        "unmatched": 157,
+        "unique_pct": 16.99,
+        "ambiguous_pct": 6.8,
+        "unmatched_pct": 76.21
+      },
+      {
+        "object_type": "지하도 입구",
+        "role": "underground_entrance_candidate",
+        "total": 2,
+        "unique": 0,
+        "ambiguous": 1,
+        "unmatched": 1,
+        "unique_pct": 0.0,
+        "ambiguous_pct": 50.0,
+        "unmatched_pct": 50.0
+      }
+    ]
+  },
+  "review_queue": {
+    "candidate_count": 414,
+    "by_source": [
+      {
+        "source": "topographic_map",
+        "label": "수치지형도 매칭",
+        "count": 96
+      },
+      {
+        "source": "public_crosswalk",
+        "label": "공공 횡단보도",
+        "count": 78
+      },
+      {
+        "source": "topographic_map_unmatched",
+        "label": "수치지형도 미매칭",
+        "count": 76
+      },
+      {
+        "source": "hdmap",
+        "label": "HD Map",
+        "count": 74
+      },
+      {
+        "source": "dem",
+        "label": "DEM",
+        "count": 60
+      },
+      {
+        "source": "orthophoto",
+        "label": "정사영상",
+        "count": 30
+      }
+    ],
+    "with_graph_edge_count": 325,
+    "with_graph_edge_pct": 78.5,
+    "unique_graph_edge_count": 192,
+    "graph_edge_coverage_pct": 26.56,
+    "status": "pending",
+    "verified_true_count": 0,
+    "graph_update_allowed_true_count": 0
+  },
+  "crosswalk_graph_representation": {
+    "sample_count": 40,
+    "unique_graph_edge_count": 30,
+    "compressed_unit_count": 10,
+    "compressed_unit_pct": 25.0,
+    "max_crosswalks_on_one_edge": 4,
+    "snap_distance_m": {
+      "median": 1.347,
+      "mean": 2.482,
+      "p95": 8.813,
+      "max": 14.414,
+      "le_1m": 16,
+      "gt_1_le_3m": 11,
+      "gt_3_le_5m": 9,
+      "gt_5m": 4,
+      "gt_10m": 1
+    }
+  },
+  "crosswalk_edge_sensitivity": {
+    "unique_edge_count": 30,
+    "no_alternative_edge_count": 3,
+    "no_alternative_sample_ids": [
+      "CW02",
+      "CW30",
+      "CW37"
+    ],
+    "alternative_available_edge_count": 27,
+    "alternative_ratio_median": 2.75,
+    "alternative_ratio_p90": 4.75,
+    "alternative_ratio_max": 5.96,
+    "bridge_crosswalk_count": 3,
+    "articulation_adjacent_crosswalk_count": 12,
+    "articulation_adjacent_crosswalk_pct": 30.0,
+    "articulation_adjacent_sample_ids": [
+      "CW02",
+      "CW04",
+      "CW29",
+      "CW30",
+      "CW32",
+      "CW34",
+      "CW35",
+      "CW36",
+      "CW37",
+      "CW38",
+      "CW39",
+      "CW40"
+    ],
+    "scope_warning": "현재 OSM 기반 Proxy Graph의 구조 민감도이며 실제 보행 우회거리 추정값이 아님"
+  },
+  "review_priority": {
+    "method_status": "derived advisory heuristic; not calibrated or human-validated",
+    "formula": {
+      "structural_criticality": "0-40: bridge 20, articulation adjacency 10, alternative-route ratio 0-10",
+      "spatial_uncertainty": "0-30: mapping status 0-20 plus distance/no-edge 0-10",
+      "evidence_gap": "0-20: fewer uniquely linked candidate evidence layers scores higher",
+      "temporal_risk": "0-10: 2026 OSM and linked/candidate source-year span",
+      "bands": "high >=60, medium 35-59, low <35"
+    },
+    "candidate_count": 414,
+    "band_counts": {
+      "high": 49,
+      "medium": 191,
+      "low": 174
+    },
+    "top10": [
+      {
+        "review_queue_id": "RQ-2d466136652526a8d4a0",
+        "review_source": "topographic_map_unmatched",
+        "review_role": "stairs_candidate",
+        "source_feature_id": "1000037612047C03910000000000000069",
+        "graph_edge_id": "OSM_E_1417492465_a7cdf32987",
+        "mapping_status": "unmatched",
+        "mapping_distance_m": 12.568,
+        "source_year": 2025,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 0,
+        "temporal_gap_years": 1,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 30,
+        "evidence_gap_score_20": 20,
+        "temporal_risk_score_10": 3,
+        "review_priority_score_100": 93,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 1
+      },
+      {
+        "review_queue_id": "RQ-95039b28e054e12454e3",
+        "review_source": "topographic_map_unmatched",
+        "review_role": "stairs_candidate",
+        "source_feature_id": "1000037612047C03910000000000000108",
+        "graph_edge_id": "OSM_E_1323539454_861f3a9b41",
+        "mapping_status": "unmatched",
+        "mapping_distance_m": 10.97,
+        "source_year": 2025,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 0,
+        "temporal_gap_years": 1,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 30,
+        "evidence_gap_score_20": 20,
+        "temporal_risk_score_10": 3,
+        "review_priority_score_100": 93,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 2
+      },
+      {
+        "review_queue_id": "RQ-edd888a3d474beeb63ce",
+        "review_source": "topographic_map_unmatched",
+        "review_role": "stairs_candidate",
+        "source_feature_id": "1000037612047C03910000000000000128",
+        "graph_edge_id": "OSM_E_1323539454_861f3a9b41",
+        "mapping_status": "unmatched",
+        "mapping_distance_m": 13.105,
+        "source_year": 2025,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 0,
+        "temporal_gap_years": 1,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 30,
+        "evidence_gap_score_20": 20,
+        "temporal_risk_score_10": 3,
+        "review_priority_score_100": 93,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 3
+      },
+      {
+        "review_queue_id": "RQ-e70bbe3a740ac8b30723",
+        "review_source": "topographic_map_unmatched",
+        "review_role": "pedestrian_area",
+        "source_feature_id": "1000037612037A00310000000000000018",
+        "graph_edge_id": "OSM_E_969817614_15ac4285f9",
+        "mapping_status": "unmatched",
+        "mapping_distance_m": 8.932,
+        "source_year": 2025,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 0,
+        "temporal_gap_years": 1,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 28,
+        "evidence_gap_score_20": 20,
+        "temporal_risk_score_10": 3,
+        "review_priority_score_100": 91,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 4
+      },
+      {
+        "review_queue_id": "RQ-6dcf57a0a23e43c5c8ae",
+        "review_source": "topographic_map",
+        "review_role": "pedestrian_area",
+        "source_feature_id": "1000376120996A00310000000000000002",
+        "graph_edge_id": "OSM_E_484348867_501ff2491d",
+        "mapping_status": "ambiguous",
+        "mapping_distance_m": 5.313,
+        "source_year": 2022,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 0,
+        "temporal_gap_years": 4,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 16,
+        "evidence_gap_score_20": 20,
+        "temporal_risk_score_10": 10,
+        "review_priority_score_100": 86,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 5
+      },
+      {
+        "review_queue_id": "RQ-3f9de179b52895daa555",
+        "review_source": "topographic_map",
+        "review_role": "pedestrian_area",
+        "source_feature_id": "1000376120994A00310000000000000037",
+        "graph_edge_id": "OSM_E_380194322_5a689b96d7",
+        "mapping_status": "ambiguous",
+        "mapping_distance_m": 2.709,
+        "source_year": 2022,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 0,
+        "temporal_gap_years": 4,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 12,
+        "evidence_gap_score_20": 20,
+        "temporal_risk_score_10": 10,
+        "review_priority_score_100": 82,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 6
+      },
+      {
+        "review_queue_id": "RQ-d4c91a899507a2f9d96b",
+        "review_source": "topographic_map",
+        "review_role": "pedestrian_area",
+        "source_feature_id": "10000376120995A0031000000000000047",
+        "graph_edge_id": "OSM_E_1469155089_74ab581423",
+        "mapping_status": "ambiguous",
+        "mapping_distance_m": 0.0,
+        "source_year": 2022,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 0,
+        "temporal_gap_years": 4,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 12,
+        "evidence_gap_score_20": 20,
+        "temporal_risk_score_10": 10,
+        "review_priority_score_100": 82,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 7
+      },
+      {
+        "review_queue_id": "RQ-0bd11a3cbd09102371a0",
+        "review_source": "topographic_map_unmatched",
+        "review_role": "pedestrian_area",
+        "source_feature_id": "1000037612048A00310000000000000794",
+        "graph_edge_id": "OSM_E_318699995-318699998-685069353_3958fc4f58",
+        "mapping_status": "unmatched",
+        "mapping_distance_m": 13.077,
+        "source_year": 2025,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 2,
+        "temporal_gap_years": 1,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 30,
+        "evidence_gap_score_20": 8,
+        "temporal_risk_score_10": 3,
+        "review_priority_score_100": 81,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 8
+      },
+      {
+        "review_queue_id": "RQ-722cf9c14d4247d26cd4",
+        "review_source": "topographic_map_unmatched",
+        "review_role": "stairs_candidate",
+        "source_feature_id": "1000037612038C03910000000000000091",
+        "graph_edge_id": "OSM_E_481148746_d88caa7016",
+        "mapping_status": "unmatched",
+        "mapping_distance_m": 14.079,
+        "source_year": 2025,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 2,
+        "temporal_gap_years": 1,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 30,
+        "evidence_gap_score_20": 8,
+        "temporal_risk_score_10": 3,
+        "review_priority_score_100": 81,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 9
+      },
+      {
+        "review_queue_id": "RQ-e7ec9f56ed0bc0852af3",
+        "review_source": "topographic_map_unmatched",
+        "review_role": "stairs_candidate",
+        "source_feature_id": "1000037612048C03910000000000000192",
+        "graph_edge_id": "OSM_E_38609097_9fdc599159",
+        "mapping_status": "unmatched",
+        "mapping_distance_m": 14.799,
+        "source_year": 2025,
+        "bridge_edge": true,
+        "articulation_adjacent": true,
+        "alternative_ratio": null,
+        "linked_candidate_evidence_layers": 2,
+        "temporal_gap_years": 1,
+        "structural_score_40": 40,
+        "spatial_uncertainty_score_30": 30,
+        "evidence_gap_score_20": 8,
+        "temporal_risk_score_10": 3,
+        "review_priority_score_100": 81,
+        "priority_band": "high",
+        "status": "advisory_unvalidated_priority; pending; verified=false; graph_update_allowed=false",
+        "priority_rank": 10
+      }
+    ]
+  },
+  "evidence_coverage": {
+    "definition": "OSM 외에 unique로 연결된 공간 레이어 수; 독립적 확인 또는 사람 검증 수가 아님",
+    "edge_count": 723,
+    "band_counts": {
+      "0개 (OSM only)": 446,
+      "3개 이상": 115,
+      "1개": 83,
+      "2개": 79
+    },
+    "combination_top10": {
+      "OSM only": 446,
+      "OSM + 공공 횡단보도 + 수치지형도 + 정사영상": 103,
+      "OSM + 수치지형도": 81,
+      "OSM + 공공 횡단보도 + 정사영상": 79,
+      "OSM + HD Map + 공공 횡단보도 + 정사영상": 10,
+      "OSM + HD Map": 2,
+      "OSM + HD Map + 공공 횡단보도 + 수치지형도 + 정사영상": 2
+    },
+    "human_verified_edge_count": 0,
+    "dem_note": "90m DEM context는 전 Edge에 있으나 hard constraint 근거에서 제외"
+  },
+  "temporal_consistency": {
+    "edge_gap_band_counts": {
+      "0년": 446,
+      "1년": 136,
+      "4년 이상": 127,
+      "3년": 14
+    },
+    "source_vintages": {
+      "topographic_map": "2022/2025",
+      "hd_map": 2023,
+      "dem": 2025,
+      "orthophoto": 2025,
+      "roadview": 2025,
+      "public_crosswalk": 2026,
+      "osm": 2026
+    }
+  },
+  "cross_source_correspondence": {
+    "public_crosswalk_context_count": 402,
+    "inside_hd_coverage_count": 210,
+    "direct_near_match_count": 12,
+    "direct_near_match_pct_inside": 5.7,
+    "including_nearby_review_count": 18,
+    "including_nearby_review_pct_inside": 8.6,
+    "outside_hd_coverage_count": 192,
+    "interpretation": "정확도가 아니라 객체 정의와 geometry 단위 차이로 단순 자동 Join이 어렵다는 지표"
+  },
+  "ai_policy_separation": {
+    "legacy_block_candidate_count": 5,
+    "candidate_labels": {
+      "tactile_absent_candidate": 4,
+      "construction_block_candidate": 1
+    },
+    "tactile_absent_count": 4,
+    "tactile_absent_share_pct": 80.0,
+    "wheelchair_hard_constraint_note": "현 wheelchair hard-constraint에는 tactile absence가 없음. 인식 결과와 사용자별 정책 판단을 분리해야 함."
+  },
+  "route_impact_simulation": {
+    "scope_warning": "미승인 stairs 후보를 가상 적용한 민감도 분석; 성과 또는 실제 경로 결과가 아님",
+    "case_count": 5,
+    "changed_count": 5,
+    "no_route_count": 2,
+    "cases": [
+      {
+        "case": "#1",
+        "candidate_id": "GEC-61063192388228C2",
+        "edge_id": "OSM_E_379904073_9581b7b371",
+        "before_m": 98.1,
+        "after_status": "ok",
+        "after_m": 212.2,
+        "difference_m": 114.1,
+        "interpretation": "가상 적용 민감도; 성과 측정값 아님; Graph 미반영"
+      },
+      {
+        "case": "#2",
+        "candidate_id": "GEC-456C3271E69E7EDF",
+        "edge_id": "OSM_E_380194922_e00ee2ab58",
+        "before_m": 140.2,
+        "after_status": "ok",
+        "after_m": 1346.0,
+        "difference_m": 1205.8,
+        "interpretation": "가상 적용 민감도; 성과 측정값 아님; Graph 미반영"
+      },
+      {
+        "case": "#3",
+        "candidate_id": "GEC-4B67AFFBA04FD5B5",
+        "edge_id": "OSM_E_60819380_fa291dd1d2",
+        "before_m": 368.2,
+        "after_status": "ok",
+        "after_m": 643.4,
+        "difference_m": 275.2,
+        "interpretation": "가상 적용 민감도; 성과 측정값 아님; Graph 미반영"
+      },
+      {
+        "case": "#4",
+        "candidate_id": "GEC-FEF1A7A50FC72885",
+        "edge_id": "OSM_E_82908648_bc495b4b83",
+        "before_m": 288.1,
+        "after_status": "no_accessible_route",
+        "after_m": null,
+        "difference_m": null,
+        "interpretation": "가상 적용 민감도; 성과 측정값 아님; Graph 미반영"
+      },
+      {
+        "case": "#5",
+        "candidate_id": "GEC-2A42B3C84090E7F6",
+        "edge_id": "OSM_E_998463214-998463215-998463216_f14383982b",
+        "before_m": 70.4,
+        "after_status": "no_accessible_route",
+        "after_m": null,
+        "difference_m": null,
+        "interpretation": "가상 적용 민감도; 성과 측정값 아님; Graph 미반영"
+      }
+    ],
+    "current_full_diagnostic_count": 17,
+    "current_full_diagnostic_no_route_count": 11,
+    "current_dem_slope_diagnostic_count": 12,
+    "full_diagnostic_note": "현재 파일에는 90m DEM slope 진단 후보가 추가되어 있으나 hard constraint 승인 대상이 아니므로 핵심 Figure에서 제외"
+  },
+  "graph": {
+    "node_count": 504,
+    "edge_count": 723,
+    "connected_component_count": 6,
+    "largest_component_pct": 94.84,
+    "articulation_point_count": 88,
+    "bridge_edge_pair_count": 100,
+    "proxy_warning": "OSM 기반 Proxy Graph 구조이며 실제 안양 보행망 위험도를 뜻하지 않음"
+  },
+  "validation": {
+    "status": "warning",
+    "check_counts": {
+      "pass": 176,
+      "warning": 7,
+      "fail": 0,
+      "hold": 1
+    },
+    "graph_unchanged": true
+  },
+  "dem": {
+    "edge_count": 723,
+    "under_3_cells_count": 596,
+    "under_3_cells_pct": 82.43,
+    "same_90m_cell_count": 241,
+    "hard_constraint_eligible_edge_count": 0
+  },
+  "graph_enrichment_safety": {
+    "baseline_graph_unchanged": true,
+    "routing_field_projection_identical": true,
+    "route_regression_identical": true,
+    "route_regression": {
+      "identical": true,
+      "profiles": {
+        "default": {
+          "identical": true,
+          "distance_m": 1081.9,
+          "edge_ids": [
+            "OSM_E_915477947_2a7346f0c3",
+            "OSM_E_837321098_ed4fd99d32",
+            "OSM_E_380184681-837321097_1e3e748951",
+            "OSM_E_380184681_d31ec1cff8",
+            "OSM_E_915477950_3d69322e67",
+            "OSM_E_38609408_805d08ce89",
+            "OSM_E_38609408_c9bd1fb90c",
+            "OSM_E_38609408_b27393be54",
+            "OSM_E_38609408_55e57bcfa8",
+            "OSM_E_38609408_7a2fdc501b",
+            "OSM_E_38609408_bcd6e4b0ab",
+            "OSM_E_38609408_86a52fcf94",
+            "OSM_E_38609408_f068e9c4d0"
+          ]
+        },
+        "wheelchair": {
+          "identical": true,
+          "distance_m": 1302.5,
+          "edge_ids": [
+            "OSM_E_915477947_d2ce447501",
+            "OSM_E_915477947_e2b2a2a4a7",
+            "OSM_E_380184682_b0cd27b32e",
+            "OSM_E_380184682_134e52f788",
+            "OSM_E_380184682_8c07d69d61",
+            "OSM_E_380184682_9c7c063f42",
+            "OSM_E_915477950_ab67cf4d52",
+            "OSM_E_915477950_3d69322e67",
+            "OSM_E_38609408_805d08ce89",
+            "OSM_E_38609408_c9bd1fb90c",
+            "OSM_E_38609408_b27393be54",
+            "OSM_E_38609408_55e57bcfa8",
+            "OSM_E_38609408_7a2fdc501b",
+            "OSM_E_38609408_bcd6e4b0ab",
+            "OSM_E_38609408_86a52fcf94",
+            "OSM_E_38609408_f068e9c4d0"
+          ]
+        }
+      }
+    },
+    "candidate_preview_sha256": "06c1a12a087ceb346cd27d117e53ba88a9ac25d5fc571ba9512764b709d83fb3",
+    "candidate_simulation_sha256": "2e8c8e6d000c64139863c5124db4a75601bba7a23e4dea41dc466b9122e8b282"
+  }
+}

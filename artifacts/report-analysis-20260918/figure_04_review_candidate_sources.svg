@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="667" viewBox="0 0 1200 667">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text { font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", Arial, sans-serif; }</style>
+<text x="64.0" y="64.0" font-size="32" font-weight="700" fill="#172033" text-anchor="start">공간데이터 기반 Human Review 후보 414건</text>
+<text x="64.0" y="100.0" font-size="18" font-weight="400" fill="#667085" text-anchor="start">모든 후보는 pending · verified=false이며 사람 승인 전 Graph에 반영되지 않음</text>
+<text x="64.0" y="172.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">수치지형도 매칭</text>
+<rect x="340.0" y="145" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="145" width="669.6" height="38" rx="5" fill="#2F6BFF"/>
+<text x="1021.6" y="172.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">96건</text>
+<text x="64.0" y="244.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">공공 횡단보도</text>
+<rect x="340.0" y="217" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="217" width="544.1" height="38" rx="5" fill="#2F6BFF"/>
+<text x="896.1" y="244.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">78건</text>
+<text x="64.0" y="316.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">수치지형도 미매칭</text>
+<rect x="340.0" y="289" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="289" width="530.1" height="38" rx="5" fill="#2F6BFF"/>
+<text x="882.1" y="316.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">76건</text>
+<text x="64.0" y="388.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">HD Map</text>
+<rect x="340.0" y="361" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="361" width="516.2" height="38" rx="5" fill="#2F6BFF"/>
+<text x="868.2" y="388.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">74건</text>
+<text x="64.0" y="460.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">DEM</text>
+<rect x="340.0" y="433" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="433" width="418.5" height="38" rx="5" fill="#2F6BFF"/>
+<text x="770.5" y="460.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">60건</text>
+<text x="64.0" y="532.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">정사영상</text>
+<rect x="340.0" y="505" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="505" width="209.3" height="38" rx="5" fill="#2F6BFF"/>
+<text x="561.3" y="532.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">30건</text>
+<text x="64.0" y="633.0" font-size="15" font-weight="400" fill="#667085" text-anchor="start">ARNAVIGATION 데이터 분석, 2026-09-18</text>
+</svg>

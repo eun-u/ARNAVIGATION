@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="335" viewBox="0 0 1200 335">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text { font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", Arial, sans-serif; }</style>
+<text x="64.0" y="64.0" font-size="32" font-weight="700" fill="#172033" text-anchor="start">대표 횡단보도 양단 AI 사전판독 차이</text>
+<text x="64.0" y="100.0" font-size="18" font-weight="400" fill="#667085" text-anchor="start">비무작위 대표 회랑 표본 40건 — 안양시 전체 현장 상태로 일반화하지 않음</text>
+<line x1="300.0" y1="135" x2="300.0" y2="240" stroke="#DDE3EA" stroke-width="1"/>
+<text x="300.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">0%</text>
+<line x1="505.0" y1="135" x2="505.0" y2="240" stroke="#DDE3EA" stroke-width="1"/>
+<text x="505.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">25%</text>
+<line x1="710.0" y1="135" x2="710.0" y2="240" stroke="#DDE3EA" stroke-width="1"/>
+<text x="710.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">50%</text>
+<line x1="915.0" y1="135" x2="915.0" y2="240" stroke="#DDE3EA" stroke-width="1"/>
+<text x="915.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">75%</text>
+<line x1="1120.0" y1="135" x2="1120.0" y2="240" stroke="#DDE3EA" stroke-width="1"/>
+<text x="1120.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">100%</text>
+<text x="64.0" y="195.0" font-size="21" font-weight="600" fill="#172033" text-anchor="start">A/B 접근부</text>
+<rect x="300.0" y="165.0" width="430.5" height="42" rx="4" fill="#159D9A"/>
+<text x="515.2" y="194.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">52.50%</text>
+<rect x="730.5" y="165.0" width="389.5" height="42" rx="4" fill="#D95D4F"/>
+<text x="925.2" y="194.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">47.50%</text>
+<rect x="300" y="247" width="18" height="18" rx="3" fill="#159D9A"/>
+<text x="328.0" y="263.0" font-size="16" font-weight="400" fill="#667085" text-anchor="start">A/B 동일 21건</text>
+<rect x="520" y="247" width="18" height="18" rx="3" fill="#D95D4F"/>
+<text x="548.0" y="263.0" font-size="16" font-weight="400" fill="#667085" text-anchor="start">A/B 상이 19건</text>
+<text x="64.0" y="301.0" font-size="15" font-weight="400" fill="#667085" text-anchor="start">AI 사전판독 반복자료 기반, ARNAVIGATION 2026-09-18</text>
+</svg>

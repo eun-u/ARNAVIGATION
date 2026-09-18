@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="523" viewBox="0 0 1200 523">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text { font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", Arial, sans-serif; }</style>
+<text x="64.0" y="64.0" font-size="32" font-weight="700" fill="#172033" text-anchor="start">Graph Edge별 공간 증거 레이어 커버리지</text>
+<text x="64.0" y="100.0" font-size="18" font-weight="400" fill="#667085" text-anchor="start">Unique로 연결된 OSM 외 후보 레이어 수 — 독립 검증 수가 아니며 사람 검증 Edge는 0개</text>
+<text x="64.0" y="172.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">0개 (OSM only)</text>
+<rect x="340.0" y="145" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="145" width="669.6" height="38" rx="5" fill="#EEF2F6"/>
+<text x="1021.6" y="172.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">446개 Edge</text>
+<text x="64.0" y="244.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">1개</text>
+<rect x="340.0" y="217" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="217" width="124.6" height="38" rx="5" fill="#2F6BFF"/>
+<text x="476.6" y="244.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">83개 Edge</text>
+<text x="64.0" y="316.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">2개</text>
+<rect x="340.0" y="289" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="289" width="118.6" height="38" rx="5" fill="#159D9A"/>
+<text x="470.6" y="316.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">79개 Edge</text>
+<text x="64.0" y="388.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">3개 이상</text>
+<rect x="340.0" y="361" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="361" width="172.7" height="38" rx="5" fill="#7A5AF8"/>
+<text x="524.7" y="388.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">115개 Edge</text>
+<text x="64.0" y="489.0" font-size="15" font-weight="400" fill="#667085" text-anchor="start">ARNAVIGATION 데이터 분석, 2026-09-18</text>
+</svg>

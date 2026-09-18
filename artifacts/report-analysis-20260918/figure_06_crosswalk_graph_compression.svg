@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="379" viewBox="0 0 1200 379">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text { font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", Arial, sans-serif; }</style>
+<text x="64.0" y="64.0" font-size="32" font-weight="700" fill="#172033" text-anchor="start">횡단보도 접근성 공간단위 손실</text>
+<text x="64.0" y="100.0" font-size="18" font-weight="400" fill="#667085" text-anchor="start">대표 횡단보도 40건이 현재 Proxy Graph에서는 30개 Edge로 압축</text>
+<text x="64.0" y="172.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">실제 횡단보도 표본</text>
+<rect x="340.0" y="145" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="145" width="669.6" height="38" rx="5" fill="#2F6BFF"/>
+<text x="1021.6" y="172.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">40개</text>
+<text x="64.0" y="244.0" font-size="19" font-weight="600" fill="#172033" text-anchor="start">연결된 고유 Graph Edge</text>
+<rect x="340.0" y="217" width="750.0" height="38" rx="5" fill="#EEF2F6"/>
+<rect x="340.0" y="217" width="502.2" height="38" rx="5" fill="#159D9A"/>
+<text x="854.2" y="244.0" font-size="18" font-weight="700" fill="#172033" text-anchor="start">30개</text>
+<text x="64.0" y="345.0" font-size="15" font-weight="400" fill="#667085" text-anchor="start">ARNAVIGATION 데이터 분석, 2026-09-18</text>
+</svg>

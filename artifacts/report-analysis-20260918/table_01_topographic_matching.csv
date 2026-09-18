@@ -1,0 +1,6 @@
+﻿object_type,role,total,unique,ambiguous,unmatched,unique_pct,ambiguous_pct,unmatched_pct
+보행공간,pedestrian_area,1011,263,417,331,26.01,41.25,32.74
+횡단보도,crossing_candidate,127,87,18,22,68.5,14.17,17.32
+육교,grade_separated_crossing_candidate,5,5,0,0,100.0,0.0,0.0
+계단,stairs_candidate,206,35,14,157,16.99,6.8,76.21
+지하도 입구,underground_entrance_candidate,2,0,1,1,0.0,50.0,50.0

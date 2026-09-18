@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="695" viewBox="0 0 1200 695">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<style>text { font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", Arial, sans-serif; }</style>
+<text x="64.0" y="64.0" font-size="32" font-weight="700" fill="#172033" text-anchor="start">공간객체별 Routing Graph 매칭 품질</text>
+<text x="64.0" y="100.0" font-size="18" font-weight="400" fill="#667085" text-anchor="start">수치지형도 1,351개 객체와 OSM 기반 Proxy Graph의 자동매칭 결과</text>
+<line x1="300.0" y1="135" x2="300.0" y2="600" stroke="#DDE3EA" stroke-width="1"/>
+<text x="300.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">0%</text>
+<line x1="505.0" y1="135" x2="505.0" y2="600" stroke="#DDE3EA" stroke-width="1"/>
+<text x="505.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">25%</text>
+<line x1="710.0" y1="135" x2="710.0" y2="600" stroke="#DDE3EA" stroke-width="1"/>
+<text x="710.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">50%</text>
+<line x1="915.0" y1="135" x2="915.0" y2="600" stroke="#DDE3EA" stroke-width="1"/>
+<text x="915.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">75%</text>
+<line x1="1120.0" y1="135" x2="1120.0" y2="600" stroke="#DDE3EA" stroke-width="1"/>
+<text x="1120.0" y="128.0" font-size="15" font-weight="400" fill="#667085" text-anchor="middle">100%</text>
+<text x="64.0" y="195.0" font-size="21" font-weight="600" fill="#172033" text-anchor="start">보행공간</text>
+<rect x="300.0" y="165.0" width="213.3" height="42" rx="4" fill="#2F6BFF"/>
+<text x="406.6" y="194.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">26.01%</text>
+<rect x="513.3" y="165.0" width="338.2" height="42" rx="4" fill="#E9A23B"/>
+<text x="682.4" y="194.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">41.25%</text>
+<rect x="851.5" y="165.0" width="268.5" height="42" rx="4" fill="#D95D4F"/>
+<text x="985.8" y="194.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">32.74%</text>
+<text x="64.0" y="285.0" font-size="21" font-weight="600" fill="#172033" text-anchor="start">횡단보도</text>
+<rect x="300.0" y="255.0" width="561.7" height="42" rx="4" fill="#2F6BFF"/>
+<text x="580.9" y="284.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">68.50%</text>
+<rect x="861.7" y="255.0" width="116.2" height="42" rx="4" fill="#E9A23B"/>
+<text x="919.8" y="284.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">14.17%</text>
+<rect x="977.9" y="255.0" width="142.0" height="42" rx="4" fill="#D95D4F"/>
+<text x="1048.9" y="284.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">17.32%</text>
+<text x="64.0" y="375.0" font-size="21" font-weight="600" fill="#172033" text-anchor="start">육교</text>
+<rect x="300.0" y="345.0" width="820.0" height="42" rx="4" fill="#2F6BFF"/>
+<text x="710.0" y="374.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">100.00%</text>
+<rect x="1120.0" y="345.0" width="0.0" height="42" rx="4" fill="#E9A23B"/>
+<rect x="1120.0" y="345.0" width="0.0" height="42" rx="4" fill="#D95D4F"/>
+<text x="64.0" y="465.0" font-size="21" font-weight="600" fill="#172033" text-anchor="start">계단</text>
+<rect x="300.0" y="435.0" width="139.3" height="42" rx="4" fill="#2F6BFF"/>
+<text x="369.7" y="464.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">16.99%</text>
+<rect x="439.3" y="435.0" width="55.8" height="42" rx="4" fill="#E9A23B"/>
+<text x="467.2" y="427.0" font-size="14" font-weight="700" fill="#E9A23B" text-anchor="middle">6.80%</text>
+<rect x="495.1" y="435.0" width="624.9" height="42" rx="4" fill="#D95D4F"/>
+<text x="807.5" y="464.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">76.21%</text>
+<text x="64.0" y="555.0" font-size="21" font-weight="600" fill="#172033" text-anchor="start">지하도 입구</text>
+<rect x="300.0" y="525.0" width="0.0" height="42" rx="4" fill="#2F6BFF"/>
+<rect x="300.0" y="525.0" width="410.0" height="42" rx="4" fill="#E9A23B"/>
+<text x="505.0" y="554.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">50.00%</text>
+<rect x="710.0" y="525.0" width="410.0" height="42" rx="4" fill="#D95D4F"/>
+<text x="915.0" y="554.0" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">50.00%</text>
+<rect x="300" y="607" width="18" height="18" rx="3" fill="#2F6BFF"/>
+<text x="328.0" y="623.0" font-size="16" font-weight="400" fill="#667085" text-anchor="start">Unique</text>
+<rect x="520" y="607" width="18" height="18" rx="3" fill="#E9A23B"/>
+<text x="548.0" y="623.0" font-size="16" font-weight="400" fill="#667085" text-anchor="start">Ambiguous</text>
+<rect x="740" y="607" width="18" height="18" rx="3" fill="#D95D4F"/>
+<text x="768.0" y="623.0" font-size="16" font-weight="400" fill="#667085" text-anchor="start">Unmatched</text>
+<text x="64.0" y="661.0" font-size="15" font-weight="400" fill="#667085" text-anchor="start">ARNAVIGATION 데이터 분석, 2026-09-18</text>
+</svg>
