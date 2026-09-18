@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>작업 로드맵</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+--brand-primary:#2A5FE8;--brand-violet:#5A3FD6;--brand-cyan:#3FC8E4;--brand-indigo:#4A47E0;
+--sem-pass:#0E8F72;--sem-warn:#A9660B;--sem-block:#C4283C;--sem-unknown:#6B7480;
+--text-strong:#10131A;--text-body:#3D4453;--text-muted:#737D8C;--text-disabled:#A8AFBC;
+--surface-base:#F4F6FA;--surface-solid:#FFFFFF;--line:rgba(16,19,26,.08);
+--radius-sm:10px;--radius-md:16px;--radius-lg:20px;--radius-xl:26px;--radius-pill:999px;
+--motion-press:140ms;--motion-chip:180ms;--motion-screen:220ms;--motion-sheet:280ms;--motion-route:380ms;
+}
+body{margin:0;font-family:Pretendard,"Pretendard Variable",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;background:#EEF1F6;color:#10131A;-webkit-font-smoothing:antialiased;letter-spacing:-0.02em}
+.dis{font-weight:700;letter-spacing:-0.035em}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+/* ── numeric system ─────────────────────────────────────────── */
+.m1{font-variant-numeric:tabular-nums;font-size:40px;font-weight:700;letter-spacing:-0.045em;line-height:1;color:#10131A}
+.m2{font-variant-numeric:tabular-nums;font-size:18px;font-weight:700;letter-spacing:-0.03em;color:#10131A}
+.delta{font-variant-numeric:tabular-nums;font-size:14px;font-weight:700;letter-spacing:-0.02em;color:#A9660B}
+.delta.down{color:#0E8F72}
+.unc{font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;letter-spacing:0;color:#737D8C}
+.ph{width:390px;height:844px;box-sizing:border-box;display:flex;flex-direction:column;background:#F4F6FA;overflow:hidden;position:relative;isolation:isolate}
+.ph>*{position:relative;z-index:1}
+.fieldbg{position:absolute;inset:0;z-index:0}
+.lg,.lg2,.lg3,.cta,.ctaS,.ctaD,.float,.sheet,.card,.chip{position:relative}
+.lg::before,.lg2::before,.lg3::before,.cta::before,.ctaS::before,.float::before,.sheet::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(145deg,rgba(47,107,255,.38),rgba(123,75,232,.20) 38%,rgba(255,255,255,0) 66%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+/* ── glass levels · numeric spec ────────────────────────────── */
+.lg{background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.52));-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(16,19,26,.05),0 0 0 .5px rgba(16,19,26,.06),0 6px 18px rgba(18,24,48,.07)}
+.lg2{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.07),0 8px 22px rgba(18,24,48,.09)}
+.lg3{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(236,241,255,.74));-webkit-backdrop-filter:blur(22px) saturate(190%);backdrop-filter:blur(22px) saturate(190%);box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(47,107,255,.32),0 8px 24px rgba(47,107,255,.15)}
+.inset{height:40px;flex-shrink:0}
+.appbar{height:56px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 8px 0 6px;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.54));-webkit-backdrop-filter:blur(18px) saturate(175%);backdrop-filter:blur(18px) saturate(175%);box-shadow:inset 0 -1px 0 rgba(16,19,26,.07)}
+.iconbtn{width:48px;height:48px;border:none;background:none;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#10131A;cursor:pointer;padding:0}
+.iconbtn:hover{background:rgba(255,255,255,.6)}
+.iconbtn:active{transform:scale(.94)}
+.title{font-size:18px;font-weight:700;letter-spacing:-0.03em}
+.body{flex-grow:1;overflow:hidden;padding:12px 20px 16px;display:flex;flex-direction:column;gap:14px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(255,255,255,.46));-webkit-backdrop-filter:blur(14px) saturate(165%);backdrop-filter:blur(14px) saturate(165%);border:none;border-radius:20px;padding:16px;box-sizing:border-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(16,19,26,.055),0 6px 18px rgba(18,24,48,.06)}
+.lbl{font-size:13px;font-weight:700;letter-spacing:-0.02em;color:#737D8C}
+.sub{margin:0;font-size:13px;color:#737D8C;line-height:1.55;letter-spacing:-0.02em}
+.chip{display:inline-flex;align-items:center;gap:5px;border:none;background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.58));-webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:#3D4453;min-height:38px;box-sizing:border-box;letter-spacing:-0.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 .5px rgba(16,19,26,.07)}
+.chip.on{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(233,239,255,.74));color:#2A5FE8;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(47,107,255,.40),0 6px 16px rgba(47,107,255,.16)}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:9px;padding:4px 9px;font-size:12px;font-weight:700;letter-spacing:-0.02em}
+/* ── CTA system · 6 types ───────────────────────────────────── */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:18px;font-size:17px;font-weight:700;letter-spacing:-0.03em;text-decoration:none;border:none;width:100%;box-sizing:border-box;cursor:pointer;font-family:inherit;transition:transform var(--motion-press) cubic-bezier(.2,.8,.3,1)}
+.cta{background:linear-gradient(140deg,#2A5FE8,#5A3FD6);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(0,0,0,.18),0 10px 26px rgba(42,95,232,.30)}
+.cta::before{background:linear-gradient(150deg,rgba(255,255,255,.55),rgba(123,75,232,.0) 55%)}
+.cta:active{transform:scale(.985);box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 4px 14px rgba(42,95,232,.26)}
+.ctaS{background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);color:#10131A;box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.08),0 6px 18px rgba(18,24,48,.08)}
+.ctaS:active{transform:scale(.985)}
+.ctaT{background:none;color:#2A5FE8;box-shadow:none;height:48px;font-size:15px}
+.ctaT:active{transform:scale(.97)}
+.ctaD{background:rgba(196,40,60,.10);color:#A3222F;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 .5px rgba(196,40,60,.30)}
+.ctaD:active{transform:scale(.985)}
+.ctaX{background:#E7E9EE;color:#A8AFBC;box-shadow:none;cursor:not-allowed}
+.ctaL{background:linear-gradient(140deg,rgba(42,95,232,.55),rgba(90,63,214,.55));color:rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);cursor:progress}
+.cta2{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);color:#10131A;font-size:17px;font-weight:700;letter-spacing:-0.03em;text-decoration:none;border:none;width:100%;box-sizing:border-box;cursor:pointer;font-family:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,19,26,.06),0 0 0 .5px rgba(16,19,26,.07),0 6px 18px rgba(18,24,48,.08)}
+.cta2:active{transform:scale(.985)}
+.tabbar{flex-shrink:0;display:flex;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.86));-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -.5px 0 rgba(16,19,26,.08);padding:6px 0 22px}
+.tab{flex-grow:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;min-height:48px;text-decoration:none;color:#98A1AE;font-size:11px;font-weight:600;letter-spacing:-0.02em}
+.tab.on{color:#2A5FE8}
+.stage{position:relative;flex-grow:1;background:#E9EDF2;overflow:hidden}
+.sheet{background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.92));-webkit-backdrop-filter:blur(26px) saturate(185%);backdrop-filter:blur(26px) saturate(185%);border-radius:26px 26px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 -.5px 0 rgba(16,19,26,.08),0 -14px 40px rgba(18,24,48,.14);padding:8px 20px 0;box-sizing:border-box;flex-shrink:0}
+.hdl{width:40px;height:4px;border-radius:2px;background:rgba(16,19,26,.16);margin:2px auto 12px}
+.float{background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.66));-webkit-backdrop-filter:blur(20px) saturate(185%);backdrop-filter:blur(20px) saturate(185%);border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,1),0 0 0 .5px rgba(16,19,26,.07),0 8px 24px rgba(18,24,48,.14)}
+.note{display:flex;gap:8px;align-items:flex-start;background:rgba(169,102,11,.10);border-radius:14px;padding:11px 13px;font-size:13px;color:#A9660B;line-height:1.5;letter-spacing:-0.02em;box-shadow:inset 0 0 0 .5px rgba(169,102,11,.20)}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(16,19,26,.07);min-height:60px;box-sizing:border-box;text-decoration:none;color:inherit}
+.h3{margin:0 0 4px;font-size:17px;font-weight:700;letter-spacing:-0.03em}
+.band{display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:13px;font-weight:600;box-sizing:border-box;letter-spacing:-0.02em}
+.node{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.60));border-radius:12px;padding:9px 13px;font-size:13px;font-weight:600;white-space:nowrap;letter-spacing:-0.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 .5px rgba(16,19,26,.07)}
+.arr{color:#98A1AE;font-size:14px;flex-shrink:0}
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tree{font-size:13px;line-height:1.95;color:#3D4453;letter-spacing:-0.02em}
+.tree b{color:#10131A}
+/* ── spec-board helpers ─────────────────────────────────────── */
+.doc{box-sizing:border-box;background:#EEF1F6;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.hd{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:14px;box-shadow:0 1px 0 rgba(16,19,26,.08)}
+.kick{font-size:13px;font-weight:700;color:#2A5FE8}
+.tb{width:100%;border-collapse:collapse;font-size:12.5px;letter-spacing:-0.02em}
+.tb th{text-align:left;font-weight:700;color:#737D8C;padding:8px 10px;border-bottom:1px solid rgba(16,19,26,.12);white-space:nowrap}
+.tb td{padding:9px 10px;border-bottom:1px solid rgba(16,19,26,.06);color:#3D4453;vertical-align:top;line-height:1.5}
+.tb td strong{color:#10131A}
+.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:11.5px;letter-spacing:0;color:#3D4453}
+a{color:#2A5FE8}a:hover{color:#1E49BE}
+button:focus-visible,a:focus-visible{outline:2px solid #2F6BFF;outline-offset:2px}
+</style>
+<style>body{display:flex;justify-content:center;padding:24px;background:#DDE2EA}</style>
+</head>
+<body>
+
+<div class="doc" style="width: 1240px; height: 900px; padding: 36px 40px; gap: 18px;">
+  <div class="hd">
+    <div>
+      <div class="kick">최종본 · FINALIZE</div>
+      <h1 class="dis" style="margin: 8px 0 0; font-size: 34px;">B안을 제품 명세로 내리는 6단계</h1>
+    </div>
+    <p class="sub" style="max-width: 500px; text-align: right;">새 UI 콘셉트를 더 찾지 않는다. <strong style="color:#10131A">B안(Page 2)의 재질과 레이아웃을 고정</strong>하고, 규격 → 예외 흐름 → 시스템 상태 → 접근성 → 토큰 → 핸드오프 순으로 내려간다.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px;">
+    <div class="card" style="border-radius: 18px;">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="m2" style="color:#2A5FE8">1</span><span style="font-size:15px;font-weight:700">UI Finalize</span></div>
+      <p class="sub" style="margin-top:7px">색·토큰 / Glass 수치 / CTA 6종 / 타이포·숫자 체계 / 아이콘 / 브랜드 강도</p>
+      <div class="mono" style="margin-top:8px">F-01 … F-06 · 6장</div>
+    </div>
+    <div class="card" style="border-radius: 18px;">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="m2" style="color:#2A5FE8">2</span><span style="font-size:15px;font-weight:700">UX Completion</span></div>
+      <p class="sub" style="margin-top:7px">경로 없음 / 재탐색 실패 / GPS 부정확 / 오프라인 / AR 트래킹 실패 / 경로 이탈</p>
+      <div class="mono" style="margin-top:8px">U-1 … U-6 · 신규 화면 6장</div>
+    </div>
+    <div class="card" style="border-radius: 18px;">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="m2" style="color:#2A5FE8">3</span><span style="font-size:15px;font-weight:700">Product / System</span></div>
+      <p class="sub" style="margin-top:7px">Screen State Matrix · Routing Constraint Model · Data Trust Model(2축)</p>
+      <div class="mono" style="margin-top:8px">S-1 … S-3 · 3장</div>
+    </div>
+    <div class="card" style="border-radius: 18px;">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="m2" style="color:#2A5FE8">4</span><span style="font-size:15px;font-weight:700">Interaction</span></div>
+      <p class="sub" style="margin-top:7px">Motion 타이밍 · 재탐색 4단계 시퀀스 · Haptic vocabulary · Voice event 규칙</p>
+      <div class="mono" style="margin-top:8px">I-1 · 1장</div>
+    </div>
+    <div class="card" style="border-radius: 18px;">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="m2" style="color:#2A5FE8">5</span><span style="font-size:15px;font-weight:700">Accessibility</span></div>
+      <p class="sub" style="margin-top:7px">글자 200% · TalkBack 순서 · 고대비 폴백 · 직사광선 · 한 손 조작 검증 계획</p>
+      <div class="mono" style="margin-top:8px">A-1 · 1장</div>
+    </div>
+    <div class="card" style="border-radius: 18px;">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="m2" style="color:#2A5FE8">6</span><span style="font-size:15px;font-weight:700">System / Handoff</span></div>
+      <p class="sub" style="margin-top:7px">Design Token(Figma Variable = Code Token) · Component Variant 표</p>
+      <div class="mono" style="margin-top:8px">D-1 · 1장</div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-grow: 1; min-height: 0;">
+    <div class="card" style="flex-grow: 1; border-radius: 20px;">
+      <div class="h3">이번 최종본에서 실제로 바뀐 것</div>
+      <table class="tb" style="margin-top: 10px;">
+        <tr><th style="width:120px">영역</th><th style="width:150px">Page 2 상태</th><th>최종본에서 고정한 내용</th></tr>
+        <tr><td><strong>CTA</strong></td><td>Primary 1종만 명확</td><td>Primary / Secondary / Tertiary / Destructive / Disabled / Loading 6종을 클래스로 분리하고 화면별 사용처를 지정</td></tr>
+        <tr><td><strong>Glass</strong></td><td>컴포넌트마다 감으로 조정</td><td>L1·L2·L3의 blur·opacity·border·radius·highlight·shadow를 수치로 고정</td></tr>
+        <tr><td><strong>숫자</strong></td><td>본문 타이포와 혼재</td><td>Primary Metric / Secondary Metric / Delta / Uncertainty 4단계로 분리</td></tr>
+        <tr><td><strong>브랜드 강도</strong></td><td>전 화면 균일</td><td>High(감성) · Medium(개인) · Low/None(판단) 3단계를 화면별로 지정</td></tr>
+        <tr><td><strong>예외 흐름</strong></td><td>정상 흐름만 존재</td><td>경로 없음 · 재탐색 실패 등 6개 화면 신규. <strong>앱이 Hard Constraint를 임의로 완화하지 않는다</strong>는 원칙 적용</td></tr>
+        <tr><td><strong>데이터 신뢰</strong></td><td>1축(검증/미검증)</td><td>통행 상태 × 근거 수준 2축으로 분리</td></tr>
+      </table>
+    </div>
+    <div class="card" style="width: 330px; flex-shrink: 0; border-radius: 20px; background: linear-gradient(180deg,rgba(255,244,224,.85),rgba(255,244,224,.6));">
+      <div class="h3" style="color: #A9660B;">이 페이지가 다루지 않는 것</div>
+      <p class="sub" style="margin-top: 8px; color: #A9660B;">· <strong>실제 접근성 검증 결과</strong> — A-1은 검증 <em>계획</em>과 폴백 설계다. 200% 글자·TalkBack·직사광선은 기기에서 직접 돌려야 나온다.<br><br>· <strong>Figma 파일</strong> — D-1은 변수 이름 규격이다. Figma Variable 생성은 별도 작업.<br><br>· <strong>코드 반영</strong> — <span class="mono">tokens.css</span>, <span class="mono">Color.kt</span>, <span class="mono">Dimens.kt</span>는 아직 손대지 않았다. 최종본 승인 후 진행.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,120 +1,292 @@
-/* Hallmark · genre: atmospheric utility · macrostructure: mobile workbench · design-system: design.md · designed-as-app
- * pre-emit critique: P5 H5 E4 S5 R4 V5
+/* NaVi — 최종 디자인 토큰 (canonical)
+ *
+ * 이름은 docs/design_tokens.md 의 Figma Variable 이름과 1:1로 대응하고,
+ * Android 쪽 ui/theme/Color.kt · Dimens.kt · Type.kt 와 같은 값을 갖는다.
+ *
+ * 규칙
+ *  - 화면에서 새 색을 만들지 않는다. 필요하면 여기에 토큰을 먼저 추가한다.
+ *  - 누를 수 있는 요소의 색은 brand 계열 하나뿐이다.
+ *  - semantic 계열은 상태 표기 전용이며 버튼이 되지 않는다.
+ *  - 상태는 색 + 아이콘 + 글자를 항상 함께 쓴다.
  */
 :root {
   color-scheme: light;
 
-  --color-paper: oklch(98% 0.012 92);
-  --color-paper-2: oklch(95.5% 0.019 92);
-  --color-paper-3: oklch(92% 0.028 88);
-  --color-surface: oklch(99.5% 0.006 90);
-  --color-surface-glass: oklch(99.5% 0.006 90 / 0.9);
-  --color-ink: oklch(23% 0.09 266);
-  --color-ink-2: oklch(40% 0.065 263);
-  --color-muted: oklch(46% 0.04 260);
-  --color-rule: oklch(83% 0.04 258);
-  --color-rule-strong: oklch(68% 0.075 258);
-  --color-lead: oklch(29% 0.07 266);
-  --color-accent: oklch(55% 0.225 258);
-  --color-accent-deep: oklch(49% 0.235 263);
-  --color-accent-soft: oklch(92% 0.05 257);
-  --color-violet: oklch(55% 0.225 297);
-  --color-violet-soft: oklch(92% 0.055 297);
-  --color-cyan: oklch(77% 0.15 221);
-  --color-cyan-soft: oklch(94% 0.045 221);
-  --color-success: oklch(49% 0.135 169);
-  --color-success-soft: oklch(94% 0.045 169);
-  --color-warning: oklch(51% 0.15 68);
-  --color-warning-soft: oklch(95% 0.05 77);
-  --color-danger: oklch(52% 0.22 25);
-  --color-danger-soft: oklch(95% 0.045 25);
-  --color-unknown: oklch(57% 0.035 257);
-  --color-focus: oklch(57% 0.235 255);
-  --color-on-accent: oklch(99% 0.004 90);
-  --color-accent-ink: var(--color-on-accent);
-  --color-night: oklch(18% 0.07 266 / 0.9);
-  --color-shadow: oklch(24% 0.08 266 / 0.18);
-  --color-shadow-soft: oklch(24% 0.08 266 / 0.1);
+  /* ── brand ─────────────────────────────────────────────────────────── */
+  --color-brand-primary: #2A5FE8;
+  --color-brand-primary-pressed: #1E49BE;
+  --color-brand-primary-soft: #E9EFFD;
+  --color-brand-violet: #5A3FD6;
+  --color-brand-violet-deep: #432BA8;
+  --color-brand-violet-soft: #EDE9FB;
+  --color-brand-indigo: #4A47E0;
+  --color-brand-cyan: #3FC8E4;
+  /* Primary CTA 전용 브랜드 글래스 */
+  --brand-gradient: linear-gradient(140deg, #2A5FE8, #5A3FD6);
 
-  --font-display: "MaruBuri", "Noto Serif KR", Georgia, serif;
-  --font-body: Pretendard, SUIT, "Apple SD Gothic Neo", system-ui, sans-serif;
-  --font-data: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  /* ── semantic · 상태 표기 전용 ──────────────────────────────────────── */
+  --semantic-pass: #0E8F72;
+  --semantic-pass-soft: #E2F3EE;
+  --semantic-warning: #A9660B;
+  --semantic-warning-soft: #FAEEDC;
+  --semantic-danger: #C4283C;
+  --semantic-danger-soft: #FAE7E9;
+  --semantic-unknown: #6B7480;
+  --semantic-unknown-soft: #EDEFF3;
 
-  --text-2xs: 0.75rem;
-  --text-xs: 0.8125rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.18rem;
-  --text-xl: 1.48rem;
-  --text-2xl: 2rem;
-  --text-display-s: clamp(2rem, 8vw, 3.4rem);
-  --text-display: clamp(2.55rem, 12vw, 4.8rem);
+  /* ── text · 4단계 ──────────────────────────────────────────────────── */
+  --text-strong: #10131A;   /* 흰 바탕 대비 17.9:1 */
+  --text-body: #3D4453;     /* 10.2:1 */
+  --text-muted: #737D8C;    /*  4.6:1 · 13px 이상에서만 */
+  --text-disabled: #A8AFBC; /*  2.6:1 · 정보 전달에 쓰지 않음 */
+  --text-on-brand: #FFFFFF;
 
-  --space-3xs: 0.25rem;
-  --space-2xs: 0.5rem;
-  --space-xs: 0.75rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2rem;
-  --space-xl: 3rem;
-  --space-2xl: 4.5rem;
-  --space-3xl: 7rem;
+  /* ── surface & line ────────────────────────────────────────────────── */
+  --surface-base: #F4F6FA;
+  --surface-solid: #FFFFFF;
+  --surface-raised: #EDF0F6;
+  --surface-map: #E9EDF2;
+  --line-hairline: rgba(16, 19, 26, 0.08);
+  --line-strong: rgba(16, 19, 26, 0.14);
 
-  --radius-xs: 0.35rem;
-  --radius-sm: 0.65rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-sheet: 1.75rem;
+  /* ── glass · 수치 고정 (docs/design_tokens.md "Glass") ───────────────── */
+  --glass-soft-blur: 16px;
+  --glass-soft: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.52));
+  --glass-soft-fallback: rgba(255, 255, 255, 0.92);
+  --glass-interactive-blur: 20px;
+  --glass-interactive: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.64));
+  --glass-interactive-fallback: rgba(255, 255, 255, 0.96);
+  --glass-focus-blur: 22px;
+  --glass-focus: linear-gradient(180deg, rgba(255,255,255,.92), rgba(236,241,255,.74));
+  --glass-focus-fallback: #ECF1FF;
+  --glass-saturate: 180%;
+  --glass-edge: 0 0 0 .5px rgba(16, 19, 26, 0.06);
+  --glass-edge-focus: 0 0 0 .5px rgba(47, 107, 255, 0.32);
+  --glass-specular: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --glass-edge-darkening: inset 0 -1px 0 rgba(16, 19, 26, 0.05);
+  /* 가장자리 색 분산 — 브랜드 요소에만 */
+  --glass-chromatic: linear-gradient(145deg, rgba(47,107,255,.38), rgba(123,75,232,.20) 38%, rgba(255,255,255,0) 66%);
+
+  /* ── radius ────────────────────────────────────────────────────────── */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-control: 16px;
+  --radius-action: 18px;
+  --radius-card: 20px;
+  --radius-lg: 20px;
+  --radius-sheet: 26px;
   --radius-pill: 999px;
 
+  /* ── space · 8pt 기본, 4pt 보조 ────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --screen-padding: 20px;
+  --touch-target: 48px;
+  --list-item-height: 60px;
+  --action-height: 56px;
+  --action-height-compact: 48px;
+
+  /* ── type ──────────────────────────────────────────────────────────── */
+  --font-ui: Pretendard, "Pretendard Variable", -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --text-display-size: 26px;
+  --text-display-weight: 700;
+  --text-display-tracking: -0.035em;
+  --text-display-leading: 1.42;
+  --text-title-size: 18px;
+  --text-body-size: 15px;
+  --text-body-leading: 1.6;
+  --text-caption-size: 13px;
+
+  /* 숫자 체계 — 일반 텍스트와 분리된 4단계 */
+  --metric-primary-size: 40px;
+  --metric-primary-tracking: -0.045em;
+  --metric-secondary-size: 18px;
+  --metric-delta-size: 14px;
+  --metric-uncertainty-size: 12px;
+
+  /* ── motion · Fluid Optical Motion ─────────────────────────────────── */
+  --motion-press: 140ms;
+  --motion-chip: 180ms;
+  --motion-screen: 220ms;
+  --motion-sheet: 280ms;
+  --motion-route: 380ms;
+  --motion-reduced: 120ms;
+  --motion-ease: cubic-bezier(.2, .8, .3, 1);
+  --press-scale: 0.985;
+
+  /* ── elevation — 최소한만 ──────────────────────────────────────────── */
+  --shadow-card: 0 6px 18px rgba(18, 24, 48, 0.06);
+  --shadow-float: 0 8px 24px rgba(18, 24, 48, 0.14);
+  --shadow-sheet: 0 -14px 40px rgba(18, 24, 48, 0.14);
+  --shadow-brand: 0 10px 26px rgba(42, 95, 232, 0.30);
+
+  /* ══════════════════════════════════════════════════════════════════════
+   * 호환 별칭 — 기존 화면(styles.css · mobile.css · app.js)이 참조하는 이름.
+   * 새 코드는 위의 정식 토큰을 직접 쓴다. 이 블록은 점진적으로 제거한다.
+   * ═══════════════════════════════════════════════════════════════════ */
+  --color-paper: var(--surface-base);
+  --color-paper-2: var(--surface-raised);
+  --color-paper-3: #E3E7EF;
+  --color-surface: var(--surface-solid);
+  --color-surface-glass: rgba(255, 255, 255, 0.82);
+  --color-ink: var(--text-strong);
+  --color-ink-2: var(--text-body);
+  --color-muted: var(--text-muted);
+  --color-lead: var(--text-strong);
+  --color-rule: var(--line-hairline);
+  --color-rule-strong: var(--line-strong);
+  --color-accent: var(--color-brand-primary);
+  --color-accent-deep: var(--color-brand-primary-pressed);
+  --color-accent-soft: var(--color-brand-primary-soft);
+  --color-accent-ink: var(--text-on-brand);
+  --color-on-accent: var(--text-on-brand);
+  --color-violet: var(--color-brand-violet);
+  --color-violet-soft: var(--color-brand-violet-soft);
+  --color-cyan: var(--color-brand-cyan);
+  --color-cyan-soft: #E3F7FC;
+  --color-success: var(--semantic-pass);
+  --color-success-soft: var(--semantic-pass-soft);
+  --color-warning: var(--semantic-warning);
+  --color-warning-soft: var(--semantic-warning-soft);
+  --color-danger: var(--semantic-danger);
+  --color-danger-soft: var(--semantic-danger-soft);
+  --color-unknown: var(--semantic-unknown);
+  --color-focus: var(--color-brand-primary);
+  --color-night: #0E1117;
+  --color-shadow: rgba(18, 24, 48, 0.14);
+  --color-shadow-soft: rgba(18, 24, 48, 0.06);
+
+  --bg-base: var(--surface-base);
+  --bg-raised: var(--surface-solid);
+  --bg-inset: var(--surface-raised);
+  --fg-primary: var(--text-strong);
+  --fg-secondary: var(--text-muted);
+  --border-default: var(--line-strong);
+  --border-subtle: var(--line-hairline);
+  --brand-blue: var(--color-brand-primary);
+  --brand-blue-dark: var(--color-brand-primary-pressed);
+  --brand-blue-soft: var(--color-brand-primary-soft);
+  --brand-violet: var(--color-brand-violet);
+  --route-standard: var(--semantic-unknown);
+  --status-success: var(--semantic-pass);
+  --status-success-soft: var(--semantic-pass-soft);
+  --status-warning: var(--semantic-warning);
+  --status-warning-soft: var(--semantic-warning-soft);
+  --status-danger: var(--semantic-danger);
+  --status-danger-dark: #9A1E2E;
+  --status-danger-soft: var(--semantic-danger-soft);
+
+  --navi-canvas: var(--surface-base);
+  --navi-surface: var(--surface-solid);
+  --navi-surface-soft: var(--surface-raised);
+  --navi-ink: var(--text-strong);
+  --navi-ink-soft: var(--text-body);
+  --navi-ink-muted: var(--text-muted);
+  --navi-line: var(--line-hairline);
+  --navi-line-strong: var(--line-strong);
+  --navi-blue: var(--color-brand-primary);
+  --navi-blue-deep: var(--color-brand-primary-pressed);
+  --navi-blue-light: var(--color-brand-primary-soft);
+  --navi-violet: var(--color-brand-violet);
+  --navi-violet-light: var(--color-brand-violet-soft);
+  --navi-pass: var(--semantic-pass);
+  --navi-pass-soft: var(--semantic-pass-soft);
+  --navi-warning: var(--semantic-warning);
+  --navi-warning-soft: var(--semantic-warning-soft);
+  --navi-block: var(--semantic-danger);
+  --navi-block-soft: var(--semantic-danger-soft);
+  --navi-unknown: var(--semantic-unknown);
+  --navi-glass-light: var(--glass-interactive);
+  --navi-glass-dark: rgba(14, 17, 23, 0.72);
+  --navi-font-ui: var(--font-ui);
+  --navi-font-data: var(--font-ui);
+  --navi-radius-control: var(--radius-control);
+  --navi-radius-sheet: var(--radius-sheet);
+  --navi-radius-shell: var(--radius-card);
+  --navi-shadow-float: var(--shadow-float);
+  --navi-shadow-sheet: var(--shadow-sheet);
+  --navi-space-1: var(--space-1);
+  --navi-space-2: var(--space-2);
+  --navi-space-3: var(--space-3);
+  --navi-space-4: var(--space-4);
+  --navi-space-5: var(--space-5);
+  --navi-space-6: var(--space-6);
+  --navi-space-8: var(--space-8);
+
+  --font-display: var(--font-ui);
+  --font-body: var(--font-ui);
+  --font-data: var(--font-ui);
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 26px;
+  --text-display: clamp(26px, 8vw, 34px);
+  --text-display-s: clamp(22px, 6vw, 26px);
+
+  --space-3xs: var(--space-1);
+  --space-2xs: var(--space-2);
+  --space-xs: var(--space-3);
+  --space-sm: var(--space-4);
+  --space-md: var(--space-5);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  --radius-md: var(--radius-control);
+  --radius-panel: var(--radius-card);
   --rule-thin: 1px;
   --rule-strong: 2px;
-  --shadow-card: 0 0.75rem 2.5rem var(--color-shadow-soft);
-  --shadow-float: 0 1.25rem 3rem var(--color-shadow);
-  --shadow-sheet: 0 -1.25rem 3rem var(--color-shadow-soft);
+  --shadow-panel: var(--shadow-card);
 
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 140ms;
-  --dur-base: 220ms;
-  --dur-slow: 420ms;
+  --dur-fast: var(--motion-press);
+  --dur-base: var(--motion-screen);
+  --dur-slow: var(--motion-sheet);
+  --ease-out: var(--motion-ease);
+  --ease-in: cubic-bezier(.7, 0, .84, 0);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+}
 
-  /* Compatibility aliases for the review tool and legacy route modules. */
-  --navi-ink: var(--color-ink);
-  --navi-ink-soft: var(--color-ink-2);
-  --navi-ink-muted: var(--color-muted);
-  --navi-canvas: var(--color-paper-2);
-  --navi-surface: var(--color-surface);
-  --navi-surface-soft: var(--color-accent-soft);
-  --navi-line: var(--color-rule);
-  --navi-line-strong: var(--color-rule-strong);
-  --navi-blue: var(--color-accent);
-  --navi-blue-deep: var(--color-accent-deep);
-  --navi-blue-light: var(--color-cyan);
-  --navi-violet: var(--color-violet);
-  --navi-violet-light: var(--color-violet-soft);
-  --navi-pass: var(--color-success);
-  --navi-pass-soft: var(--color-success-soft);
-  --navi-warning: var(--color-warning);
-  --navi-warning-soft: var(--color-warning-soft);
-  --navi-block: var(--color-danger);
-  --navi-block-soft: var(--color-danger-soft);
-  --navi-unknown: var(--color-unknown);
-  --navi-glass-dark: var(--color-night);
-  --navi-glass-light: var(--color-surface-glass);
-  --navi-shadow-sheet: var(--shadow-sheet);
-  --navi-shadow-float: var(--shadow-float);
-  --navi-radius-shell: var(--radius-sheet);
-  --navi-radius-sheet: var(--radius-sheet);
-  --navi-radius-control: var(--radius-md);
-  --navi-space-1: var(--space-3xs);
-  --navi-space-2: var(--space-2xs);
-  --navi-space-3: var(--space-xs);
-  --navi-space-4: var(--space-sm);
-  --navi-space-5: 1.25rem;
-  --navi-space-6: var(--space-md);
-  --navi-space-8: var(--space-lg);
-  --navi-font-ui: var(--font-body);
-  --navi-font-data: var(--font-data);
+/* 흐림과 투명도가 사라져도 구조와 위계는 그대로 유지되어야 한다.
+ * 직사광선·고대비·저전력·backdrop-filter 미지원에서 불투명 대체값으로 내려간다. */
+@media (prefers-contrast: more) {
+  :root {
+    --glass-soft: var(--glass-soft-fallback);
+    --glass-interactive: var(--glass-interactive-fallback);
+    --glass-focus: var(--glass-focus-fallback);
+    --glass-soft-blur: 0px;
+    --glass-interactive-blur: 0px;
+    --glass-focus-blur: 0px;
+    --line-hairline: rgba(16, 19, 26, 0.24);
+    --line-strong: rgba(16, 19, 26, 0.40);
+    --text-muted: #5A6473;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --glass-soft: var(--glass-soft-fallback);
+    --glass-interactive: var(--glass-interactive-fallback);
+    --glass-focus: var(--glass-focus-fallback);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-press: var(--motion-reduced);
+    --motion-chip: var(--motion-reduced);
+    --motion-screen: var(--motion-reduced);
+    --motion-sheet: var(--motion-reduced);
+    --motion-route: var(--motion-reduced);
+    --press-scale: 1;
+  }
 }
