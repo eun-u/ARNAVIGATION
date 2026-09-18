@@ -1,102 +1,85 @@
-# NaVi 프로젝트 중간 체크포인트
+# NaVi 프로젝트 현재 체크포인트
 
-기준일: 2026-09-18
+기준일: 2026-09-18 18:54 KST
 
 기준 브랜치: `master`
-체크포인트 직전 커밋: `0491327` (`프론트 구조 변경`)
 
-이 문서는 M1 AR, M2 AI, 공간자료 평가와 Graph 반영 후보 분석을 함께 진행한 시점의 저장 상태를 정리한다.
+단일 작업 기준: [`project_master_plan.md`](project_master_plan.md)
+
+이 문서는 현재 저장소를 GitHub에 동기화하기 직전의 구현·검증 상태를 요약한다. 날짜가 지난 제안이나 개별 문서와 충돌하면 `project_master_plan.md`의 상태와 `바로 다음 작업`을 우선한다.
 
 ## 한눈에 보는 현재 상태
 
-| 영역 | 상태 | 핵심 결과 | 다음 Gate |
+| 영역 | 상태 | 확인된 결과 | 다음 Gate |
 |---|---|---|---|
-| M0 모듈화 | 완료 | AR·AI·fusion·공통 계약을 독립 Gradle 모듈로 분리 | live 계약 변경 시 호환성 유지 |
-| M1 AR | 기술 스파이크 완료 | ARCore session, pose/depth, route ribbon, fallback, Recording/Playback, telemetry | live CPU image lease와 pose/depth timestamp 정렬 |
-| M2 AI | device-free 범위 완료 | MP4 replay, EfficientDet-Lite0, tracker, 회귀 보고서, 에뮬레이터 자동 실행 | 실제 현장 라벨 세트와 모델 비교 |
-| 공간자료 평가 | 자동평가 완료·검수 대기 | 원본/CRS/coverage 검증, 414개 review queue 생성 | Human Review 승인 |
-| Graph enrichment | 후보 bundle 확장 완료 | 247개 후보/196개 Edge, 시뮬레이션 17개·근거 전용 230개 | 승인 전 기준 Graph 반영 금지 |
-| 서비스 Graph | 유지 | 504 Node, 723 Edge, 평가 전후 SHA-256 동일 | 검증된 observation만 별도 승격 |
+| M0 모듈화 | 완료 | AR·AI·fusion·공통 계약을 독립 Gradle 모듈로 분리 | 계약 변경 시 회귀 테스트 |
+| M1 AR | 진행 중 | ARCore pose/depth, 3D route ribbon, 2D fallback, Recording/Playback, telemetry, 20분 soak 완료 | M1-VIS 정적 A/B 후 전북대 25m 현장 정합 3회 |
+| E2E-WC | 합성 폐루프 완료·현장 보류 | 경로 A → 세션 차단 → 경로 B → 저정확도 거부 → 3회·2초 자동 도착 통과 | A·B 사람 사전 점검 뒤 현장 1회 |
+| M1-VIS | 다음 작업 | 기하 리본 A와 sidewalk-mask 보정 shadow B의 병렬 비교 계획 확정 | 정적 frame harness와 fallback fixture 구현 |
+| M2 AI device-free | 별도 작업선 | importer·tracker·평가기 계약과 에뮬레이터 실행 경로 존재 | 실제 라벨 데이터와 모델 비교 |
+| 공간자료·Graph 후보 | 자동화 완료·사람 검수 대기 | 후보 247개/196개 Edge, 요청 한정 시뮬레이션 17개 | Human Review 전 Graph 승격 금지 |
+| 서비스 Graph | 유지 | 기준 Graph 504 Node/723 Edge, 평가 전후 SHA-256 동일 | 검증된 observation만 별도 승격 |
 
-## M1 AR 기술 스파이크
+## 현재 아키텍처와 안전 경계
 
-- `:feature:ar-navigation`이 ARCore session lifecycle을 소유한다.
-- Tracking quality, 자동 Depth, route ribbon 정렬과 2D HUD fallback을 구현했다.
-- ARCore Recording/Playback과 telemetry CSV 기록 경로를 구현했다.
-- Galaxy SM-S911N 기준으로 Tracking·Depth·route ribbon·fallback·Recording/Playback을 확인했다.
-- 20분 연속 세션에서 crash와 camera deadlock 없이 종료했고 최대 thermal status는 2(Moderate)였다.
+- `:feature:ar-navigation`이 AR 모드 카메라를 소유하고 timestamp가 있는 frame/pose/depth를 공급한다.
+- `:feature:ai-perception`은 탐지·분할·추적 결과만 만들고 AR 렌더링이나 Graph를 변경하지 않는다.
+- `:feature:guidance-fusion`은 같은 frame의 공간 정보와 AI 결과를 결합하되 Edge를 확정하거나 공용 Graph를 수정하지 않는다.
+- 통과 가능성은 결정론적 Rule/Cost Engine, 경로는 RouteEngine이 계산한다. LLM은 검증된 후보의 설명·비교만 담당한다.
+- 자동 관측은 항상 `pending`, `verified=false`, session-local 또는 shadow 상태로 시작한다.
+- 안양 데이터는 데모·공간자료 분석용이다. 현재 AR 위치 검증 장소는 전북대학교 전주캠퍼스 내부의 짧은 로컬 OSM 경로다.
 
-아직 남은 경계는 ARCore CPU image를 복사 수명 계약이 있는 `PerceptionFrameLease`로 넘기고, 동일 timestamp의 pose/depth와 AI 결과를 결합하는 것이다. 상세 내용은 [M1 실행 기록](m1_ar_spike.md)을 기준으로 한다.
+## M1 AR 현재 결과
 
-## M2 AI device-free harness
+- Samsung SM-S911N, Android 16에서 ARCore session, tracking, `DepthMode.AUTOMATIC`, 3D route ribbon, 2D fallback을 확인했다.
+- 20분 연속 실행에서 crash와 camera deadlock 없이 종료했고 최대 thermal status는 2(Moderate)였다.
+- Recording/Playback 5회와 telemetry 기록, 추적 손실 사유 및 성능 관측 항목을 구현했다.
+- ARCore 또는 후면 카메라가 없는 환경에서는 설치 화면을 자동 실행하지 않고 CameraX/정적 2D 안내로 안전하게 강등한다.
+- 실제 보도 위 리본 정합과 접근성 정확도는 전북대 내부 25m 경로의 현장 3회 전까지 미검증이다.
 
-- M1 MP4와 telemetry CSV를 versioned manifest로 변환한다.
-- 입력 SHA-256, 실제 MP4 duration, telemetry 형식, 최근접 sample offset과 추정 동기화 오차를 검증한다.
-- MediaPipe Tasks Vision 1.0.0과 EfficientDet-Lite0 int8 CPU/IMAGE baseline을 사용한다.
-- detector 단독 또는 deterministic temporal IoU tracker를 선택할 수 있다.
-- 전체/label/context/객체 크기별 precision·recall·F1, latency, 실패 frame, track ID switch를 기록한다.
-- JSON, 집계 CSV, frame CSV, 반복 실행 결정성/model diff 결과를 생성한다.
-- 실패 frame만 별도 manifest로 재실행한다.
-- segmentation은 unsigned 8-bit mask 계약과 IoU·Dice·pixel recall evaluator/golden fixture까지 준비했다.
-- 물리 단말 serial은 실행 스크립트가 거부하며 실제 모델 실행은 Android 에뮬레이터에서 수행한다.
+## E2E-WC 합성 Android 폐루프
 
-주 진입점은 `scripts/run_m2_device_free.ps1`이며 상세 계약은 [M2 실행 문서](m2_device_free_harness.md)에 있다. 에뮬레이터 latency는 기능 회귀용이며 production 성능 기준이 아니다.
+- 완료 세션: `9393bae7-34bb-4058-9022-efcd0b70a735`
+- 경로 A `130.7m`에서 Edge `LOCAL_OSM_0c2997b56763`만 session-local로 차단해 경로 B `153.5m`로 전환했다.
+- 우회 증가량은 `22.8m / 17.44%`이며 경로 B geometry는 차단 Edge를 포함하지 않는다.
+- 목적지 정확도 `30m` 위치는 거부했고, 정확도 `5m`인 서로 다른 위치 3개를 2초 넘게 주입했을 때만 자동 도착했다.
+- 원본 Edge는 `blocked=false`, `verified=false`, Graph revision은 전후 모두 `0`이다.
+- 관측 후보 `MOB_3C690B2E8C7D`는 `pending`, `verified=false`로만 저장됐다.
+- 로컬 증거는 Git 제외 경로 `data/runtime/local-field-tests/jbnu-jeonju-e2e-wheelchair/evidence/20260918-1822/`에 있으며 `field_verified=false`다.
 
-## 공간자료와 Graph 후보
+이 결과는 선분 선택·세션 재탐색·도착 gate의 소프트웨어 흐름을 검증한 것이다. 실제 GPS/AR 정합, 휠체어 통행 가능성 또는 현장 안전을 증명하지 않는다.
 
-자동평가는 기준 Graph를 변경하지 않았다.
+## 현재 UI와 지도 상태
 
-- 공통 검증: 184 checks 중 pass 176, warning 7, hold 1, fail 0
-- 기준 Graph: 504 Node, 723 Edge, SHA-256 `b6c746a47c80d516bc506473335e0177eade52d82b8b635d1cb0f8ce2d9cac78`
-- 평가 전후 Graph SHA-256 동일
-- 수치지형도 회랑 객체 1,351개: unique 390, ambiguous 450, unmatched 511
-- DEM: Graph coverage 100%, 해상도 90m이므로 Edge hard constraint에는 사용 금지
-- 정사영상: 약 25cm/pixel이나 독립 기준점 RMSE가 없어 geometry 자동 수정 보류
-- 공공 횡단보도 context 후보 402개, HD map 20m 이내 대응 12개
-- Human Review queue 414개, 전부 `pending`, `verified=false`, `graph_update_allowed=false`
+- Android 최종 디자인 화면과 경로·재탐색·도착 흐름을 연결했다.
+- 일부 화면에는 안양 데모용 고정 문구와 수치가 남아 있다. backend session 연결 전에는 이를 전북대 실증 결과로 해석하지 않는다.
+- Android 지도는 현재 MapLibre/OSM을 사용한다.
+- Kakao JavaScript/REST 키는 로컬 `.env`에만 있으며 Git에 포함하지 않는다. 이 키들은 Android 네이티브 지도 키가 아니다.
 
-Graph enrichment bundle은 247개 후보를 196개 Edge에 연결했다. 이 중 5개는 `stairs=true`를 제안하는 승인 가능 후보, 12개는 90m DEM 경사를 적용해 민감도만 보는 승인 불가 진단 후보, 나머지 230개는 geometry/evidence 전용이다. 시뮬레이션 17건은 요청 한정 overlay에서만 계산하며 기준 Graph와 SQLite를 바꾸지 않는다. 모든 247개 후보에는 정사영상 도엽·pixel 참조가 연결되지만 독립 기준점 RMSE 전에는 geometry 보정이나 Graph 반영에 사용할 수 없다.
+## GitHub 동기화 전 회귀 검증
 
-재배포 제한이 있는 NGII 원자료와 그 geometry 파생 산출물은 로컬 전용이다. `data/processed/evaluation/`은 Git에서 제외하고, 저장소에는 재현 스크립트와 집계 보고서만 보관한다.
+2026-09-18 18:54 KST 기준 결과:
 
-## 안전 및 데이터 승격 원칙
+- Python/backend: `60 tests`, 전부 통과
+- `:core:guidance-contract`: `13 tests`, failure 0
+- `:feature:ar-navigation`: `17 tests`, failure 0
+- `:feature:ai-perception`: `28 tests`, failure 0
+- `:app`: `20 tests`, failure 0
+- `:app:assembleDebug`, `:app:assembleDebugAndroidTest` 성공
+- `:app:lintDebug`, `:feature:ar-navigation:lintDebug` 성공
 
-1. 원본 공간자료와 기준 Graph는 자동평가가 수정하지 않는다.
-2. AI·공간매핑 결과는 후보일 뿐이며 기본값은 `pending`, `verified=false`다.
-3. AI confidence는 접근 가능 확률이나 검증 완료를 뜻하지 않는다.
-4. 세션 임시 차단은 공용 Graph 상태와 분리한다.
-5. Human Review에서 승인된 observation만 provenance와 함께 Graph 갱신 절차로 전달한다.
-6. 카카오 로드뷰 등 저장·학습·재배포 권리가 확인되지 않은 이미지는 평가 데이터로 커밋하지 않는다.
-7. 모델 파일, 촬영 원본, M2 실행 결과와 제한 자료의 파생 geometry는 Git에서 제외한다.
+경고는 기존 라이브러리 deprecation과 테스트용 raster georeference 경고이며 실패는 없다.
 
-## 체크포인트 검증 기준
+## Git 제외 원칙
 
-커밋 직전 다음 명령을 다시 실행한다.
+- 실제 API 키가 든 `.env`
+- 촬영 원본 MP4·CSV와 ARCore dataset
+- 모델 파일과 M2 실행 결과
+- SQLite와 `data/runtime/` 현장·에뮬레이터 증거
+- 재배포 제한이 있는 NGII 원자료 및 제한 geometry 파생물
 
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
+## 바로 다음 작업
 
-cd android
-$env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
-.\gradlew.bat :app:testDebugUnitTest :feature:ai-perception:testDebugUnitTest
-.\gradlew.bat :app:assembleDebug :app:assembleDebugAndroidTest
-.\gradlew.bat :feature:ai-perception:lintDebug
-```
+`M1-VIS-1`: 같은 정적 거리 frame에 현재 기하 리본 A와 외부 sidewalk mask 기반 shadow 리본 B를 투영하는 비교 harness를 만든다. timestamp 불일치, stale mask, 저신뢰 mask는 모두 A fallback으로 귀결되도록 golden fixture로 검증한다. B는 안내·재탐색·Graph를 변경하지 않는다.
 
-실기기 M1 결과와 device-free M2 E2E 결과는 각각 [M1 실행 기록](m1_ar_spike.md), [M2 실행 문서](m2_device_free_harness.md)에 기록한다.
-
-이번 체크포인트의 현재 작업트리 재검증 결과는 다음과 같다.
-
-- Python: 56 tests passed
-- Android app JVM unit: 11 tests passed, failure 0
-- AR navigation JVM unit: 9 tests passed, failure 0
-- Android app·AR navigation lint 성공
-- Android app debug·benchmark APK와 androidTest APK assemble 성공
-
-## 다음 우선순위
-
-1. 414개 공간 review queue와 승인 가능 계단 후보 5개를 사람이 검수한다.
-2. 실제 촬영 MP4를 비식별화하고 최소 현장 annotation 세트를 만든다.
-3. detector/segmenter 후보를 동일 manifest에서 비교해 초기 회귀 기준을 고정한다.
-4. ARCore camera image·pose·depth를 동일 frame 계약으로 연결해 M3 spatial fusion을 시작한다.
-5. 실제 단말에서 end-to-end latency, 발열, battery, false reroute와 missed hazard를 측정한다.
+세부 계획은 [`ar_ai_parallel_alignment_spike.md`](ar_ai_parallel_alignment_spike.md), 전북대 현장 절차는 [`m1_local_field_route_jbnu.md`](m1_local_field_route_jbnu.md), 재탐색 폐루프는 [`e2e_wc_jbnu_route.md`](e2e_wc_jbnu_route.md)를 따른다.

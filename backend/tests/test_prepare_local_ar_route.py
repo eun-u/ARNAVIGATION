@@ -3,10 +3,15 @@ from __future__ import annotations
 import json
 
 import networkx as nx
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
-from scripts.prepare_local_ar_route import build_graph_payload, select_route_segment
+from scripts.prepare_local_ar_route import (
+    build_graph_payload,
+    require_expected_osm_way,
+    select_route_segment,
+)
 
 
 def _synthetic_walk_graph() -> nx.MultiDiGraph:
@@ -38,6 +43,10 @@ def test_selects_non_crossing_25m_walking_segment() -> None:
 
     assert segment["osm_way_ids"] == ["12345"]
     assert 24.9 <= segment["length_m"] <= 25.1
+    assert segment["source_edge_length_m"] > segment["length_m"]
+    assert segment["start_offset_m"] > 0
+    assert segment["end_offset_m"] > 0
+    assert segment["straightness_ratio"] == 1.0
     assert len(segment["coordinates"]) >= 2
 
 
@@ -66,6 +75,20 @@ def test_local_graph_keeps_accessibility_unknown_and_unverified() -> None:
     assert edge["properties"]["accessibility_status"] == "unknown"
     assert edge["properties"]["field_test_only"] is True
     assert edge["properties"]["shared_graph_mutation_allowed"] is False
+
+
+def test_expected_osm_way_guard_rejects_silent_route_change() -> None:
+    segment = select_route_segment(
+        _synthetic_walk_graph(),
+        center_lat=35.8422,
+        center_lon=127.13145,
+        target_length_m=25.0,
+        max_center_distance_m=100.0,
+    )
+
+    require_expected_osm_way(segment, "12345")
+    with pytest.raises(RuntimeError, match="expected 99999"):
+        require_expected_osm_way(segment, "99999")
 
 
 def test_field_graph_does_not_seed_unrelated_default_candidates(tmp_path) -> None:

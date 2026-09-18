@@ -26,7 +26,7 @@
 | 앱 콜드 스타트 | 통과 |
 | AR camera 화면 진입 | 통과 |
 | tracking loss 후 회복 | 통과 (`EXCESSIVE_MOTION` → `TRACKING`) |
-| 전북대 정문 로컬 25m 경로 | 앱·backend 연결 통과, 현장 정합 3회 대기 |
+| 전북대 내부 로컬 25m 경로 | 106 학생군사교육단 남측 구간·backend 계약 통과, SM-S911N 화면·현장 정합 3회 대기 |
 | 20분 연속 세션 | 통과, crash·process death·안전 중단 없음 |
 | Recording | 통과, MP4와 telemetry CSV 생성 확인 |
 | Playback | 통과, 동일 dataset 5회 연속 완료와 live camera 복귀 확인 |
@@ -93,22 +93,25 @@ PSS는 시험 중 감소와 재할당이 반복되어 단조 증가하지 않았
 
 benchmark의 스레드별 6표본에서는 ARCore motion-stereo 계열로 추정되는 `ms_late_stage`가 평균 33.92%로 가장 컸고 앱 main thread는 평균 2.47%였다. 따라서 현재 높은 부하는 앱 UI보다 ARCore Depth 쪽일 가능성이 높다. 이는 스레드 이름 기반 추론이며 Depth on/off 인과 비교는 아직 수행하지 않았다. 상세 방법·원시 결과·경고 분석은 [M1 AR 성능 기준선](m1_ar_performance_baseline_20260918.md)에 기록했다.
 
-### 전북대학교 전주캠퍼스 정문 로컬 경로 준비
+### 전북대학교 전주캠퍼스 내부 M1-ALIGN 경로 준비
 
-2026-09-18 사용자가 제시한 공개 랜드마크를 기준으로 25m 로컬 AR 정합 경로를 준비했다. 기존 안양 데모 Graph를 사용하거나 안양 현장 방문을 요구하지 않는다.
+2026-09-18 캠퍼스 전체 보행망 후보를 비교해 106 학생군사교육단 남측 녹지 보행로의 25m를 활성 AR 정합 경로로 확정했다. 기존 안양 데모 Graph와 기존 정문 주변 경로는 사용하지 않는다.
 
 | 항목 | 결과 |
 |---|---|
 | 원본 | OpenStreetMap 로컬 스냅샷, ODbL |
-| 선택 way | `1072205323`, `highway=footway`, `footway=sidewalk` |
-| 시험 길이 / 방위 | `25.0m` / `343.3°` |
+| 선택 way | `471373639`, `highway=footway` |
+| 시험 길이 / 방위 | `25.0m` / `93.09°` |
+| 원 보행선 / 양끝 여유 | `75.031m` / 약 `25m`, `25m` |
 | 접근성 계약 | `unknown`, `verified=false`, `field_test_only=true` |
 | 공용 Graph 변경 | 금지, `shared_graph_mutation_allowed=false` |
 | backend 계약 | 2 nodes, 1 edge, pending 후보 0, 두 경로 모두 25.0m |
-| SM-S911N UI | 홈·경로 비교·안내 진입 통과, 올바른 미검증 고지 확인 |
+| SM-S911N UI | 이전 경로 UI 계약 통과, 새 내부 경로 표시는 기기 미연결로 재확인 대기 |
 | 실제 AR 정합 | 미검증, 현장 3회 측정 대기 |
 
-원본 GraphML, 정확한 좌표, route GeoJSON과 manifest는 `data/runtime/local-field-tests/jbnu-jeonju-main-gate/`에만 저장하고 Git에서 제외한다. 앱에서 카메라 안내까지 진입했을 때 기기가 현장 밖이고 실내 저조도였으므로 `route_aligned=false`, `INSUFFICIENT_LIGHT`가 기록됐다. 이는 정합 실패 판정이 아니라 현장 시험 전의 예상된 안전 폴백이다. 전체 실행 절차와 기록표는 [전북대 정문 M1 로컬 현장 시험](m1_local_field_route_jbnu.md)에 고정했다.
+원본 GraphML, 정확한 좌표, route GeoJSON과 manifest는 `data/runtime/local-field-tests/jbnu-jeonju-campus-poc/`에만 저장하고 Git에서 제외한다. 데스크톱 선별에서 차량 통행선 약 `22.8m`, 계단·횡단 약 `19.6m`, 건물 약 `11.1m`, 캠퍼스 경계 약 `215.9m` 이격을 확인했지만 현장 안전 증거는 아니다. 선정 근거는 [전북대 내부 PoC 경로 선정 기록](m1_jbnu_route_selection.md), 전체 실행 절차와 기록표는 [전북대 내부 M1 로컬 현장 시험](m1_local_field_route_jbnu.md)에 고정했다.
+
+이 25m Graph는 2 nodes/1 edge라 장애 Edge 차단 뒤 우회가 불가능하다. 안내 중 장애물 확인부터 재탐색·도착까지는 같은 현장의 별도 [E2E-WC 전북대 재탐색 경로](e2e_wc_jbnu_route.md)를 사용한다. E2E Graph는 8 nodes/8 edges이고, backend에서 A `130.7m`가 지정 Edge의 session-local 차단 뒤 B `153.5m`로 바뀌는 계약을 확인했다. 실제 접근성은 아직 `unknown`, `verified=false`다.
 
 ## 실기기 실행
 
@@ -174,11 +177,15 @@ adb -s R3CWA0J3XRZ pull `
 
 ## 다음 체크포인트
 
-1. 전북대 정문 25m 구간의 보행 안전을 현장에서 먼저 확인한다.
-2. SM-S911N에서 GPS 횡오차, 리본 횡방향 오차, compass/yaw, fallback을 같은 조건으로 3회 기록한다.
-3. ARCore Depth native 경고는 현장 시험에서 사용자 가시 오류와 함께 관찰한다.
-4. 3회 결과를 이 문서와 `project_master_plan.md`에 반영한 뒤 M1 통과/보정 결정을 내린다.
-5. Geospatial/VPS는 Google Cloud 프로젝트와 API key가 준비된 뒤 별도 capability gate로 연결한다.
+1. 현재 위치 forward segment 기반 2D fallback과 `10m / 정확도 15m / 3회 / 최소 2초` 도착 gate는 구현·단위 검증을 완료했다.
+2. 활성 frontend에 실제 `CameraHud`, 현재 선분 방향과 도착 상태를 연결했고 실제 작업공간 앱 테스트·debug APK 빌드도 통과했다.
+3. 단독 에뮬레이터 완료 세션 `9393bae7-34bb-4058-9022-efcd0b70a735`에서 합성 위치 `A 130.7m → session block → B 153.5m → 저정확도 거부 → 3회·2초 자동 도착`을 검증했다. Graph revision은 `0`, 원본 Edge는 `blocked=false`, 후보는 `pending`, `verified=false`였다.
+4. ARCore/Play Store가 없는 환경의 자동 설치 화면 crash를 수정했다. availability를 먼저 확인하고 후면 카메라 또는 ARCore가 없으면 2D 안내로 강등하며, 재시험에서 fatal exception과 CameraX 재시도 로그가 없었다.
+5. 다음 활성 작업은 [M1-VIS 병렬 정합 스파이크](ar_ai_parallel_alignment_spike.md)의 정적 거리 frame A/B harness다.
+6. 전북대 현장에서는 먼저 25m M1-ALIGN을 같은 조건으로 3회 기록하고, E2E 경로 A·B의 접근성을 사람이 별도 사전 점검한다.
+7. A·B가 모두 통과 가능한 경우에만 AI 없이 수동 E2E 폐루프를 1회 수행한다. 실제 통행을 방해하는 장애물은 설치하지 않는다.
+8. GPS 횡오차, 현재 segment 방향, 리본 전환, tracking/fallback, 도착 gate와 ARCore Depth native 경고를 함께 기록한다.
+9. Geospatial/VPS는 Google Cloud 프로젝트와 API key가 준비된 뒤 별도 capability gate로 연결한다.
 
 ## 참고
 

@@ -2,13 +2,13 @@
 
 ## 검증 범위 구분
 
-현재 기본 경로 Graph는 안양역–안양1동 데모 구역이다. M1 실제 AR 정합 시험에서는 이 Graph를 사용하지 않고, 전북대학교 전주캠퍼스 정문 주변의 25m 로컬 전용 OSM Graph를 명시적으로 선택한다. 앱은 선택한 Graph 범위 밖 현재 위치를 출발지로 적용하지 않고 이 한계를 알린다.
+현재 기본 경로 Graph는 안양역–안양1동 데모 구역이다. M1 실제 AR 정합 시험에서는 이 Graph를 사용하지 않고, 전북대학교 전주캠퍼스 내부 106 학생군사교육단 남측 보행로의 25m 로컬 전용 OSM Graph를 명시적으로 선택한다. 앱은 선택한 Graph 범위 밖 현재 위치를 출발지로 적용하지 않고 이 한계를 알린다.
 
 따라서 검증을 두 부분으로 나눈다.
 
 - 기능 검증: 에뮬레이터 또는 사용자의 생활권에서 카메라/센서/제보 흐름 확인
 - 데모 검증: 안양 synthetic 시나리오로 경로 차이와 후보 영향 확인
-- M1 공간 정합: 전북대 정문 로컬 OSM 25m Graph로 GPS/AR 리본 정합만 확인
+- M1 공간 정합: 전북대 내부 로컬 OSM 25m Graph로 GPS/AR 리본 정합만 확인
 
 로드뷰는 현장 후보를 미리 확인하는 참고 자료로만 사용한다. 로드뷰 이미지에서 추정한 턱·경사·통행 가능 여부를 검증 완료 데이터로 등록하지 않는다.
 
@@ -99,7 +99,7 @@ Invoke-RestMethod http://127.0.0.1:8000/edges/OSM_E_379904073_9581b7b371
 
 ## 사용자 생활권으로 확장할 때
 
-지역 독립형 M1 정합 경로는 `scripts/prepare_local_ar_route.py`로 만든다. 이 스크립트는 계단·횡단·실내·사유지·보행 금지 way를 제외하고 20~30m 구간을 만들지만, OSM 형상만 선택할 뿐 접근성을 검증하지 않는다. 현재 전북대 정문 산출물은 `data/runtime/local-field-tests/jbnu-jeonju-main-gate/`에 있고 Git에서 제외된다.
+지역 독립형 M1 정합 경로는 `scripts/prepare_local_ar_route.py`로 만든다. 이 스크립트는 계단·횡단·실내·사유지·보행 금지 way를 제외하고 20~30m 구간을 만들지만, OSM 형상만 선택할 뿐 접근성을 검증하지 않는다. 현재 전북대 내부 산출물은 `data/runtime/local-field-tests/jbnu-jeonju-campus-poc/`에 있고 Git에서 제외된다. `--expected-osm-way-id 471373639`가 재생성 때 다른 보행로로의 무음 변경을 막는다.
 
 지역 독립형 Graph 빌더는 아래 입력과 경계를 명시적으로 유지한다.
 
@@ -110,15 +110,15 @@ Invoke-RestMethod http://127.0.0.1:8000/edges/OSM_E_379904073_9581b7b371
 
 실제 턱·경사·폭은 현장 측정 또는 사람 검수 전까지 `unknown`으로 유지한다.
 
-## 시나리오 E — 전북대 정문 M1 로컬 AR 정합
+## 시나리오 E — 전북대 내부 M1 로컬 AR 정합
 
-전체 준비값과 기록표는 [전북대 정문 M1 로컬 현장 시험](m1_local_field_route_jbnu.md)을 기준으로 한다.
+전체 준비값과 기록표는 [전북대 내부 M1 로컬 현장 시험](m1_local_field_route_jbnu.md)을 기준으로 한다.
 
-1. 현장에서 먼저 25m 구간을 눈으로 확인한다. 공사, 차량 진출입, 보행 혼잡 또는 미끄럼 위험이 있으면 시험하지 않는다.
+1. 106 학생군사교육단 남측 보행로의 서쪽 시작점에서 동쪽 종료점까지 25m를 눈으로 확인한다. 공사, 차량 진출입, 보행 혼잡 또는 미끄럼 위험이 있으면 시험하지 않는다.
 2. 개발 PC에서 로컬 전용 backend를 실행한다.
 
 ```powershell
-$localRouteDir = (Resolve-Path 'data\runtime\local-field-tests\jbnu-jeonju-main-gate').Path
+$localRouteDir = (Resolve-Path 'data\runtime\local-field-tests\jbnu-jeonju-campus-poc').Path
 $env:NAVI_GRAPH_PATH = Join-Path $localRouteDir 'route.geojson'
 $env:NAVI_DB_PATH = Join-Path $localRouteDir 'navi-field-clean.db'
 $env:NAVI_GRAPH_ENRICHMENT_PATH = ''
@@ -134,7 +134,7 @@ $adbPath = 'C:\Users\User\AppData\Local\Android\Sdk\platform-tools\adb.exe'
 Invoke-RestMethod http://127.0.0.1:8002/health
 ```
 
-4. 앱 홈에서 `전북대학교 전주캠퍼스 정문`, `OSM 로컬 스냅샷`, `접근성 속성 미확인·미검증`, `공용 Graph에는 반영하지 않습니다`를 확인한다.
+4. 앱 홈에서 `전북대학교 106 학생군사교육단 남측 보행로`, `OSM 로컬 스냅샷`, `접근성 속성 미확인·미검증`, `공용 Graph에는 반영하지 않습니다`를 확인한다.
 5. `접근 가능한 길 찾기`에서 일반/접근 가능 경로가 모두 `25m`, 약 `1분`인지 확인한다.
 6. `이 경로로 안내 시작` → `카메라 안내 보기`로 진입한다.
 7. 이동 중에는 휴대폰을 조작하지 않는다. 각 회차 시작·종료와 메모는 안전하게 멈춘 뒤 입력한다.
@@ -146,3 +146,18 @@ Invoke-RestMethod http://127.0.0.1:8002/health
 ```
 
 이 시나리오는 AR 정합만 평가한다. 3회가 성공해도 턱·폭·경사·표면 또는 휠체어 통행 가능성을 검증한 것이 아니며 공용 Graph 승인 근거가 아니다.
+
+## 시나리오 F — E2E-WC 수동 재탐색 폐루프
+
+상세 좌표, Graph 계약과 현장 사전 점검표는 [E2E-WC 전북대 재탐색 경로](e2e_wc_jbnu_route.md)를 기준으로 한다. 경로 준비와 backend 계약에 더해 아래 1~4번의 소프트웨어 검증은 완료됐다. 이는 현장 접근성이나 AR 정합 성공을 뜻하지 않는다.
+
+1. `[완료]` 2D fallback이 사용자의 현재 forward segment 방위를 안내한다.
+2. `[완료]` 지정 Edge 세션 차단 뒤 active route와 2D 방향 계산이 경로 B geometry를 사용한다.
+3. `[완료]` 목적지 `10m`·정확도 `15m`·3회·최소 2초 기반 자동 도착 gate가 동작하며 수동 종료는 도착으로 세지 않는다.
+4. `[완료·합성]` 단독 에뮬레이터에서 A `130.7m` → 지정 Edge 차단 → B `153.5m` → 저정확도 거부 → 3회·2초 자동 도착을 재현했다.
+
+2026-09-18 1차 공유 에뮬레이터 시도는 Graph와 A 로딩까지만 확인해 실패·미완료로 유지한다. 2차 단독 에뮬레이터 완료 세션은 `9393bae7-34bb-4058-9022-efcd0b70a735`이며 증거는 Git 제외 경로 `data/runtime/local-field-tests/jbnu-jeonju-e2e-wheelchair/evidence/20260918-1822/`에 있다. 원본 Graph revision은 `0`, 차단 Edge는 `blocked=false`, 후보는 `pending`, `verified=false`로 유지됐다.
+
+같은 에뮬레이터에서 ARCore/Play Store 미설치 시 자동 설치 화면을 열지 않고 `2D 대체 안내`로 강등되는 것도 재시험했다. 이 결과 역시 카메라·ARCore가 있는 물리 기기의 3D 리본 검증을 대체하지 않는다.
+
+gate 통과 뒤에도 A와 B를 사람이 먼저 점검해 둘 다 휠체어 통과 가능할 때만 수동 폐루프를 1회 수행한다. 실제 통행을 막는 물체는 설치하지 않고 지정 Edge를 통제 시나리오로 제보한다. AI는 이 단계의 경로 결정을 맡지 않는다.

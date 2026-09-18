@@ -3,6 +3,8 @@ package kr.co.navi.mobility.ar.ui
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
@@ -37,6 +39,7 @@ import kr.co.navi.mobility.ar.ArLifecycleState
 import kr.co.navi.mobility.ar.ArRuntimeMode
 import kr.co.navi.mobility.ar.ArRuntimeState
 import kr.co.navi.mobility.guidance.contract.GeoCoordinate
+import kr.co.navi.mobility.guidance.contract.TrackingQuality
 import kotlin.math.max
 
 private val RouteBlue = Color(0xFF2563EB)
@@ -57,8 +60,25 @@ fun CameraHud(
 ) {
     val context = LocalContext.current
     val activity = remember(context) { context.findActivity() }
-    var arState by remember { mutableStateOf(ArRuntimeState()) }
-    val useArCore = cameraGranted && activity != null && arState.mode != ArRuntimeMode.UNAVAILABLE
+    val hasBackCamera = remember(context) { context.hasBackCamera() }
+    var arState by remember(hasBackCamera) {
+        mutableStateOf(
+            if (hasBackCamera) {
+                ArRuntimeState()
+            } else {
+                ArRuntimeState(
+                    mode = ArRuntimeMode.UNAVAILABLE,
+                    trackingQuality = TrackingQuality.UNAVAILABLE,
+                    message = "사용 가능한 후면 카메라가 없어 2D 안내로 전환합니다.",
+                )
+            },
+        )
+    }
+    val useCamera = cameraGranted && hasBackCamera
+    val useArCore = useCamera &&
+        activity != null &&
+        arState.mode != ArRuntimeMode.UNAVAILABLE &&
+        arState.mode != ArRuntimeMode.INSTALL_REQUIRED
 
     LaunchedEffect(arState) { onArStateChanged(arState) }
 
@@ -75,10 +95,10 @@ fun CameraHud(
                 modifier = Modifier.fillMaxSize(),
             )
 
-            cameraGranted -> CameraXPreview(Modifier.fillMaxSize())
+            useCamera -> CameraXPreview(Modifier.fillMaxSize())
             else -> CameraFallback(Modifier.fillMaxSize())
         }
-        if (!cameraGranted || arState.shouldUse2dFallback) {
+        if (!useCamera || arState.shouldUse2dFallback) {
             PrismaticRouteRibbon(
                 headingDelta = headingDelta,
                 modifier = Modifier.fillMaxSize(),
@@ -159,6 +179,7 @@ private fun ArCorePreview(
 private fun CameraXPreview(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    var cameraBound by remember { mutableStateOf(false) }
     val controller = remember(context) {
         LifecycleCameraController(context).apply {
             cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -166,20 +187,29 @@ private fun CameraXPreview(modifier: Modifier = Modifier) {
         }
     }
     DisposableEffect(controller, lifecycleOwner) {
-        controller.bindToLifecycle(lifecycleOwner)
-        onDispose { controller.unbind() }
+        cameraBound = runCatching {
+            controller.bindToLifecycle(lifecycleOwner)
+        }.isSuccess
+        onDispose {
+            if (cameraBound) controller.unbind()
+            cameraBound = false
+        }
     }
 
-    AndroidView(
-        factory = { previewContext: Context ->
-            PreviewView(previewContext).apply {
-                scaleType = PreviewView.ScaleType.FILL_CENTER
-                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                this.controller = controller
-            }
-        },
-        modifier = modifier,
-    )
+    if (cameraBound) {
+        AndroidView(
+            factory = { previewContext: Context ->
+                PreviewView(previewContext).apply {
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    this.controller = controller
+                }
+            },
+            modifier = modifier,
+        )
+    } else {
+        CameraFallback(modifier)
+    }
 }
 
 private tailrec fun Context.findActivity(): Activity? = when (this) {
@@ -187,6 +217,14 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
     is ContextWrapper -> baseContext.findActivity()
     else -> null
 }
+
+private fun Context.hasBackCamera(): Boolean = runCatching {
+    val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    manager.cameraIdList.any { cameraId ->
+        manager.getCameraCharacteristics(cameraId)
+            .get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK
+    }
+}.getOrDefault(false)
 
 @Composable
 private fun CameraFallback(modifier: Modifier = Modifier) {

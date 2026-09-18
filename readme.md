@@ -4,6 +4,17 @@ NaVi는 스마트폰 카메라와 접근성 경로 엔진을 결합해 휠체어
 
 현재 기본 데모는 안양 대표 회랑의 고정 OSM 보행망 스냅샷을 사용합니다. OSM은 실제 공간 데이터지만 보도 전용 정밀망이 아니며, 계단·공사 차단 등 접근성 데모 속성은 기능 검증을 위한 `synthetic`, `verified=false` 데이터입니다.
 
+## 현재 개발 상태 — 2026-09-18
+
+- AR·AI·융합·공통 계약을 독립 Gradle 모듈로 분리했습니다. AR 모드의 카메라는 `:feature:ar-navigation`이 소유하고 AI에는 timestamp가 있는 frame lease만 전달합니다.
+- M1 AR은 SM-S911N에서 ARCore pose/tracking, Depth, 3D route ribbon, 2D fallback, Recording/Playback과 20분 안정성 시험까지 완료했습니다. 실제 보도 위 리본 정합은 전북대 내부 25m 구간의 현장 3회 전까지 미검증입니다.
+- 전북대 로컬 E2E-WC Graph의 합성 Android 시험에서 `A 130.7m → session-local 차단 → B 153.5m → 저정확도 거부 → 3회·2초 자동 도착` 폐루프를 통과했습니다. 원본 Graph와 Edge는 변경되지 않았고 관측 후보는 `pending`, `verified=false`입니다.
+- ARCore 또는 후면 카메라를 사용할 수 없는 환경에서는 설치 화면을 자동 실행하지 않고 2D 안내로 강등합니다.
+- 현재 활성 작업은 M1-VIS 정적 frame A/B 비교입니다. 기하 기반 리본 A는 계속 실제 안내를 담당하고, sidewalk mask 기반 보정 B는 검증 전까지 shadow/debug 출력만 만듭니다.
+- Android 최종 디자인 화면 일부에는 안양 데모용 고정 문구와 수치가 남아 있습니다. backend 세션 데이터 연결이 완료될 때까지 이를 전북대 실증 결과로 해석하면 안 됩니다.
+
+상세 완료 근거, 남은 위험과 한 개로 고정한 다음 시작점은 [프로젝트 마스터 계획](docs/project_master_plan.md)을 기준으로 합니다.
+
 ## 검증 시나리오
 
 | 상태 | 거리 | 설명 |
@@ -22,7 +33,7 @@ NaVi는 스마트폰 카메라와 접근성 경로 엔진을 결합해 휠체어
 - Kotlin + Jetpack Compose 기반 Android 전용 시민 앱
 - MapLibre 지도에서 일반·접근 가능·재탐색 경로 비교
 - Android 후보 지도에서 계단 5건과 DEM 진단 12건의 요청 한정 전·후 경로 시뮬레이션
-- CameraX 실시간 미리보기 위 Prismatic Wayfinding 2D HUD
+- ARCore 3D route ribbon과 CameraX 기반 Prismatic Wayfinding 2D fallback
 - 시작 → 경로 계획 → 비교 → 판단 근거 → 지도/카메라 안내 → 현장 제보 → 재탐색 흐름
 - 현장 제보 → 현재 세션 임시 차단 → 즉시 재탐색
 - 시민 제보는 `pending`, `verified=false`로 저장하고 공용 Graph에는 미반영
@@ -124,8 +135,11 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 
 - [Android 아키텍처와 화면 흐름](docs/android_architecture.md)
 - [AR·AI 모듈화 및 개발 계획](docs/ar_ai_modularization_plan.md)
+- [AR 기준선·AI 보정 병렬 정합 스파이크](docs/ar_ai_parallel_alignment_spike.md)
 - [Android 현장 검증 절차](docs/android_field_test.md)
-- [M1 전북대 정문 로컬 AR 정합 시험](docs/m1_local_field_route_jbnu.md)
+- [M1 전북대 내부 로컬 AR 정합 시험](docs/m1_local_field_route_jbnu.md)
+- [M1 전북대 내부 PoC 경로 선정 기록](docs/m1_jbnu_route_selection.md)
+- [E2E-WC 전북대 휠체어 가정 재탐색 경로](docs/e2e_wc_jbnu_route.md)
 - [Prismatic Wayfinding 디자인 시스템](docs/frontend_design_system.md)
 - [디자인 토큰 명세](docs/design_tokens.md) — Figma Variable ↔ CSS ↔ Compose
 - [최종 와이어프레임 36장](docs/wireframes/final/README.md)
@@ -168,7 +182,11 @@ Android의 `공간데이터 후보` 화면은 시뮬레이션 가능 후보 17�
 NAVI_GRAPH_PATH=data/processed/anyang_accessibility_graph.geojson
 NAVI_DB_PATH=data/runtime/navi.db
 NAVI_GRAPH_ENRICHMENT_PATH=data/processed/evaluation/graph_enrichment/candidate_bundle.json
+VITE_KAKAO_MAP_KEY=<Kakao Maps JavaScript key, optional>
+KAKAO_REST_API_KEY=<Kakao REST API key, optional>
 ```
+
+Kakao 키는 로컬 `.env`에만 두며 저장소에 커밋하지 않습니다. 두 키는 각각 브라우저 JavaScript SDK와 서버 REST 요청용이고 Android 네이티브 지도 키가 아닙니다. 현재 Android 지도는 MapLibre/OSM을 사용합니다.
 
 ## 데이터 신뢰도와 한계
 
@@ -177,9 +195,10 @@ NAVI_GRAPH_ENRICHMENT_PATH=data/processed/evaluation/graph_enrichment/candidate_
 - AI precheck 5건: 검수 대기 후보, 사실로 취급하지 않음
 - synthetic 데모 속성: 경로 차이를 재현하기 위한 실험값
 - 실제 턱 높이, 경사, 폭, 엘리베이터 상태를 주장하지 않음
-- CameraX 영상은 화면 미리보기에만 사용하며 저장·업로드·AI 판독하지 않음
-- 현재 프리즘 경로는 카메라 위 2D HUD이며 ARCore 공간 정합이나 실제 장애물 자동 감지는 아직 연결하지 않음
+- 기본 카메라 화면은 영상을 서버로 업로드하지 않음. ARCore dataset 기록은 사용자가 기술 스파이크 화면에서 명시적으로 시작한 로컬 MP4·telemetry에 한함
+- ARCore 3D 리본은 구현됐지만 실제 보도 정합 정확도는 현장 3회 전까지 미검증이며, 추적·위치 조건이 부족하면 2D 안내로 강등
+- 실제 장애물 자동 감지와 안전 재탐색은 아직 실시간 안내에 연결하지 않음. AI 결과는 shadow/pending 상태와 사람 검수를 거쳐야 함
 - 현재 기본 Graph 범위 밖 위치는 Android 앱에서 경로 출발지로 사용하지 않으며, 다른 지역의 실제 경로 검증에는 해당 지역 Graph 빌드가 필요
 - 안양 Graph와 접근성 속성은 현장 실측 완료 데이터가 아니므로 실제 안전을 보장하지 않음
 
-현재 작업 상태와 다음 시작점은 [프로젝트 마스터 계획](docs/project_master_plan.md)을 우선 확인하세요. 전체 구조와 데이터 계약은 [architecture.md](docs/architecture.md), [data_schema.md](docs/data_schema.md), 실험 절차는 [experiment.md](docs/experiment.md)를 참고하세요.
+전체 구조와 데이터 계약은 [architecture.md](docs/architecture.md), [data_schema.md](docs/data_schema.md), 실험 절차는 [experiment.md](docs/experiment.md)를 참고하세요.

@@ -654,10 +654,6 @@ fun RowScopeTab(
     ) {
         Box(
             modifier = Modifier
-                .background(
-                    if (selected) NaviGlass.FocusFallback else Color.Transparent,
-                    RoundedCornerShape(NaviDimens.RadiusSmall),
-                )
                 .padding(horizontal = NaviDimens.Space12, vertical = 3.dp),
             contentAlignment = Alignment.Center,
         ) {
@@ -720,9 +716,9 @@ data class NaviDestination(
  */
 val NaviDestinations: List<NaviDestination> = listOf(
     NaviDestination("home", "홈", "⌂"),
-    NaviDestination("plan", "길찾기", "◇"),
-    NaviDestination("report", "제보", "⚑"),
-    NaviDestination("profile", "내 정보", "◔"),
+    NaviDestination("search", "길찾기", "⌕"),
+    NaviDestination("saved", "제보", "⚑"),
+    NaviDestination("settings", "내 정보", "♙"),
 )
 
 // ─────────────────────────────────────────────────────────────────────────────

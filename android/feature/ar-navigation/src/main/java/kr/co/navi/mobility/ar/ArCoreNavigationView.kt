@@ -56,8 +56,9 @@ class ArCoreNavigationView(
     private val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
     private var stateListener = onStateChanged
     private var session: Session? = null
-    private var installRequested = false
+    private var availabilityCheckInFlight = false
     private var resumed = false
+    private var disposed = false
     private var routeAligned = false
     private var depthSupported = false
     private var lastState = ArRuntimeState()
@@ -90,6 +91,16 @@ class ArCoreNavigationView(
     }
 
     fun updateLifecycleState(state: ArLifecycleState) {
+        disposed = when (state) {
+            ArLifecycleState.DISPOSED,
+            ArLifecycleState.DESTROYED,
+            -> true
+            ArLifecycleState.CREATED,
+            ArLifecycleState.STARTED,
+            ArLifecycleState.RESUMED,
+            -> false
+            else -> disposed
+        }
         val transition = when (state) {
             ArLifecycleState.PAUSED -> ArSessionTransitionReason.LIFECYCLE_PAUSE
             ArLifecycleState.DISPOSED -> ArSessionTransitionReason.VIEW_DISPOSE
@@ -130,7 +141,7 @@ class ArCoreNavigationView(
     }
 
     fun resumeSession() {
-        if (resumed) return
+        if (resumed || disposed) return
         val transition = diagnostics.beginExpectedTransition(
             ArSessionTransitionReason.LIFECYCLE_RESUME,
             SystemClock.elapsedRealtime(),
@@ -286,56 +297,103 @@ class ArCoreNavigationView(
     private fun createSession(): Session? {
         publish(lastState.copy(mode = ArRuntimeMode.CHECKING, message = "ARCore 지원 상태 확인 중"))
         return try {
-            when (ArCoreApk.getInstance().requestInstall(activity, !installRequested)) {
-                ArCoreApk.InstallStatus.INSTALL_REQUESTED -> {
-                    installRequested = true
-                    publish(
-                        lastState.copy(
-                            mode = ArRuntimeMode.INSTALL_REQUIRED,
-                            trackingQuality = TrackingQuality.WAITING,
-                            message = "Google Play Services for AR 설치 또는 업데이트 필요",
-                        ),
-                    )
+            val arCoreApk = ArCoreApk.getInstance()
+            val availability = arCoreApk.checkAvailability(activity)
+            when (availability.toStartupDecision()) {
+                ArCoreStartupDecision.START_SESSION -> createConfiguredSession()
+                ArCoreStartupDecision.WAIT_FOR_RESULT -> {
+                    resolveAvailabilityAsync(arCoreApk)
                     null
                 }
-
-                ArCoreApk.InstallStatus.INSTALLED -> {
-                    val created = Session(activity)
-                    val config = created.config.apply {
-                        focusMode = Config.FocusMode.AUTO
-                        planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
-                        updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
-                    }
-                    depthSupported = created.isDepthModeSupported(Config.DepthMode.AUTOMATIC)
-                    config.depthMode = if (depthSupported) {
-                        Config.DepthMode.AUTOMATIC
-                    } else {
-                        Config.DepthMode.DISABLED
-                    }
-                    created.configure(config)
-                    session = created
-                    val transition = diagnostics.onSessionCreated(
-                        pendingSessionCreationReason,
-                        SystemClock.elapsedRealtime(),
-                    )
-                    pendingSessionCreationReason = ArSessionTransitionReason.VIEW_RECREATE
-                    logDiagnosticEvent("session_created", transition)
-                    publish(
-                        lastState.copy(
-                            mode = ArRuntimeMode.DEGRADED,
-                            trackingQuality = TrackingQuality.WAITING,
-                            depthSupported = depthSupported,
-                            routeAligned = routeAligned,
-                            message = "ARCore가 주변 공간을 인식하는 중",
-                        ).withDiagnostics(transition),
-                    )
-                    created
+                ArCoreStartupDecision.USE_2D_INSTALL_REQUIRED -> {
+                    publishInstallRequired()
+                    null
+                }
+                ArCoreStartupDecision.USE_2D_UNAVAILABLE -> {
+                    publishUnavailable(availability.toUnavailableMessage())
+                    null
                 }
             }
         } catch (error: UnavailableException) {
             publishUnavailable(error.toUserMessage())
             null
         }
+    }
+
+    private fun resolveAvailabilityAsync(arCoreApk: ArCoreApk) {
+        if (availabilityCheckInFlight) return
+        availabilityCheckInFlight = true
+        runCatching {
+            arCoreApk.checkAvailabilityAsync(activity) { availability ->
+                post {
+                    availabilityCheckInFlight = false
+                    if (disposed) return@post
+                    when (availability.toStartupDecision()) {
+                        ArCoreStartupDecision.START_SESSION -> resumeSession()
+                        ArCoreStartupDecision.USE_2D_INSTALL_REQUIRED -> publishInstallRequired()
+                        ArCoreStartupDecision.USE_2D_UNAVAILABLE -> {
+                            publishUnavailable(availability.toUnavailableMessage())
+                        }
+                        ArCoreStartupDecision.WAIT_FOR_RESULT -> {
+                            publishUnavailable("ARCore 지원 여부를 확인할 수 없어 2D 안내로 전환합니다.")
+                        }
+                    }
+                }
+            }
+        }.onFailure {
+            availabilityCheckInFlight = false
+            publishUnavailable("ARCore 지원 여부를 확인할 수 없어 2D 안내로 전환합니다.")
+        }
+    }
+
+    private fun publishInstallRequired() {
+        publish(
+            lastState.copy(
+                mode = ArRuntimeMode.INSTALL_REQUIRED,
+                trackingQuality = TrackingQuality.WAITING,
+                message = "Google Play Services for AR 설치 또는 업데이트가 필요해 2D 안내로 전환합니다.",
+            ),
+        )
+    }
+
+    private fun createConfiguredSession(): Session {
+        val created = Session(activity)
+        val config = created.config.apply {
+            focusMode = Config.FocusMode.AUTO
+            planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
+            updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
+        }
+        depthSupported = created.isDepthModeSupported(Config.DepthMode.AUTOMATIC)
+        config.depthMode = if (depthSupported) {
+            Config.DepthMode.AUTOMATIC
+        } else {
+            Config.DepthMode.DISABLED
+        }
+        created.configure(config)
+        session = created
+        val transition = diagnostics.onSessionCreated(
+            pendingSessionCreationReason,
+            SystemClock.elapsedRealtime(),
+        )
+        pendingSessionCreationReason = ArSessionTransitionReason.VIEW_RECREATE
+        logDiagnosticEvent("session_created", transition)
+        publish(
+            lastState.copy(
+                mode = ArRuntimeMode.DEGRADED,
+                trackingQuality = TrackingQuality.WAITING,
+                depthSupported = depthSupported,
+                routeAligned = routeAligned,
+                message = "ARCore가 주변 공간을 인식하는 중",
+            ).withDiagnostics(transition),
+        )
+        return created
+    }
+
+    private fun ArCoreApk.Availability.toUnavailableMessage(): String = when (this) {
+        ArCoreApk.Availability.UNSUPPORTED_DEVICE_NOT_CAPABLE -> {
+            "이 기기에서는 ARCore를 사용할 수 없어 2D 안내로 전환합니다."
+        }
+        else -> "ARCore 지원 여부를 확인할 수 없어 2D 안내로 전환합니다."
     }
 
     private fun onFrameTelemetry(telemetry: FrameTelemetry) {

@@ -69,7 +69,10 @@ import kr.co.navi.mobility.data.model.NaviBootstrap
 import kr.co.navi.mobility.data.model.RouteComparisonDto
 import kr.co.navi.mobility.data.model.RouteResultDto
 import kr.co.navi.mobility.location.LocationState
+import kr.co.navi.mobility.guidance.contract.ArrivalGateProgress
+import kr.co.navi.mobility.guidance.contract.ArrivalGateStatus
 import kr.co.navi.mobility.guidance.contract.GeoCoordinate
+import kr.co.navi.mobility.guidance.contract.forwardRouteBearing
 import kr.co.navi.mobility.guidance.contract.normalizeHeadingDelta
 import kr.co.navi.mobility.guidance.contract.reasonLabel
 import kr.co.navi.mobility.guidance.contract.routeBearing
@@ -456,10 +459,10 @@ fun NavigationScreen(
     onBack: () -> Unit,
     onCamera: () -> Unit,
     onReport: () -> Unit,
-    onFinish: () -> Unit,
 ) {
     val session by viewModel.sessionState.collectAsStateWithLifecycle()
     val location by viewModel.locationState.collectAsStateWithLifecycle()
+    val arrival by viewModel.arrivalState.collectAsStateWithLifecycle()
     val route = session.activeRoute
     DisposableEffect(viewModel) {
         viewModel.startSensors()
@@ -475,9 +478,6 @@ fun NavigationScreen(
             NaviTopBar(
                 title = if (session.reroute == null) "접근 경로 안내" else "우회 경로 안내",
                 onBack = onBack,
-                trailing = {
-                    OutlinedButton(onClick = onFinish) { Text("종료") }
-                },
             )
         },
         bottomBar = {
@@ -556,6 +556,12 @@ fun NavigationScreen(
                     RerouteDeltaPanel(previousRoute, route)
                 }
                 LocationStatus(location)
+                ArrivalStatus(
+                    progress = arrival,
+                    requiredObservations = viewModel.arrivalGateConfig.requiredConsecutiveObservations,
+                    radiusMeters = viewModel.arrivalGateConfig.arrivalRadiusMeters,
+                    maximumAccuracyMeters = viewModel.arrivalGateConfig.maximumAccuracyMeters,
+                )
                 TrustBanner("카메라 안내는 PoC 오버레이입니다. 이동 중에는 화면보다 주변 환경을 먼저 확인하세요.")
                 Spacer(Modifier.height(140.dp))
             }
@@ -593,9 +599,21 @@ fun CameraScreen(
         MissingJourneyScreen(onBack)
         return
     }
-    val targetBearing = routeBearing(route.geometry)
     val headingDegrees = (heading as? HeadingState.Available)?.degrees
     val availableLocation = location as? LocationState.Available
+    val userCoordinate = availableLocation?.coordinate?.let {
+        GeoCoordinate(latitude = it.lat, longitude = it.lon)
+    }
+    val directionAccuracyMeters = availableLocation?.accuracyMeters
+    val targetBearing = if (
+        userCoordinate != null &&
+        directionAccuracyMeters != null &&
+        directionAccuracyMeters <= MAX_DIRECTION_LOCATION_ACCURACY_METERS
+    ) {
+        forwardRouteBearing(route.geometry, userCoordinate)
+    } else {
+        null
+    } ?: routeBearing(route.geometry)
     val routeCoordinates = remember(route.geometry) {
         route.geometry.mapNotNull { point ->
             if (point.size < 2) null else GeoCoordinate(
@@ -616,9 +634,7 @@ fun CameraScreen(
             headingDelta = delta,
             datasetController = datasetController,
             routeCoordinates = routeCoordinates,
-            userCoordinate = availableLocation?.coordinate?.let {
-                GeoCoordinate(latitude = it.lat, longitude = it.lon)
-            },
+            userCoordinate = userCoordinate,
             locationAccuracyMeters = availableLocation?.accuracyMeters,
             headingDegrees = headingDegrees,
             onArStateChanged = { arState = it },
@@ -980,7 +996,7 @@ fun ArrivalScreen(
             Text("안내를 마쳤습니다", style = MaterialTheme.typography.headlineMedium, color = NaviInk)
             Spacer(Modifier.height(NaviDimens.Space8))
             Text(
-                "실제 도착 여부는 사용자가 확인해야 합니다.",
+                "GPS 기준 도착 조건이 연속으로 확인되었습니다. 주변을 확인한 뒤 안내를 종료하세요.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = NaviInkMuted,
                 textAlign = TextAlign.Center,
@@ -1255,6 +1271,53 @@ private fun LocationStatus(location: LocationState) {
 }
 
 @Composable
+private fun ArrivalStatus(
+    progress: ArrivalGateProgress,
+    requiredObservations: Int,
+    radiusMeters: Double,
+    maximumAccuracyMeters: Float,
+) {
+    val display = when (progress.status) {
+        ArrivalGateStatus.WAITING_FOR_LOCATION -> LocationDisplay(
+            "…",
+            "자동 도착 판정 대기 · GPS 위치 필요",
+            NaviInkMuted,
+            NaviSurfaceRaised,
+        )
+        ArrivalGateStatus.POOR_ACCURACY -> LocationDisplay(
+            "!",
+            "도착 판정 보류 · 위치 정확도 ${maximumAccuracyMeters.toInt()}m 이하 필요",
+            NaviCaution,
+            NaviCautionSoft,
+        )
+        ArrivalGateStatus.OUTSIDE_RADIUS -> LocationDisplay(
+            "◇",
+            "목적지까지 ${formatDistance(progress.distanceMeters ?: 0.0)} · ${radiusMeters.toInt()}m 안에서 자동 확인",
+            NaviBlue,
+            NaviBlueSoft,
+        )
+        ArrivalGateStatus.CONFIRMING -> LocationDisplay(
+            "◎",
+            "도착 위치 확인 중 · ${progress.consecutiveObservations}/$requiredObservations",
+            NaviViolet,
+            NaviVioletSoft,
+        )
+        ArrivalGateStatus.ARRIVED -> LocationDisplay(
+            "✓",
+            "도착 조건 확인됨",
+            NaviPass,
+            NaviPassSoft,
+        )
+    }
+    StatusPill(
+        symbol = display.symbol,
+        text = display.text,
+        foreground = display.foreground,
+        background = display.background,
+    )
+}
+
+@Composable
 private fun CameraRoundButton(text: String, description: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
@@ -1373,6 +1436,8 @@ private fun directionText(delta: Float): String = when {
     delta > 22f -> "오른쪽 방향으로 맞추세요"
     else -> "경로 방향으로 이동하세요"
 }
+
+private const val MAX_DIRECTION_LOCATION_ACCURACY_METERS = 30f
 
 private val reportTypes = listOf(
     Triple("blocked_path", "통행 불가", "⛔"),

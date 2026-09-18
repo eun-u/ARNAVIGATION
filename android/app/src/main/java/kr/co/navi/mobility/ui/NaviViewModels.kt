@@ -14,6 +14,10 @@ import kr.co.navi.mobility.data.model.GraphEnrichmentSummaryDto
 import kr.co.navi.mobility.data.model.ObservationCandidateDto
 import kr.co.navi.mobility.data.model.SessionRerouteResponseDto
 import kr.co.navi.mobility.data.repository.NaviRepository
+import kr.co.navi.mobility.guidance.contract.ArrivalGateConfig
+import kr.co.navi.mobility.guidance.contract.ArrivalGateProgress
+import kr.co.navi.mobility.guidance.contract.GeoCoordinate
+import kr.co.navi.mobility.guidance.contract.updateArrivalGate
 import kr.co.navi.mobility.location.LocationState
 import kr.co.navi.mobility.location.LocationTracker
 import kotlinx.coroutines.CancellationException
@@ -25,6 +29,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 
@@ -428,16 +434,74 @@ class NavigationViewModel(
     val sessionState: StateFlow<NaviSessionState> = sessionStore.state
     val locationState: StateFlow<LocationState> = locationTracker.state
     val headingState: StateFlow<HeadingState> = headingTracker.state
+    val arrivalGateConfig = ArrivalGateConfig()
 
     private val mutableReportState = MutableStateFlow(ReportUiState())
     val reportState: StateFlow<ReportUiState> = mutableReportState.asStateFlow()
+    private val guidanceActive = MutableStateFlow(false)
+    private val mutableArrivalState = MutableStateFlow(ArrivalGateProgress())
+    val arrivalState: StateFlow<ArrivalGateProgress> = mutableArrivalState.asStateFlow()
+    private val mutableArrivalEvents = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val arrivalEvents: SharedFlow<Unit> = mutableArrivalEvents.asSharedFlow()
+    private var arrivalJourneyKey: String? = null
+
+    init {
+        viewModelScope.launch {
+            combine(sessionState, locationState, guidanceActive) { session, location, active ->
+                Triple(session, location, active)
+            }.collect { (session, location, active) ->
+                val route = session.activeRoute
+                val destination = session.arrivalTarget()
+                if (route == null || destination == null) {
+                    arrivalJourneyKey = null
+                    mutableArrivalState.value = ArrivalGateProgress()
+                    return@collect
+                }
+
+                val sessionKey = session.comparison?.sessionId
+                    ?: route.sessionId
+                    ?: "${route.originNode}:${route.destinationNode}"
+                val journeyKey = "$sessionKey:${route.edgeIds.joinToString(",")}:${route.geometry.hashCode()}"
+                if (journeyKey != arrivalJourneyKey) {
+                    arrivalJourneyKey = journeyKey
+                    mutableArrivalState.value = ArrivalGateProgress(destination = destination)
+                }
+                if (!active) return@collect
+
+                val available = location as? LocationState.Available
+                if (available == null) {
+                    mutableArrivalState.value = ArrivalGateProgress(destination = destination)
+                    return@collect
+                }
+
+                val previous = mutableArrivalState.value
+                val next = updateArrivalGate(
+                    previous = previous,
+                    destination = destination,
+                    user = GeoCoordinate(
+                        latitude = available.coordinate.lat,
+                        longitude = available.coordinate.lon,
+                    ),
+                    accuracyMeters = available.accuracyMeters,
+                    observedAtMillis = available.observedAtMillis.coerceAtLeast(0L),
+                    config = arrivalGateConfig,
+                )
+                mutableArrivalState.value = next
+                if (!previous.arrived && next.arrived) {
+                    mutableArrivalEvents.tryEmit(Unit)
+                }
+            }
+        }
+    }
 
     fun startSensors() {
         locationTracker.start()
         headingTracker.start()
+        guidanceActive.value = true
     }
 
     fun stopSensors() {
+        guidanceActive.value = false
         locationTracker.stop()
         headingTracker.stop()
     }
@@ -494,6 +558,19 @@ class NavigationViewModel(
     override fun onCleared() {
         stopSensors()
         super.onCleared()
+    }
+}
+
+private fun NaviSessionState.arrivalTarget(): GeoCoordinate? {
+    val route = activeRoute ?: return null
+    val routeEnd = route.geometry.lastOrNull { it.size >= 2 }
+    if (routeEnd != null) {
+        return runCatching {
+            GeoCoordinate(latitude = routeEnd[1], longitude = routeEnd[0])
+        }.getOrNull()
+    }
+    return destination?.let {
+        runCatching { GeoCoordinate(latitude = it.lat, longitude = it.lon) }.getOrNull()
     }
 }
 

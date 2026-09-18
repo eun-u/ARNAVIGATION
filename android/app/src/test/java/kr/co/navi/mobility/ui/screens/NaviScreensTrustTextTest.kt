@@ -12,7 +12,7 @@ class NaviScreensTrustTextTest {
     @Test
     fun `local osm graph displays unknown unverified boundary without synthetic claim`() {
         val bootstrap = NaviBootstrap(
-            areaName = "전북대학교 전주캠퍼스 정문",
+            areaName = "전북대학교 106 학생군사교육단 남측 보행로",
             source = "OpenStreetMap local snapshot",
             accessibilityAttributes = "unknown_unverified",
             disclaimer = "공용 Graph에는 반영하지 않습니다.",

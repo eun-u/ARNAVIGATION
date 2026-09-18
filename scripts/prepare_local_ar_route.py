@@ -127,6 +127,9 @@ def select_route_segment(
         if not isinstance(segment_local, LineString) or len(segment_local.coords) < 2:
             continue
         segment_wgs84 = transform(to_wgs84.transform, segment_local)
+        segment_chord_m = Point(segment_local.coords[0]).distance(
+            Point(segment_local.coords[-1])
+        )
         osm_ids = sorted(as_values(attributes.get("osmid")))
         identity = f"{from_node}|{to_node}|{key}|{'-'.join(osm_ids)}"
         candidate = {
@@ -137,6 +140,16 @@ def select_route_segment(
             "attributes": dict(attributes),
             "center_distance_m": round(center_distance, 3),
             "length_m": round(float(segment_local.length), 3),
+            "source_edge_length_m": round(float(local_line.length), 3),
+            "start_offset_m": round(float(start_offset), 3),
+            "end_offset_m": round(
+                float(local_line.length - start_offset - target_length_m),
+                3,
+            ),
+            "straightness_ratio": round(
+                float(segment_chord_m / segment_local.length),
+                6,
+            ),
             "coordinates": [
                 [round(float(lon), 8), round(float(lat), 8)]
                 for lon, lat in segment_wgs84.coords
@@ -173,6 +186,17 @@ def bearing_degrees(coordinates: list[list[float]]) -> float:
         * math.cos(longitude_delta)
     )
     return round((math.degrees(math.atan2(y, x)) + 360.0) % 360.0, 2)
+
+
+def require_expected_osm_way(
+    segment: dict[str, Any],
+    expected_osm_way_id: str | None,
+) -> None:
+    if expected_osm_way_id and expected_osm_way_id not in segment["osm_way_ids"]:
+        raise RuntimeError(
+            "Selected OSM way does not match --expected-osm-way-id: "
+            f"expected {expected_osm_way_id}, got {segment['osm_way_ids']}"
+        )
 
 
 def build_graph_payload(
@@ -354,6 +378,12 @@ def main() -> int:
     parser.add_argument("--radius-m", type=int, default=180)
     parser.add_argument("--target-length-m", type=float, default=25.0)
     parser.add_argument("--max-center-distance-m", type=float, default=100.0)
+    parser.add_argument(
+        "--expected-osm-way-id",
+        help="Fail instead of silently selecting a different OSM way.",
+    )
+    parser.add_argument("--site-reference")
+    parser.add_argument("--selection-note")
     parser.add_argument("--as-of")
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     args = parser.parse_args()
@@ -377,6 +407,7 @@ def main() -> int:
         target_length_m=args.target_length_m,
         max_center_distance_m=args.max_center_distance_m,
     )
+    require_expected_osm_way(segment, args.expected_osm_way_id)
     graph_payload, edge_id = build_graph_payload(
         label=args.label,
         segment=segment,
@@ -402,6 +433,10 @@ def main() -> int:
         "requested_length_m": args.target_length_m,
         "selected_length_m": segment["length_m"],
         "selected_center_distance_m": segment["center_distance_m"],
+        "source_edge_length_m": segment["source_edge_length_m"],
+        "start_offset_m": segment["start_offset_m"],
+        "end_offset_m": segment["end_offset_m"],
+        "straightness_ratio": segment["straightness_ratio"],
         "bearing_degrees": bearing_degrees(segment["coordinates"]),
         "projection_epsg": segment["projection_epsg"],
         "osm_way_ids": segment["osm_way_ids"],
@@ -416,6 +451,8 @@ def main() -> int:
         "field_verified": False,
         "shared_graph_mutation_allowed": False,
         "allowed_use": "local_ar_alignment_test_only",
+        "site_reference": args.site_reference,
+        "selection_note": args.selection_note,
         "raw_graph": {
             "path": raw_graph_path.name,
             "sha256": sha256(raw_graph_path),

@@ -308,15 +308,16 @@ LLM 출력은 schema validation을 통과해야 하며, 실패·시간 초과 �
 - AI/AR SDK 타입이 공통 계약에 노출되지 않음
 - 순환 의존성 없음
 
-### M1. AR 기술 스파이크 — 완료
+### M1. AR 기술 스파이크 — 구현 완료, 현장 정합 검증 진행 중
 
 - ARCore capability, pose, tracking state와 depth 연결
 - 현재 route geometry의 전방 guidance step 생성
-- 고정된 안양 실증 구간에서 로컬 경로 리본 렌더링
+- 사용자 생활권의 전북대 내부 106 학생군사교육단 남측 로컬 25m OSM 구간에서 경로 리본 계약과 앱 연결
 - 낮은 정확도와 미지원 기기에서 2D HUD fallback
 - ARCore Recording/Playback 기반 반복 테스트 자료 생성
 - 기준 기기 SM-S911N에서 Tracking·Depth·route ribbon·fallback·Recording/Playback 검증
 - 20분 연속 세션에서 crash와 camera deadlock 없이 완료
+- 실제 보도 리본 정합은 전북대 내부 106 학생군사교육단 남측 25m 구간 현장 3회 측정 전까지 미검증
 - 상세 실행 기록: [M1 AR 기술 스파이크](m1_ar_spike.md)
 
 측정:
@@ -373,9 +374,36 @@ LLM 출력은 schema validation을 통과해야 하며, 실패·시간 초과 �
 - reference device에서 UI를 막지 않는 비동기 추론
 - 성능 기준 미달 frame은 backlog 대신 drop하는 bounded pipeline
 
+### M1-VIS. AR 기준선·AI 보정 병렬 정합 스파이크
+
+AR과 AI를 순차 대체하지 않고 동일 frame에서 두 결과를 병렬 비교한다.
+
+- A `GEOMETRY_BASELINE`: GPS·heading·ARCore pose/depth 기반 현재 리본. 항상 동작하는 사용자 안내와 fallback이다.
+- B `AI_ASSISTED_SHADOW`: 오픈소스 segmentation mask로 리본 횡방향 위치를 제한 보정한다. 정량 검증 전에는 debug/shadow 출력만 만든다.
+- AR 렌더링은 연속 실행하고 AI는 별도 worker에서 5Hz로 시작해 최대 10Hz까지만 평가한다.
+- AI는 한 frame만 처리하며 새 frame이 오면 대기열을 쌓지 않고 이전 미처리 frame을 버린다.
+- mask 누락, 낮은 confidence 또는 stale 결과에서는 A를 그대로 유지한다.
+- 정적 거리 영상 A/B → 녹화 replay → SM-S911N shadow → 전북대 내부 106 학생군사교육단 남측 25m 현장 3회 순서로 확장한다.
+
+측정:
+
+- sidewalk IoU·Dice·pixel recall
+- 리본 보도 내부 비율, 횡방향 오차와 frame 간 흔들림
+- inference p50/p95, mask age, dropped frame
+- CPU·PSS·배터리/AP/skin 온도와 tracking loss
+
+작업 경계:
+
+- M1/AR 작업은 기준선·거리 영상 overlay harness와 성능 비교를 소유한다.
+- M2 별도 채팅은 모델 선택·변환·mask 평가를 소유한다.
+- 실제 timestamp 결합과 A/B gate는 M3 `guidance-fusion`에서 구현한다.
+- 상세 계획: [AR·AI 보정 병렬 정합 스파이크](ar_ai_parallel_alignment_spike.md)
+
 ### M3. 공간 융합과 Map Matching — 1~2주
 
 - 동일 frame의 AI region, pose와 depth 결합
+- A 기준 리본과 B 보정 리본을 동시에 산출하고 timestamp/confidence/mask age를 기록
+- stale·저신뢰 B를 폐기하고 A로 결정론적으로 fallback
 - 위치·크기·잔여 폭·지속시간 추정
 - `HazardObservation` API와 idempotency 구현
 - 서버 `ObservationMapper`와 debug review 화면 구현
@@ -422,7 +450,8 @@ LLM 출력은 schema validation을 통과해야 하며, 실패·시간 초과 �
 
 ### M6. 현장 검증 — 1~2주
 
-- 안양 대표 회랑의 시간대·날씨·기기별 반복 주행
+- 사용자 생활권의 로컬 OSM 시험 구간에서 시간대·날씨·기기별 반복 주행
+- 전북대 내부 106 학생군사교육단 남측 25m 구간에서 A 기준 리본과 B AI 보정 리본의 동일 회차 비교
 - 휠체어 사용자 관점의 경고 시점과 확인 UX 평가
 - false reroute, missed hazard, tracking loss 기록
 - 자동 차단 임계값을 shadow 결과를 근거로 조정
@@ -454,12 +483,13 @@ LLM 출력은 schema validation을 통과해야 하며, 실패·시간 초과 �
 
 ## 당장 실행할 작업 순서
 
-1. M0에서 Gradle 골격과 계약을 먼저 만든다.
-2. 기존 HUD를 AR 모듈로 이동한 뒤 build·UI 회귀를 끝낸다.
-3. AR과 AI는 각각 fake 상대 모듈로 독립 개발한다.
-4. AR 녹화 세션을 AI 평가 입력으로 재사용한다.
-5. M3 shadow mode 데이터가 쌓이기 전에는 자동 재탐색을 활성화하지 않는다.
-6. LLM은 M4의 결정론적 재탐색이 안정된 뒤에만 추가한다.
+1. 완료된 M0~M2 계약과 M1 성능 기준선을 유지한다.
+2. M1-VIS 정적 거리 frame에서 A 기준 리본과 mask fixture 기반 B 보정 리본을 side-by-side로 재현한다.
+3. M2 별도 채팅의 실제 segmentation 출력이 준비되면 같은 harness에 교체해 공개 benchmark가 아닌 로컬 수치를 기록한다.
+4. 녹화 replay에서 timestamp·stale fallback을 검증한 뒤 SM-S911N 5Hz shadow로 연결한다.
+5. 물리적으로 현장에 도착하면 전북대 내부 106 학생군사교육단 남측 25m 구간에서 A/B를 같은 3회에 기록한다.
+6. M3 shadow mode 데이터가 쌓이기 전에는 AI 보정 결과로 자동 재탐색하거나 공용 Graph를 변경하지 않는다.
+7. LLM은 M4의 결정론적 재탐색이 안정된 뒤에만 추가한다.
 
 ## 기술 참고
 
