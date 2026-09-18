@@ -78,6 +78,8 @@ import kr.co.navi.mobility.ui.RouteViewModel
 import kr.co.navi.mobility.ui.components.NaviBrandLockup
 import kr.co.navi.mobility.ui.components.NaviTopBar
 import kr.co.navi.mobility.ui.components.PrimaryActionButton
+import kr.co.navi.mobility.ui.components.PrimaryMetric
+import kr.co.navi.mobility.ui.components.SecondaryMetric
 import kr.co.navi.mobility.ui.components.PrismDivider
 import kr.co.navi.mobility.ui.components.RouteMap
 import kr.co.navi.mobility.ui.components.SecondaryActionButton
@@ -498,12 +500,16 @@ fun NavigationScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column {
-                        Text("남은 경로", style = MaterialTheme.typography.labelMedium, color = NaviInkMuted)
-                        Text(formatDistance(route.distanceM), style = NaviMetricTextStyle, color = NaviInk)
+                        Text("남은 시간", style = MaterialTheme.typography.labelMedium, color = NaviInkMuted)
+                        PrimaryMetric(
+                            value = "${route.estimatedMinutes}",
+                            unit = "분",
+                            color = NaviBlue,
+                        )
                     }
                     Column(horizontalAlignment = Alignment.End) {
-                        Text("예상 시간", style = MaterialTheme.typography.labelMedium, color = NaviInkMuted)
-                        Text("약 ${route.estimatedMinutes}분", style = NaviMetricTextStyle, color = NaviInk)
+                        Text("남은 거리", style = MaterialTheme.typography.labelMedium, color = NaviInkMuted)
+                        SecondaryMetric(formatDistance(route.distanceM))
                     }
                 }
                 if (session.reroute != null) {
