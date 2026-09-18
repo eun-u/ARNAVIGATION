@@ -1,6 +1,8 @@
 package kr.co.navi.mobility.ar.ui
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
@@ -11,7 +13,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -21,7 +28,14 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import kr.co.navi.mobility.ar.ArCoreNavigationView
+import kr.co.navi.mobility.ar.ArDatasetController
+import kr.co.navi.mobility.ar.ArRuntimeMode
+import kr.co.navi.mobility.ar.ArRuntimeState
+import kr.co.navi.mobility.guidance.contract.GeoCoordinate
 import kotlin.math.max
 
 private val RouteBlue = Color(0xFF2563EB)
@@ -33,42 +47,130 @@ fun CameraHud(
     cameraGranted: Boolean,
     headingDelta: Float,
     modifier: Modifier = Modifier,
+    datasetController: ArDatasetController? = null,
+    routeCoordinates: List<GeoCoordinate> = emptyList(),
+    userCoordinate: GeoCoordinate? = null,
+    locationAccuracyMeters: Float? = null,
+    headingDegrees: Float? = null,
+    onArStateChanged: (ArRuntimeState) -> Unit = {},
 ) {
+    val context = LocalContext.current
+    val activity = remember(context) { context.findActivity() }
+    var arState by remember { mutableStateOf(ArRuntimeState()) }
+    val useArCore = cameraGranted && activity != null && arState.mode != ArRuntimeMode.UNAVAILABLE
+
+    LaunchedEffect(arState) { onArStateChanged(arState) }
+
+    Box(modifier) {
+        when {
+            useArCore -> ArCorePreview(
+                activity = requireNotNull(activity),
+                routeCoordinates = routeCoordinates,
+                userCoordinate = userCoordinate,
+                locationAccuracyMeters = locationAccuracyMeters,
+                headingDegrees = headingDegrees,
+                onStateChanged = { arState = it },
+                datasetController = datasetController,
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            cameraGranted -> CameraXPreview(Modifier.fillMaxSize())
+            else -> CameraFallback(Modifier.fillMaxSize())
+        }
+        if (!cameraGranted || arState.shouldUse2dFallback) {
+            PrismaticRouteRibbon(
+                headingDelta = headingDelta,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ArCorePreview(
+    activity: Activity,
+    routeCoordinates: List<GeoCoordinate>,
+    userCoordinate: GeoCoordinate?,
+    locationAccuracyMeters: Float?,
+    headingDegrees: Float?,
+    onStateChanged: (ArRuntimeState) -> Unit,
+    datasetController: ArDatasetController?,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val currentListener by rememberUpdatedState(onStateChanged)
+    val view = remember(context, activity) {
+        ArCoreNavigationView(context, activity) { currentListener(it) }
+    }
+
+    DisposableEffect(view, lifecycleOwner, datasetController) {
+        datasetController?.attach(view)
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> view.resumeSession()
+                Lifecycle.Event.ON_PAUSE -> view.pauseSession()
+                Lifecycle.Event.ON_DESTROY -> view.closeSession()
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            view.resumeSession()
+        }
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            datasetController?.detach(view)
+            view.closeSession()
+        }
+    }
+
+    AndroidView(
+        factory = { view },
+        update = { arView ->
+            arView.setStateListener { currentListener(it) }
+            arView.updateGuidance(
+                route = routeCoordinates,
+                user = userCoordinate,
+                locationAccuracyMeters = locationAccuracyMeters,
+                headingDegrees = headingDegrees,
+            )
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun CameraXPreview(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val controller = remember(context) {
         LifecycleCameraController(context).apply {
             cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            // Preview is always enabled; no capture or analysis pipeline is attached in this PoC.
             setEnabledUseCases(0)
         }
     }
-
-    DisposableEffect(controller, lifecycleOwner, cameraGranted) {
-        if (cameraGranted) controller.bindToLifecycle(lifecycleOwner)
+    DisposableEffect(controller, lifecycleOwner) {
+        controller.bindToLifecycle(lifecycleOwner)
         onDispose { controller.unbind() }
     }
 
-    Box(modifier) {
-        if (cameraGranted) {
-            AndroidView(
-                factory = { previewContext: Context ->
-                    PreviewView(previewContext).apply {
-                        scaleType = PreviewView.ScaleType.FILL_CENTER
-                        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                        this.controller = controller
-                    }
-                },
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
-            CameraFallback(Modifier.fillMaxSize())
-        }
-        PrismaticRouteRibbon(
-            headingDelta = headingDelta,
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
+    AndroidView(
+        factory = { previewContext: Context ->
+            PreviewView(previewContext).apply {
+                scaleType = PreviewView.ScaleType.FILL_CENTER
+                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                this.controller = controller
+            }
+        },
+        modifier = modifier,
+    )
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 @Composable

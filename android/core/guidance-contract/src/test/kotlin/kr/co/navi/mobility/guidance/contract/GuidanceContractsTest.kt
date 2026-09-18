@@ -21,4 +21,24 @@ class GuidanceContractsTest {
             )
         }
     }
+
+    @Test
+    fun `perception result requires model provenance and non-negative latency`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            PerceptionResult(
+                stamp = FrameStamp(1, 1),
+                modelVersion = "",
+                inferenceMillis = 0,
+                detections = emptyList(),
+            )
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            PerceptionResult(
+                stamp = FrameStamp(1, 1),
+                modelVersion = "fixture-v1",
+                inferenceMillis = -1,
+                detections = emptyList(),
+            )
+        }
+    }
 }

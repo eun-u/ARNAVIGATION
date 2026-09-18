@@ -16,4 +16,11 @@ android/.gradle/
 android/local.properties
 android/**/build/
 android/.idea/
+android/feature/ai-perception/src/debug/assets/*.tflite
+artifacts/m2-device-free/
+artifacts/m2-device-free-fixture/
+data/ai-evaluation/runs/
+data/ai-evaluation/raw/
+# Spatial evaluation artifacts can embed geometry derived from redistribution-restricted NGII data.
+data/processed/evaluation/
 *.iml

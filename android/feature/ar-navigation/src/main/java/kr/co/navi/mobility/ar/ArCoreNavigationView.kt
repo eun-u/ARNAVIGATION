@@ -1,32 +1,42 @@
 package kr.co.navi.mobility.ar
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.os.SystemClock
+import android.util.Log
 import android.view.Surface
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.Coordinates2d
 import com.google.ar.core.Frame
+import com.google.ar.core.PlaybackStatus
 import com.google.ar.core.Pose
+import com.google.ar.core.RecordingConfig
+import com.google.ar.core.RecordingStatus
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.NotYetAvailableException
+import com.google.ar.core.exceptions.TextureNotSetException
 import com.google.ar.core.exceptions.UnavailableException
 import kr.co.navi.mobility.guidance.contract.GeoCoordinate
 import kr.co.navi.mobility.guidance.contract.TrackingQuality
+import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.math.PI
-import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
@@ -34,6 +44,7 @@ import kotlin.math.sin
 /**
  * Owns the ARCore camera session. CameraX must never be bound while this view is active.
  */
+@SuppressLint("ViewConstructor")
 class ArCoreNavigationView(
     context: Context,
     private val activity: Activity,
@@ -48,6 +59,12 @@ class ArCoreNavigationView(
     private var depthSupported = false
     private var lastState = ArRuntimeState()
     private var lastGuidanceInput: GuidanceInput? = null
+    private val metricsRecorder = ArSessionMetricsRecorder()
+    private var datasetMode = ArDatasetMode.LIVE
+    private var datasetMessage: String? = null
+    private var activeDataset: File? = null
+    private var latestDataset: File? = null
+    private var lastDiagnosticLogAt = 0L
 
     init {
         setEGLContextClientVersion(2)
@@ -55,6 +72,9 @@ class ArCoreNavigationView(
         setRenderer(renderer)
         renderMode = RENDERMODE_CONTINUOUSLY
         preserveEGLContextOnPause = true
+        keepScreenOn = true
+        latestDataset = findLatestDataset()
+        lastState = lastState.copy(latestDatasetName = latestDataset?.name)
         publish(lastState)
     }
 
@@ -103,6 +123,7 @@ class ArCoreNavigationView(
 
     fun pauseSession() {
         if (!resumed) return
+        if (datasetMode == ArDatasetMode.RECORDING) stopDatasetRecording()
         super.onPause()
         session?.pause()
         resumed = false
@@ -110,9 +131,115 @@ class ArCoreNavigationView(
 
     fun closeSession() {
         pauseSession()
+        metricsRecorder.stop()
         renderer.session = null
         session?.close()
         session = null
+    }
+
+    fun startDatasetRecording() {
+        val current = session
+        if (current == null || !resumed) {
+            publishDatasetError("ARCore 세션이 준비된 뒤 녹화를 시작하세요.")
+            return
+        }
+        if (datasetMode == ArDatasetMode.PLAYBACK || datasetMode == ArDatasetMode.PLAYBACK_FINISHED) {
+            publishDatasetError("재생 모드에서는 새 녹화를 시작할 수 없습니다.")
+            return
+        }
+        if (datasetMode == ArDatasetMode.RECORDING) return
+
+        val directory = datasetDirectory().apply { mkdirs() }
+        val stamp = SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(Date())
+        val mp4 = directory.resolve("navi_ar_$stamp.mp4")
+        val metrics = directory.resolve("navi_ar_$stamp.csv")
+        runCatching {
+            val recordingConfig = RecordingConfig(current)
+                .setMp4DatasetUri(Uri.fromFile(mp4))
+                .setAutoStopOnPause(true)
+                .setRecordingRotation(displayRotationDegrees())
+            current.startRecording(recordingConfig)
+            metricsRecorder.start(metrics)
+        }.onSuccess {
+            activeDataset = mp4
+            latestDataset = mp4
+            datasetMode = ArDatasetMode.RECORDING
+            datasetMessage = "로컬 AR dataset 녹화 중"
+            publishDatasetState()
+        }.onFailure { error ->
+            runCatching { current.stopRecording() }
+            metricsRecorder.stop()
+            activeDataset = null
+            publishDatasetError("녹화를 시작하지 못했습니다: ${error.message ?: error.javaClass.simpleName}")
+        }
+    }
+
+    fun stopDatasetRecording() {
+        if (datasetMode != ArDatasetMode.RECORDING) return
+        val recorded = activeDataset
+        val result = runCatching { session?.stopRecording() }
+        metricsRecorder.stop()
+        activeDataset = null
+        if (result.isSuccess && recorded?.isFile == true && recorded.length() > 0L) {
+            latestDataset = recorded
+            datasetMode = ArDatasetMode.LIVE
+            datasetMessage = "${recorded.name} · ${recorded.length() / 1024L} KB 저장"
+            publishDatasetState()
+        } else {
+            publishDatasetError(
+                "녹화 파일 저장에 실패했습니다: " +
+                    (result.exceptionOrNull()?.message ?: "빈 dataset"),
+            )
+        }
+    }
+
+    fun playLatestDataset() {
+        if (datasetMode == ArDatasetMode.RECORDING) stopDatasetRecording()
+        val target = latestDataset?.takeIf(File::isFile) ?: findLatestDataset()
+        if (target == null) {
+            publishDatasetError("재생할 AR dataset이 없습니다.")
+            return
+        }
+        val current = session ?: createSession()
+        if (current == null) {
+            publishDatasetError("ARCore 세션을 만들 수 없습니다.")
+            return
+        }
+
+        runCatching {
+            if (resumed) {
+                super.onPause()
+                current.pause()
+                resumed = false
+            }
+            current.setPlaybackDatasetUri(Uri.fromFile(target))
+            current.resume()
+            renderer.session = current
+            renderer.invalidateCameraTexture()
+            super.onResume()
+            resumed = true
+        }.onSuccess {
+            latestDataset = target
+            datasetMode = ArDatasetMode.PLAYBACK
+            datasetMessage = "${target.name} 반복 재생 중"
+            publishDatasetState()
+        }.onFailure { error ->
+            publishDatasetError("dataset 재생을 시작하지 못했습니다: ${error.message ?: error.javaClass.simpleName}")
+        }
+    }
+
+    fun returnToLiveSession() {
+        if (datasetMode == ArDatasetMode.LIVE) return
+        closeSession()
+        datasetMode = ArDatasetMode.LIVE
+        datasetMessage = "실시간 카메라로 전환됨"
+        publishDatasetState()
+        resumeSession()
+    }
+
+    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight)
+        renderer.displayRotation = display?.rotation ?: Surface.ROTATION_0
     }
 
     private fun createSession(): Session? {
@@ -166,6 +293,48 @@ class ArCoreNavigationView(
 
     private fun onFrameTelemetry(telemetry: FrameTelemetry) {
         post {
+            when {
+                telemetry.playbackStatus == PlaybackStatus.FINISHED -> {
+                    datasetMode = ArDatasetMode.PLAYBACK_FINISHED
+                    datasetMessage = "dataset 재생 완료"
+                }
+                telemetry.playbackStatus == PlaybackStatus.IO_ERROR -> {
+                    datasetMode = ArDatasetMode.ERROR
+                    datasetMessage = "dataset 재생 중 I/O 오류"
+                }
+                telemetry.recordingStatus == RecordingStatus.IO_ERROR -> {
+                    metricsRecorder.stop()
+                    datasetMode = ArDatasetMode.ERROR
+                    datasetMessage = "dataset 녹화 중 I/O 오류"
+                }
+            }
+            if (datasetMode == ArDatasetMode.RECORDING) {
+                metricsRecorder.append(
+                    ArTelemetrySample(
+                        elapsedRealtimeMillis = SystemClock.elapsedRealtime(),
+                        trackingQuality = telemetry.trackingQuality.name,
+                        depthActive = telemetry.depthActive,
+                        routeAligned = routeAligned,
+                        trackingLossCount = telemetry.trackingLossCount,
+                        lastRecoveryMillis = telemetry.lastRecoveryMillis,
+                        frameTimeMillis = telemetry.frameTimeMillis,
+                        message = telemetry.message,
+                    ),
+                )
+            }
+            val now = SystemClock.elapsedRealtime()
+            if (now - lastDiagnosticLogAt >= DIAGNOSTIC_LOG_INTERVAL_MILLIS) {
+                lastDiagnosticLogAt = now
+                Log.i(
+                    DIAGNOSTIC_LOG_TAG,
+                    "tracking=${telemetry.trackingQuality.name} " +
+                        "depth=${telemetry.depthActive} route_aligned=$routeAligned " +
+                        "losses=${telemetry.trackingLossCount} " +
+                        "recovery_ms=${telemetry.lastRecoveryMillis ?: -1L} " +
+                        "frame_ms=${String.format(Locale.US, "%.3f", telemetry.frameTimeMillis)} " +
+                        "dataset=${datasetMode.name}",
+                )
+            }
             val mode = when (telemetry.trackingQuality) {
                 TrackingQuality.TRACKING -> ArRuntimeMode.TRACKING
                 TrackingQuality.UNAVAILABLE -> ArRuntimeMode.UNAVAILABLE
@@ -184,6 +353,9 @@ class ArCoreNavigationView(
                     lastRecoveryMillis = telemetry.lastRecoveryMillis,
                     frameTimeMillis = telemetry.frameTimeMillis,
                     message = telemetry.message,
+                    datasetMode = datasetMode,
+                    latestDatasetName = latestDataset?.name,
+                    datasetMessage = datasetMessage,
                 ),
             )
         }
@@ -197,6 +369,36 @@ class ArCoreNavigationView(
                 message = message,
             ),
         )
+    }
+
+    private fun publishDatasetState() {
+        publish(
+            lastState.copy(
+                datasetMode = datasetMode,
+                latestDatasetName = latestDataset?.name,
+                datasetMessage = datasetMessage,
+            ),
+        )
+    }
+
+    private fun publishDatasetError(message: String) {
+        datasetMode = ArDatasetMode.ERROR
+        datasetMessage = message
+        publishDatasetState()
+    }
+
+    private fun datasetDirectory(): File =
+        (context.getExternalFilesDir("ar-datasets") ?: File(context.filesDir, "ar-datasets"))
+
+    private fun findLatestDataset(): File? = datasetDirectory()
+        .listFiles { file -> file.isFile && file.extension.equals("mp4", ignoreCase = true) }
+        ?.maxByOrNull(File::lastModified)
+
+    private fun displayRotationDegrees(): Int = when (display?.rotation ?: Surface.ROTATION_0) {
+        Surface.ROTATION_90 -> 90
+        Surface.ROTATION_180 -> 180
+        Surface.ROTATION_270 -> 270
+        else -> 0
     }
 
     private fun publish(state: ArRuntimeState) {
@@ -215,6 +417,11 @@ class ArCoreNavigationView(
         val accuracyMeters: Float?,
         val headingDegrees: Float?,
     )
+
+    private companion object {
+        const val DIAGNOSTIC_LOG_TAG = "NaViAR"
+        const val DIAGNOSTIC_LOG_INTERVAL_MILLIS = 5_000L
+    }
 }
 
 private data class FrameTelemetry(
@@ -224,6 +431,8 @@ private data class FrameTelemetry(
     val lastRecoveryMillis: Long?,
     val frameTimeMillis: Float,
     val message: String?,
+    val recordingStatus: RecordingStatus,
+    val playbackStatus: PlaybackStatus,
 )
 
 private class ArCoreRenderer(
@@ -232,8 +441,12 @@ private class ArCoreRenderer(
     @Volatile
     var session: Session? = null
 
+    @Volatile
+    var displayRotation: Int = Surface.ROTATION_0
+
     private val cameraRenderer = CameraBackgroundRenderer()
     private val ribbonRenderer = RouteRibbonRenderer()
+    @Volatile
     private var textureSession: Session? = null
     private var viewportWidth = 1
     private var viewportHeight = 1
@@ -245,6 +458,10 @@ private class ArCoreRenderer(
 
     fun setGuidance(path: ForwardGuidancePath?, headingDegrees: Float?) {
         ribbonRenderer.setGuidance(path, headingDegrees)
+    }
+
+    fun invalidateCameraTexture() {
+        textureSession = null
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -269,13 +486,16 @@ private class ArCoreRenderer(
         }
 
         activeSession.setDisplayGeometry(
-            displayRotation(),
+            displayRotation,
             viewportWidth,
             viewportHeight,
         )
         val frameStartedAt = System.nanoTime()
         val frame = try {
             activeSession.update()
+        } catch (_: TextureNotSetException) {
+            textureSession = null
+            return
         } catch (_: CameraNotAvailableException) {
             publishUnavailableTelemetry(frameStartedAt)
             return
@@ -286,7 +506,15 @@ private class ArCoreRenderer(
         val tracking = camera.trackingState == TrackingState.TRACKING
         updateTrackingMetrics(tracking)
         val depthActive = if (tracking) frame.hasDepthImage() else false
-        if (tracking) ribbonRenderer.draw(camera.pose, camera, frame)
+        if (tracking) {
+            ribbonRenderer.draw(
+                cameraPose = camera.pose,
+                camera = camera,
+                frame = frame,
+                viewportWidth = viewportWidth,
+                viewportHeight = viewportHeight,
+            )
+        }
 
         val now = SystemClock.elapsedRealtime()
         if (now - lastTelemetryAt >= TELEMETRY_INTERVAL_MILLIS || tracking != wasTracking) {
@@ -299,6 +527,8 @@ private class ArCoreRenderer(
                     lastRecoveryMillis = lastRecoveryMillis,
                     frameTimeMillis = (System.nanoTime() - frameStartedAt) / 1_000_000f,
                     message = if (tracking) null else camera.trackingFailureReason.name,
+                    recordingStatus = activeSession.recordingStatus,
+                    playbackStatus = activeSession.playbackStatus,
                 ),
             )
         }
@@ -325,13 +555,10 @@ private class ArCoreRenderer(
                 lastRecoveryMillis = lastRecoveryMillis,
                 frameTimeMillis = (System.nanoTime() - frameStartedAt) / 1_000_000f,
                 message = "CAMERA_NOT_AVAILABLE",
+                recordingStatus = RecordingStatus.NONE,
+                playbackStatus = PlaybackStatus.NONE,
             ),
         )
-    }
-
-    private fun displayRotation(): Int = when (android.content.res.Resources.getSystem().configuration.orientation) {
-        android.content.res.Configuration.ORIENTATION_LANDSCAPE -> Surface.ROTATION_90
-        else -> Surface.ROTATION_0
     }
 
     private fun Frame.hasDepthImage(): Boolean = try {
@@ -484,9 +711,15 @@ private class RouteRibbonRenderer {
         guidanceRevision += 1
     }
 
-    fun draw(cameraPose: Pose, camera: com.google.ar.core.Camera, frame: Frame) {
+    fun draw(
+        cameraPose: Pose,
+        camera: com.google.ar.core.Camera,
+        frame: Frame,
+        viewportWidth: Int,
+        viewportHeight: Int,
+    ) {
         if (anchoredRevision != guidanceRevision) {
-            vertices = buildWorldRibbon(cameraPose, frame)
+            vertices = buildWorldRibbon(cameraPose, frame, viewportWidth, viewportHeight)
             vertexCount = (vertices?.capacity() ?: 0) / 3
             anchoredRevision = guidanceRevision
         }
@@ -511,7 +744,12 @@ private class RouteRibbonRenderer {
         GLES20.glDisable(GLES20.GL_BLEND)
     }
 
-    private fun buildWorldRibbon(cameraPose: Pose, frame: Frame): FloatBuffer? {
+    private fun buildWorldRibbon(
+        cameraPose: Pose,
+        frame: Frame,
+        viewportWidth: Int,
+        viewportHeight: Int,
+    ): FloatBuffer? {
         val path = guidance ?: return null
         val heading = headingDegrees ?: return null
         if (path.points.size < 2) return null
@@ -522,7 +760,7 @@ private class RouteRibbonRenderer {
             .map { -it }
             .toFloatArray()
             .horizontalNormalized() ?: return null
-        val floorY = estimateFloorY(frame, cameraOrigin[1])
+        val floorY = estimateFloorY(frame, cameraOrigin[1], viewportWidth, viewportHeight)
         val headingRadians = heading * PI.toFloat() / 180f
         val headingCos = cos(headingRadians)
         val headingSin = sin(headingRadians)
@@ -556,8 +794,13 @@ private class RouteRibbonRenderer {
         return floatBufferOf(*values.toFloatArray())
     }
 
-    private fun estimateFloorY(frame: Frame, cameraY: Float): Float {
-        val hits = frame.hitTest(0.5f, 0.72f)
+    private fun estimateFloorY(
+        frame: Frame,
+        cameraY: Float,
+        viewportWidth: Int,
+        viewportHeight: Int,
+    ): Float {
+        val hits = frame.hitTest(viewportWidth * 0.5f, viewportHeight * 0.72f)
         val groundHit = hits.firstOrNull { it.trackable.trackingState == TrackingState.TRACKING }
         return groundHit?.hitPose?.ty() ?: (cameraY - DEFAULT_CAMERA_HEIGHT_METERS)
     }

@@ -214,17 +214,17 @@ verified=false
 
 ### 6.1 입력과 현재 상태
 
-- 기존 입력: RGB TIFF와 XML 메타데이터, 도엽 `37612049`, 비산동
-- 기존 TIFF 크기: 9,252×11,508, uint8, 3 bands
-- 기존 메타데이터 GSD: 0.25m
-- 기존 TIFF 내장 CRS/affine/GCP/RPC: 없음
-- 기존 도엽과 기준 Graph 교차: 없음
-- 추가 입력: 2025 공식 JPEG 미리보기와 HTML 메타데이터 4세트
-- 추가 도엽: `37612037`, `37612038`, `37612047`, `37612048`
-- 추가 미리보기 크기: 약 4,535×5,641, 약 0.51m/pixel
+- 대표회랑 입력: 2025 25cm RGB TIFF와 XML 메타데이터 4세트
+- 대표회랑 도엽: `37612037`, `37612038`, `37612047`, `37612048`
+- 원본 TIFF 크기: 9,252~9,264×11,496~11,508, uint8, 3 bands
+- 원본 메타데이터 GSD: 0.25m
+- TIFF 내장 GeoTIFF CRS/affine 태그 및 world file: 없음
+- 무결성: 4장 모두 TIFF 헤더·IFD·strip offset/byte count 검사 통과
+- 예비 QA 입력: 공식 JPEG 미리보기와 HTML 메타데이터 4세트, 약 4,535×5,641, 약 0.51m/pixel
 - 공식 검색 결과 extent: EPSG:5179, 현재 Graph 전역을 네 도엽이 덮음
+- 참조용 기존 도엽 `37612049`는 기준 Graph와 교차하지 않음
 
-따라서 Q3의 예비 시각 QA는 진행할 수 있습니다. 다만 미리보기는 0.25m 원본 TIF가 아니며, 공식 extent를 사용하더라도 기준점 RMSE를 확인하기 전에는 geometry 수정 또는 정량 Feature에 사용하지 않습니다.
+따라서 Q3의 full-resolution 시각 QA 준비는 가능합니다. 다만 원본 TIFF에 georeferencing이 내장되어 있지 않으므로, 공식 extent로 affine을 복원하고 기준점 RMSE를 확인하기 전에는 geometry 수정 또는 정량 Feature에 사용하지 않습니다.
 
 ### 6.2 georeferencing과 clipping
 
@@ -270,7 +270,7 @@ verified=false
 - 기준점 RMSE 1.5m 이하, 최대오차 3m 이하, 회랑 coverage 90% 이상, 해석 가능 구간 85% 이상일 때 visual QA source로 `accept`합니다.
 - geometry 수정 후보는 두 명 검토 또는 독립 공공 geometry와의 합치가 있어야 승인 대상으로 보냅니다.
 - 영상 판독만으로 Routing Hard Constraint를 만들지 않습니다.
-- 현재 네 미리보기는 회랑 시각 QA 후보로 `partial_accept`입니다. 기준점 RMSE 검증과 25cm 원본 TIF 확보 전에는 geometry 자동 수정에 사용하지 않습니다.
+- 현재 25cm 원본 4장과 미리보기 4장은 회랑 시각 QA 후보로 `partial_accept`입니다. 기준점 RMSE 검증 전에는 geometry 자동 수정에 사용하지 않습니다.
 
 ## 7. Graph 통합 전 최종 게이트
 
@@ -284,34 +284,90 @@ verified=false
 6. 새 Feature가 실제로 Edge 통과 가능 여부, cost 또는 목적지 정밀도 중 하나를 개선한다.
 7. 경로 변화가 발생하면 변경 Edge, 원인, 출처, 품질등급을 보고서에 남긴다.
 
-## 8. 평가 구현 시 예상 산출물
+## 8. 구현 및 실제 평가 결과
 
-코드 구현 승인이 아니라 다음 단계의 작업 경계를 정의한 목록입니다.
+구현된 자동 평가 진입점은 다음과 같습니다.
 
 ```text
 scripts/validate_spatial_sources.py
 scripts/evaluate_topographic_map.py
 scripts/evaluate_dem.py
 scripts/evaluate_orthophoto.py
-
-data/processed/evaluation/corridor_mask.geojson
-data/processed/evaluation/topographic_map/matches.geojson
-data/processed/evaluation/topographic_map/new_object_candidates.geojson
-data/processed/evaluation/dem/edge_slope_candidates.csv
-data/processed/evaluation/orthophoto/geometry_review_candidates.geojson
-data/processed/evaluation/metrics.json
-
-docs/spatial_data_evaluation_report.md
+scripts/evaluate_cross_sources.py
+scripts/run_spatial_evaluation.py
 ```
 
-`build_graph.py` 변경은 위 보고서에서 채택된 Feature가 생긴 뒤 별도 단계로 진행합니다.
+단일 실행 명령:
 
-## 9. 실행 순서와 예상 소요
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[dev,geo]"
+.\.venv\Scripts\python.exe .\scripts\run_spatial_evaluation.py
+```
 
-1. 현재 원본용 validator와 공통 회랑 마스크: 2~3시간
-2. DEM 평가기와 지표: 3~4시간
-3. 수치지형도 layer inventory/matcher: 4~6시간
-4. 정사영상 georeferencing/overlay 평가기: 4~6시간
-5. 수동 표본 QA와 채택 보고서: 4~8시간
+공통 validator는 Graph/raw GraphML hash 연결, 원본 manifest의 크기·SHA-256, ZIP CRC, SHP 구성, CRS, raster/GeoJSON 가독성, 회랑 coverage를 검사합니다. 실행 결과는 `status=warning`, 필수 입력 실패는 0건이며 off-corridor 연속수치지도 1건만 의도적으로 `hold`입니다.
 
-총 예상은 약 2~3 개발일입니다. 대표회랑 수치지형도는 확보되어 Q1 평가를 시작할 수 있고, DEM 메타·해상도 평가와 정사영상 미리보기 기반 예비 Q3 평가도 가능합니다. 정사영상의 정량 geometry QA 확정에는 25cm 원본 TIF와 georeferencing 검증이 추가로 필요합니다.
+### 8.1 수치지형도
+
+- 공식 NGII `수치지도 지형지물 표준코드` XLS를 SHA-256으로 검증하고 의미 사전으로 사용했습니다.
+- 9개 도엽, 399개 레이어, 97,719개 Feature를 inventory했습니다.
+- 회랑 context에서 공식 코드가 확인된 보도·횡단보도·육교·계단·지하도입구 1,351개를 평가했습니다.
+- 결과는 unique 390, ambiguous 450, unmatched 511, unique rate 28.868%입니다.
+- 새 객체 검수 후보는 309개입니다.
+- 80% 자동 매핑 gate 미달이므로 unique 결과도 자동 채택하지 않습니다.
+
+### 8.2 DEM
+
+- 723개 Edge 모두 유효 표본을 얻었으나 596개가 3개 미만의 독립 DEM cell만 통과했습니다.
+- nearest/bilinear endpoint 차이 p95는 7.767m입니다.
+- Hard Constraint 적용 가능 Edge는 0개입니다.
+- 90m DEM은 `coarse_terrain_context`로만 부분 채택합니다.
+
+### 8.3 정사영상
+
+- 공식 preview HTML의 EPSG:5179 extent와 원본 TIFF dimensions로 4개 도엽의 affine sidecar를 복원했습니다.
+- 계산 픽셀 크기는 0.250970~0.251553m이며 제품 설명 0.25m와 일치합니다.
+- 네 도엽은 Graph Edge 길이의 100%를 덮습니다.
+- 안양시 횡단보도 402개를 시각 검수 후보로 만들었습니다.
+- 독립 기준점 0개, RMSE `null`이므로 geometry 자동 수정은 `hold`입니다. 원 TIFF는 수정하지 않았습니다.
+
+### 8.4 정밀도로지도·횡단보도 교차검증
+
+- 100m context 안에서 보도 23개, 횡단보도 22개, 콘크리트 연석 29개를 검수 후보로 만들었습니다.
+- 공공 횡단보도 402개 중 HD 횡단보도와 20m 이내 대응은 12개, 20~50m 검토 대상은 6개입니다.
+- 192개는 HD-map coverage 밖이고, coverage 안 192개는 50m 이내 대응 객체가 없습니다.
+- coverage 밖의 부재는 객체 부재로 해석하지 않습니다.
+- 연석 geometry로 턱 높이 또는 휠체어 통과 가능성을 추정하지 않습니다.
+
+### 8.5 산출물과 안전 경계
+
+주요 산출물:
+
+```text
+data/processed/evaluation/evaluation_summary.json
+data/processed/evaluation/review_queue.geojson
+data/processed/evaluation/review_queue.csv
+data/processed/evaluation/topographic_map/
+data/processed/evaluation/dem/
+data/processed/evaluation/orthophoto/
+data/processed/evaluation/cross_sources/
+data/processed/evaluation/graph_enrichment/
+docs/spatial_data_evaluation_report.md
+docs/graph_enrichment_candidate_report.md
+```
+
+리뷰 큐는 역할별 최대 30개를 결정론적으로 뽑은 414개 표본이며 전부 `pending`입니다. 실행 전후 Graph SHA-256은 `b6c746a47c80d516bc506473335e0177eade52d82b8b635d1cb0f8ce2d9cac78`로 동일합니다. 모든 평가 산출물은 `derived=true`, `verified=false`, `graph_update_allowed=false`입니다.
+
+사람 판독 전 단계로 Graph 반영 후보도 생성합니다. unique 매칭과 교차 출처 합치만 기계적으로 선별한 결과는 235개 후보/192개 Edge입니다. 이 중 경로 조건 변경 가능 후보는 기존 `stairs=false` Edge 5개에 대한 `stairs=true` 제안이고, 나머지 230개는 근거 전용입니다. candidate Graph 사본은 Routing 필드를 바꾸지 않으며 일반 1081.9m·휠체어 1302.5m 데모 경로가 기준 Graph와 동일함을 회귀검증합니다. 별도 시뮬레이션 사본에 다섯 제안을 적용했을 때 후보 Edge 양 끝점 경로는 모두 바뀌었고, 3개는 각각 +114.1m, +1,205.8m, +275.2m 우회하며 2개는 접근 가능 경로가 사라졌습니다. 이 영향 때문에 자동 적용 대신 후보 상태를 유지합니다.
+
+## 9. 남은 작업과 소요 구분
+
+자동화 코드 구현과 1회 평가 실행은 완료했습니다. 현재 PC에서 전체 재실행은 약 3~4분이며 이는 LLM/프로그램 실행 시간입니다.
+
+남은 작업은 사람이 근거 영상을 보며 수행하는 검수입니다.
+
+1. 리뷰 큐 414개 중 우선순위 표본 판독 및 승인/기각: 사람 기준 약 4~8시간
+2. 정사영상 독립 기준점 최소 20개 선정과 RMSE 계산: 사람 기준 약 1~2시간
+3. 현장 또는 로드뷰로 계단·횡단부·턱 후보 확인: 범위에 따라 반나절 이상
+4. 승인된 관측만 verified observation으로 변환하고 5개 계단 후보의 경로 영향을 재계산: 위 검수 후 별도 구현
+
+따라서 다음 단계는 새 데이터를 더 받는 일이 아니라 `review_queue`를 사람이 판독하고, 정사영상 기준점 RMSE를 확보하는 일입니다.

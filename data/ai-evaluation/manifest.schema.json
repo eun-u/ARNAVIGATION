@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navi.local/schemas/ai-offline-manifest-v1.json",
+  "title": "NaVi AI offline evaluation manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "dataset_id", "frames"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "source_recording": {"$ref": "#/$defs/source_recording"},
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/frame"}
+    }
+  },
+  "$defs": {
+    "source_recording": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "video_path", "telemetry_path", "video_sha256", "telemetry_sha256",
+        "telemetry_origin_elapsed_realtime_ms", "duration_ms", "sample_interval_ms",
+        "sync_strategy", "estimated_sync_error_ms"
+      ],
+      "properties": {
+        "video_path": {"type": "string", "minLength": 1},
+        "telemetry_path": {"type": "string", "minLength": 1},
+        "video_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "telemetry_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "telemetry_origin_elapsed_realtime_ms": {"type": "integer", "minimum": 0},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "sample_interval_ms": {"type": "integer", "minimum": 1},
+        "sync_strategy": {"type": "string", "minLength": 1},
+        "estimated_sync_error_ms": {"type": "integer", "minimum": 0},
+        "privacy_status": {"enum": ["unreviewed", "redacted", "approved"], "default": "unreviewed"},
+        "consent_reference": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "timestamp_nanos"],
+      "oneOf": [
+        {"required": ["image_path"], "not": {"required": ["video_path"]}},
+        {"required": ["video_path", "video_position_ms"], "not": {"required": ["image_path"]}}
+      ],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "image_path": {"type": "string", "minLength": 1},
+        "video_path": {"type": "string", "minLength": 1},
+        "video_position_ms": {"type": "integer", "minimum": 0},
+        "timestamp_nanos": {"type": "integer", "minimum": 0},
+        "rotation_degrees": {"enum": [0, 90, 180, 270], "default": 0},
+        "context": {"$ref": "#/$defs/context"},
+        "annotations": {
+          "type": "array",
+          "default": [],
+          "items": {"$ref": "#/$defs/annotation"}
+        },
+        "segmentation": {"$ref": "#/$defs/segmentation"}
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {"type": ["string", "null"], "minLength": 1},
+        "tracking_quality": {"type": ["string", "null"], "minLength": 1},
+        "depth_active": {"type": ["boolean", "null"]},
+        "route_aligned": {"type": ["boolean", "null"]},
+        "tracking_loss_count": {"type": ["integer", "null"], "minimum": 0},
+        "last_recovery_ms": {"type": ["integer", "null"], "minimum": 0},
+        "ar_frame_time_ms": {"type": ["number", "null"], "minimum": 0},
+        "telemetry_offset_ms": {"type": ["integer", "null"]},
+        "message": {"type": ["string", "null"]}
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "left", "top", "right", "bottom"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "instance_id": {"type": ["string", "null"], "minLength": 1},
+        "left": {"type": "number", "minimum": 0, "maximum": 1},
+        "top": {"type": "number", "minimum": 0, "maximum": 1},
+        "right": {"type": "number", "minimum": 0, "maximum": 1},
+        "bottom": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "segmentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mask_path", "labels"],
+      "properties": {
+        "mask_path": {"type": "string", "minLength": 1},
+        "labels": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {"pattern": "^(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"},
+          "additionalProperties": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

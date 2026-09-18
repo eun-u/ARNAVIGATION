@@ -57,6 +57,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.co.navi.mobility.ar.ArDatasetController
+import kr.co.navi.mobility.ar.ArDatasetMode
+import kr.co.navi.mobility.ar.ArRuntimeMode
+import kr.co.navi.mobility.ar.ArRuntimeState
 import kr.co.navi.mobility.ar.sensors.HeadingState
 import kr.co.navi.mobility.ar.ui.CameraHud
 import kr.co.navi.mobility.data.NaviSessionState
@@ -64,6 +68,7 @@ import kr.co.navi.mobility.data.model.CoordinateDto
 import kr.co.navi.mobility.data.model.RouteComparisonDto
 import kr.co.navi.mobility.data.model.RouteResultDto
 import kr.co.navi.mobility.location.LocationState
+import kr.co.navi.mobility.guidance.contract.GeoCoordinate
 import kr.co.navi.mobility.guidance.contract.normalizeHeadingDelta
 import kr.co.navi.mobility.guidance.contract.reasonLabel
 import kr.co.navi.mobility.guidance.contract.routeBearing
@@ -522,7 +527,10 @@ fun CameraScreen(
 ) {
     val session by viewModel.sessionState.collectAsStateWithLifecycle()
     val heading by viewModel.headingState.collectAsStateWithLifecycle()
+    val location by viewModel.locationState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var arState by remember { mutableStateOf(ArRuntimeState()) }
+    val datasetController = remember { ArDatasetController() }
     var cameraGranted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED,
@@ -542,6 +550,15 @@ fun CameraScreen(
     }
     val targetBearing = routeBearing(route.geometry)
     val headingDegrees = (heading as? HeadingState.Available)?.degrees
+    val availableLocation = location as? LocationState.Available
+    val routeCoordinates = remember(route.geometry) {
+        route.geometry.mapNotNull { point ->
+            if (point.size < 2) null else GeoCoordinate(
+                latitude = point[1],
+                longitude = point[0],
+            )
+        }
+    }
     val delta = if (targetBearing != null && headingDegrees != null) {
         normalizeHeadingDelta(targetBearing, headingDegrees)
     } else {
@@ -552,6 +569,14 @@ fun CameraScreen(
         CameraHud(
             cameraGranted = cameraGranted,
             headingDelta = delta,
+            datasetController = datasetController,
+            routeCoordinates = routeCoordinates,
+            userCoordinate = availableLocation?.coordinate?.let {
+                GeoCoordinate(latitude = it.lat, longitude = it.lon)
+            },
+            locationAccuracyMeters = availableLocation?.accuracyMeters,
+            headingDegrees = headingDegrees,
+            onArStateChanged = { arState = it },
             modifier = Modifier.fillMaxSize(),
         )
         Column(
@@ -569,8 +594,8 @@ fun CameraScreen(
             ) {
                 CameraRoundButton("←", "지도 화면으로 돌아가기", onBack)
                 StatusPill(
-                    symbol = "◇",
-                    text = "카메라 안내 · PoC",
+                    symbol = if (arState.mode == ArRuntimeMode.TRACKING && arState.routeAligned) "◎" else "◇",
+                    text = arStatusLabel(cameraGranted, arState),
                     foreground = NaviOnDark,
                     background = Color.Black.copy(alpha = 0.52f),
                 )
@@ -600,7 +625,7 @@ fun CameraScreen(
                             color = Color.White,
                         )
                         Text(
-                            text = "경로 방향과 기기 나침반을 기준으로 표시",
+                            text = arGuidanceDetail(arState),
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.White.copy(alpha = 0.75f),
                         )
@@ -615,7 +640,7 @@ fun CameraScreen(
                 border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.24f)),
             ) {
                 Text(
-                    text = "시각화 데모 · 실제 보도 위치·거리와 정합된 AR이 아닙니다.",
+                    text = arSafetyNotice(arState),
                     modifier = Modifier.padding(horizontal = NaviDimens.Space12, vertical = NaviDimens.Space8),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.88f),
@@ -642,6 +667,13 @@ fun CameraScreen(
                 }
                 Spacer(Modifier.height(NaviDimens.Space12))
             }
+            if (cameraGranted) {
+                ArDatasetControls(
+                    state = arState,
+                    controller = datasetController,
+                )
+                Spacer(Modifier.height(NaviDimens.Space8))
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(NaviDimens.Space8)) {
                 OutlinedButton(
                     onClick = onMap,
@@ -658,6 +690,103 @@ fun CameraScreen(
         }
     }
 }
+
+@Composable
+private fun ArDatasetControls(
+    state: ArRuntimeState,
+    controller: ArDatasetController,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.Black.copy(alpha = 0.62f),
+        shape = MaterialTheme.shapes.small,
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.24f)),
+    ) {
+        Column(
+            modifier = Modifier.padding(NaviDimens.Space12),
+            verticalArrangement = Arrangement.spacedBy(NaviDimens.Space8),
+        ) {
+            Text(
+                text = state.datasetMessage ?: "ARCore MP4와 tracking telemetry를 기기에만 저장합니다.",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White.copy(alpha = 0.82f),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(NaviDimens.Space8)) {
+                androidx.compose.material3.Button(
+                    onClick = when (state.datasetMode) {
+                        ArDatasetMode.RECORDING -> controller::stopRecording
+                        ArDatasetMode.PLAYBACK,
+                        ArDatasetMode.PLAYBACK_FINISHED,
+                        -> controller::returnToLive
+                        else -> controller::startRecording
+                    },
+                    modifier = Modifier.weight(1f).height(48.dp),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = if (state.datasetMode == ArDatasetMode.RECORDING) NaviBlock else NaviBlue,
+                    ),
+                ) {
+                    Text(
+                        when (state.datasetMode) {
+                            ArDatasetMode.RECORDING -> "녹화 중지"
+                            ArDatasetMode.PLAYBACK,
+                            ArDatasetMode.PLAYBACK_FINISHED,
+                            -> "실시간 전환"
+                            else -> "세션 녹화"
+                        },
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                OutlinedButton(
+                    onClick = controller::playLatest,
+                    enabled = state.latestDatasetName != null && state.datasetMode != ArDatasetMode.RECORDING,
+                    modifier = Modifier.weight(1f).height(48.dp),
+                    colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.7f)),
+                ) { Text("최근 기록 재생") }
+            }
+        }
+    }
+}
+
+private fun arStatusLabel(cameraGranted: Boolean, state: ArRuntimeState): String = when {
+    !cameraGranted -> "2D 안내 · 카메라 권한 필요"
+    state.datasetMode == ArDatasetMode.RECORDING -> "● AR dataset 기록 중"
+    state.datasetMode == ArDatasetMode.PLAYBACK -> "▶ AR dataset 재생"
+    state.datasetMode == ArDatasetMode.PLAYBACK_FINISHED -> "AR replay 완료"
+    state.mode == ArRuntimeMode.TRACKING && state.routeAligned -> {
+        if (state.depthActive) "ARCore · Depth 활성" else "ARCore · 공간 추적"
+    }
+    state.mode == ArRuntimeMode.TRACKING -> "ARCore 추적 · 2D 경로 폴백"
+    state.mode == ArRuntimeMode.CHECKING -> "ARCore · 초기화 중"
+    state.mode == ArRuntimeMode.INSTALL_REQUIRED -> "ARCore · 설치 확인"
+    else -> "2D 폴백 · ${state.message ?: "정합 대기"}"
+}
+
+private fun arGuidanceDetail(state: ArRuntimeState): String = when {
+    state.mode == ArRuntimeMode.TRACKING && state.routeAligned -> buildString {
+        append("공간 고정 경로")
+        state.frameTimeMillis?.let { append(" · %.1f ms".format(Locale.US, it)) }
+        append(" · 추적 손실 ${state.trackingLossCount}회")
+    }
+    state.mode == ArRuntimeMode.TRACKING -> buildString {
+        append("경로 정합 대기")
+        append(if (state.depthActive) " · Depth 활성" else " · Depth 준비 중")
+        state.frameTimeMillis?.let { append(" · %.1f ms".format(Locale.US, it)) }
+        append(" · 손실 ${state.trackingLossCount}회")
+    }
+    else -> "경로 방향과 기기 나침반을 기준으로 안전하게 폴백 표시"
+}
+
+private fun arSafetyNotice(state: ArRuntimeState): String =
+    if (state.datasetMode == ArDatasetMode.RECORDING) {
+        "카메라·IMU dataset을 기기에 저장 중입니다. 민감한 사람·장소가 촬영되지 않게 주의하세요."
+    } else if (state.mode == ArRuntimeMode.TRACKING && state.routeAligned) {
+        "AR 기술 스파이크 · 현장 보정 전입니다. 이동 중에는 주변 환경을 먼저 확인하세요."
+    } else {
+        "2D HUD 폴백 · 실제 보도 위치·거리와 공간 정합된 표시가 아닙니다."
+    }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

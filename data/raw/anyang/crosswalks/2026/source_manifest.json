@@ -1,0 +1,27 @@
+{
+  "dataset_id": "anyang_crosswalks_20260826",
+  "title": "경기도 안양시 공간정보시스템 횡단보도 현황",
+  "source": "ANYANG_PUBLIC_CROSSWALKS",
+  "source_page": "https://www.data.go.kr/data/15042415/fileData.do",
+  "data_as_of": "2026-08-26",
+  "local_handoff_date": "2026-09-17",
+  "retrieval_method": "user-provided public-data CSV placed in the repository staging folder",
+  "file": "경기도 안양시_공간정보시스템_횡단보도 현황_20260826.csv",
+  "file_bytes": 163505,
+  "file_sha256": "9275a45ef21d700be25c0d436b91ce0b6a46e1cd034f2a6ba2493d63a7b030b4",
+  "encoding": "UTF-8 with BOM",
+  "crs": "EPSG:4326",
+  "row_count": 2728,
+  "derived": false,
+  "verified": false,
+  "graph_update_allowed": false,
+  "intended_use": [
+    "crossing location QA",
+    "crossing candidate mapping to the accessibility graph"
+  ],
+  "limitations": [
+    "blank curb-lowering and tactile-block values remain unknown",
+    "point coordinates do not establish the exact traversable crossing geometry",
+    "public source status does not establish current wheelchair passability"
+  ]
+}

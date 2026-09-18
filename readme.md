@@ -76,6 +76,30 @@ Android Studio에서는 `android/` 폴더를 프로젝트로 열어 `app` 구성
 
 `fetch_osm.py`의 기본 범위와 시점은 메타데이터에 기록됩니다. OSM 데이터는 OpenStreetMap contributors의 ODbL 조건을 따릅니다.
 
+## 공간데이터 평가
+
+로컬에 배치한 수치지형도·DEM·정사영상·정밀도로지도와 안양시 횡단보도 CSV를 현재 Graph 기준으로 일괄 검증합니다. 이 명령은 `data/raw/`와 기존 `anyang_accessibility_graph.geojson`을 읽기만 하며 Graph에 속성을 병합하지 않습니다.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[dev,geo]"
+.\.venv\Scripts\python.exe scripts\validate_spatial_sources.py
+.\.venv\Scripts\python.exe scripts\run_spatial_evaluation.py
+```
+
+산출물:
+
+- `data/processed/evaluation/corridor_mask.geojson`: EPSG:5179에서 계산한 30m 회랑·100m 문맥 buffer를 EPSG:4326으로 저장
+- `data/processed/evaluation/metrics.json`: 원본 무결성, CRS, Graph coverage, 경고와 hold 사유
+- `data/processed/evaluation/evaluation_summary.json`: 수치지형도·DEM·정사영상·정밀도로지도 교차평가와 채택 판정
+- `data/processed/evaluation/review_queue.geojson`, `review_queue.csv`: 역할별 최대 30개의 결정론적 Human Review 표본
+- `data/processed/evaluation/graph_enrichment/`: 기존 Routing 필드를 바꾸지 않은 Graph 반영 후보 235개와 candidate Graph 사본
+- `docs/spatial_data_evaluation_report.md`: 실제 평가 수치와 다음 검수 gate
+- `docs/graph_enrichment_candidate_report.md`: 경로 영향 후보와 제외 사유
+
+종료 코드는 `0=검증 실패 없음(pass 또는 제한이 명시된 warning)`, `1=필수 데이터 검증 실패`, `2=CLI 또는 내부 실행 오류`입니다. 전체 평가는 원본 TIFF나 기존 Graph를 수정하지 않습니다. 모든 파생 산출물은 `derived=true`, `verified=false`, `graph_update_allowed=false`이며 Human Review 전에는 공유 Graph에 반영할 수 없습니다. 상세 기준은 [대표회랑 공간데이터 평가 계획](docs/spatial_data_evaluation_plan.md)을 참고하세요.
+
+`data/processed/evaluation/`은 재배포 제한이 있는 NGII 자료의 파생 geometry를 포함할 수 있어 로컬 전용이며 Git에 저장하지 않습니다. 저장소에는 재현 스크립트와 집계 보고서만 포함합니다.
+
 ## 테스트
 
 ```powershell

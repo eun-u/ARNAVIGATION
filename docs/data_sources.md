@@ -25,9 +25,11 @@
 | NGII 수치지도 2.0 2022, 376120994/995/996/1405/1406 | `data/raw/ngii/digital_topographic_map/2022/{sheet_id}/` | ZIP 안 SHP 41~47개 레이어, EPSG:5186, XML 메타데이터 | 안양역 인근 1:1,000 세부 표본구간 평가 |
 | NGII 수치지형도 2025, 37612049 | `data/raw/ngii/digital_topographic_map/2025/37612049/` | ZIP 안 SHP 40개 레이어, EPSG:5186, XML/XLSX 메타데이터 | 수치지형도 처리기 검증용. 현재 대표회랑과 불일치 |
 | NGII 수치지도 2.0 2022, 376121501~376121513 | `data/raw/ngii/digital_topographic_map/2022/{sheet_id}/` | ZIP 안 SHP 21~27개 레이어, EPSG:5186, XML 메타데이터 | 수치지형도 처리기 검증용. 현재 대표회랑과 불일치 |
+| NGII 수치지도 지형지물 표준코드 2019 | `data/raw/ngii/reference/topographic_feature_catalog/2019/` | 공식 XLS, 685×17, SHA-256 manifest | 수치지형도 레이어 코드의 공식 의미 확인. 접근성 사실 자체는 아님 |
 | NGII 공개 DEM 2025, 37612 | `data/raw/ngii/dem/2025/37612/` | ZIP 안 HFA/IMG, EPSG:5179, float32, 90m, nodata=-9999 | 대표회랑 coverage 및 경사 후보의 해상도 적합성 평가 |
-| NGII 정사영상 2025, 37612049 | `data/raw/ngii/orthophoto/2025/37612049/` | RGB TIFF, 9,252×11,508, 메타데이터상 GSD 0.25m | 시각 QA 후보. 현재 대표회랑과 불일치 |
-| NGII 정사영상 2025 QA본, 37612037/038/047/048 | `data/raw/ngii/orthophoto_preview/2025/` | 공식 JPEG 미리보기 4장과 HTML 메타데이터, 약 0.51m/pixel | 대표회랑 OSM·횡단보도 geometry의 시각 QA. 25cm 원본 TIF 신청은 최종 제출 확인 대기 |
+| NGII 정사영상 2025, 37612037/038/047/048 | `data/raw/ngii/orthophoto/2025/{sheet_id}/` | 25cm RGB TIFF 4장과 XML 메타데이터, 내장 CRS/affine 없음 | 대표회랑 시각 QA 원본. georeferencing·기준점 검증 전에는 geometry 수정에 사용 금지 |
+| NGII 정사영상 2025, 37612049 | `data/raw/ngii/orthophoto/2025/37612049/` | 25cm RGB TIFF, 9,252×11,508, 내장 CRS/affine 없음 | 정사영상 처리기 검증용. 현재 대표회랑과 불일치 |
+| NGII 정사영상 2025 QA본, 37612037/038/047/048 | `data/raw/ngii/orthophoto_preview/2025/` | 공식 JPEG 미리보기 4장과 HTML 메타데이터, 약 0.51m/pixel | 대표회랑 OSM·횡단보도 geometry의 빠른 예비 시각 QA |
 | NGII 정밀도로지도 2023, 경기안양 시범운행지구 | `data/raw/ngii/precision_road_map/2023/gyeonggi_anyang_pilot/` | 공식 WFS GeoJSON 14개 레이어, EPSG:4326 | 대표회랑 동측의 보도·횡단보도·연석 geometry 후보 평가 |
 | NGII 연속수치지도 오선택본 2026-09-17 | `data/raw/ngii/continuous_digital_map/2026/off_corridor_selection_202609174822/` | ZIP, EPSG:5179, 294,310,019 bytes | 대표회랑과 불일치. `hold` 격리, Graph 입력 금지 |
 | 안양시 횡단보도 현황 2026-08-26 | `data/raw/anyang/crosswalks/2026/` | UTF-8 CSV, WGS84 위경도 2,728건 | 별도 후속 평가 대상. 기존 40개 표본의 갱신/확장 후보 |
@@ -56,12 +58,13 @@
 
 ### 정사영상
 
-- TIFF는 RGB uint8이고 메타데이터에는 GSD 0.25m, GRS80/TM 중부원점이라고 기록되어 있습니다.
-- TIFF 자체에는 CRS, affine transform, GCP, RPC가 없습니다. 동반 world file도 없습니다.
+- 대표회랑 4도엽 `37612037`, `37612038`, `37612047`, `37612048`의 25cm 원본 TIFF와 XML 메타데이터를 확보했습니다. 원본 총용량은 1,278,618,576 bytes입니다.
+- TIFF는 9,252~9,264×11,496~11,508, RGB uint8 3 bands이며 헤더·IFD·strip 범위 무결성 검사를 통과했습니다. SHA-256은 `data/raw/ngii/orthophoto/2025/source_manifest.json`에 기록했습니다.
+- 메타데이터에는 GSD 0.25m, GRS80/TM 중부원점이라고 기록되어 있으나, TIFF 자체에는 GeoTIFF CRS/affine 태그가 없고 동반 world file도 없습니다.
+- 제공된 XML은 UTF-8을 선언하지만 한글 요소명이 손상되어 well-formed XML이 아닙니다. 원본은 수정하지 않고 숫자 필드·공식 도엽 색인·실제 TIFF를 교차 확인합니다.
 - 공식 도엽 인덱스 또는 동반 좌표 파일로 georeferencing을 복원하고 기준점으로 검증하기 전에는 픽셀을 지도 좌표로 간주하지 않습니다.
 - 도엽 37612049는 현재 대표회랑과 교차하지 않습니다.
-- 대표회랑을 덮는 2025 도엽은 `37612037`, `37612038`, `37612047`, `37612048`로 확인했습니다.
-- 네 도엽의 공식 미리보기와 메타데이터를 확보했습니다. 미리보기는 약 0.51m/pixel JPEG이므로 0.25m 원본 TIF와 동일한 자료로 취급하지 않습니다.
+- 네 도엽의 공식 미리보기도 별도로 유지합니다. 미리보기는 약 0.51m/pixel JPEG이며, 0.25m 원본 TIFF와 섞어 사용하지 않습니다.
 - 공식 사이트가 제공한 EPSG:5179 extent를 미리보기의 image extent로 사용하되, 기준점 오차를 측정하기 전에는 geometry 자동 수정에 사용하지 않습니다.
 
 ### 정밀도로지도
@@ -77,6 +80,17 @@
 - 2,728건 모두 관리번호와 위경도를 가지며 관리번호 중복은 확인되지 않았습니다.
 - 기준 Graph bounding box 안에는 467건이 있습니다.
 - `보도턱낮춤여부`와 `점자블록유무`는 각각 2,553건이 비어 있습니다. 빈 값을 `없음`으로 해석하지 않고 `unknown`으로 유지합니다.
+
+## 2026-09-18 자동평가 상태
+
+- 수치지형도: 회랑 객체 1,351개 중 unique 390, ambiguous 450, unmatched 511. 자동 매핑 gate 미달.
+- DEM: Graph 길이 coverage 100%이나 90m 해상도이며 Hard Constraint 허용 Edge 0개.
+- 정사영상: 공식 extent 기반 4개 affine sidecar 생성, 픽셀 크기 0.250970~0.251553m. 기준점 RMSE 미측정으로 geometry correction 보류.
+- 정밀도로지도: context 내 보도 23, 횡단보도 22, 콘크리트 연석 29개를 QA 후보로 유지.
+- 공공 횡단보도: context 내 402개 중 HD 횡단보도 20m 이내 대응 12개. coverage 밖 192개는 불일치로 판정하지 않음.
+- 통합 Human Review 표본: 414개, 전부 `pending`.
+
+상세 수치와 판정은 `docs/spatial_data_evaluation_report.md` 및 `data/processed/evaluation/evaluation_summary.json`을 기준으로 합니다.
 
 ## 데이터 승격 원칙
 

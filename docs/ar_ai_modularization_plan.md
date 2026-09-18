@@ -3,13 +3,13 @@
 ## 문서 상태
 
 - 결정: AR과 AI를 독립 Gradle 모듈로 개발한다.
-- 현재 단계: M0 모듈 골격과 공통 계약 완료. ARCore·AI 런타임 도입은 아직 시작하지 않았다.
+- 현재 단계: M0 완료, M1 AR 기술 스파이크 완료, M2 물리 디바이스 비의존 오프라인 harness 완료. live AR+AI 결합은 M3 입력 계약을 기다린다.
 - 기준 구현: Android 네이티브 앱과 FastAPI 경로 서버.
 - 핵심 원칙: 인식, 공간화, 통행 정책, 경로 계산, 자연어 설명을 서로 다른 책임으로 유지한다.
 
 ## 현재 기준선
 
-현재 Android 카메라 화면은 CameraX 미리보기 위에 나침반 방위 차이로 리본을 그리는 2D HUD다. 이 구현은 `:feature:ar-navigation`으로 이동했고, 공통 계약·AI·융합 모듈 골격도 생성했다. 카메라 분석 use case, ARCore 공간 정합, 실제 온디바이스 모델은 아직 연결되어 있지 않다. 백엔드는 Edge의 접근성 Hard Constraint를 판정하고 Dijkstra로 경로를 계산하며, route session 단위 임시 차단과 `Candidate → Human Review → Approved Observation` 검수 경계를 이미 제공한다.
+현재 Android 앱은 ARCore session·pose·자동 Depth·경로 리본·2D HUD fallback·Recording/Playback을 지원하고 기준 기기 20분 연속 시험을 통과했다. AI 모듈은 MediaPipe EfficientDet-Lite0, 일반 MP4 replay, IoU tracker, 회귀 보고서와 에뮬레이터 자동 실행 경로를 제공한다. 다만 ARCore CPU image를 `PerceptionFrameLease`로 전달하고 동일 timestamp의 pose/depth와 결합하는 live 경로는 아직 연결하지 않았다. 백엔드는 Edge의 접근성 Hard Constraint를 판정하고 Dijkstra로 경로를 계산하며, route session 단위 임시 차단과 `Candidate → Human Review → Approved Observation` 검수 경계를 제공한다.
 
 이번 모듈화는 현재 동작을 보존하면서 다음 기능을 독립적으로 개발하기 위한 준비다.
 
@@ -308,13 +308,16 @@ LLM 출력은 schema validation을 통과해야 하며, 실패·시간 초과 �
 - AI/AR SDK 타입이 공통 계약에 노출되지 않음
 - 순환 의존성 없음
 
-### M1. AR 기술 스파이크 — 1~2주
+### M1. AR 기술 스파이크 — 완료
 
 - ARCore capability, pose, tracking state와 depth 연결
 - 현재 route geometry의 전방 guidance step 생성
 - 고정된 안양 실증 구간에서 로컬 경로 리본 렌더링
 - 낮은 정확도와 미지원 기기에서 2D HUD fallback
 - ARCore Recording/Playback 기반 반복 테스트 자료 생성
+- 기준 기기 SM-S911N에서 Tracking·Depth·route ribbon·fallback·Recording/Playback 검증
+- 20분 연속 세션에서 crash와 camera deadlock 없이 완료
+- 상세 실행 기록: [M1 AR 기술 스파이크](m1_ar_spike.md)
 
 측정:
 
@@ -329,7 +332,7 @@ LLM 출력은 schema validation을 통과해야 하며, 실패·시간 초과 �
 - 추적 품질이 낮을 때 잘못 고정된 리본 대신 fallback 전환
 - 20분 연속 세션에서 crash와 camera deadlock 없음
 
-### M2. AI 기술 스파이크 — 진행 중, 1~2주
+### M2. AI 기술 스파이크 — device-free 범위 완료
 
 현재 상태:
 
@@ -337,8 +340,19 @@ LLM 출력은 schema validation을 통과해야 하며, 실패·시간 초과 �
 - 라벨+IoU 기반 전체/클래스별 TP·FP·FN, precision·recall·F1 산출
 - 모델 보고 지연시간의 mean·p50·p95·max와 실패 프레임 기록
 - 한 번에 하나의 frame lease만 열고 성공·실패 모두 close하는 bounded replay 보장
-- 남은 M2-A 입출력: 실제 녹화 프레임/annotation manifest decoder와 JSON/CSV reporter
-- 남은 M2-B: MediaPipe/LiteRT baseline 구현 및 현장 데이터 비교
+- M2-A 입출력 완료: versioned manifest, 정지 이미지/일반 MP4 decoder, JSON/CSV reporter
+- 회귀 gate 완료: 전체·클래스별 precision/recall, p95 latency, 실패 frame 임계값
+- M2-B 기준선 완료: MediaPipe Tasks Vision 1.0.0 + EfficientDet-Lite0 int8 CPU engine
+- temporal IoU tracker 완료: frame 간 track ID를 결정론적으로 부여하고 만료 처리
+- 기기 검증 완료: Android 에뮬레이터와 Galaxy 물리 기기에서 모델 로딩·1 frame 추론 통과
+- MP4+telemetry importer 완료: SHA-256·duration·동기화 오차·privacy provenance 검증
+- 프레임별 예측과 tracking/depth/route/session/객체 크기별 지표, track ID switch 보고 완료
+- 실패 frame 선택 재실행과 latency 제외 결정성/model diff 도구 완료
+- segmentation mask 계약과 IoU·Dice·pixel recall golden evaluator 완료
+- 에뮬레이터 one-command harness 완료: [M2 device-free AI harness](m2_device_free_harness.md)
+- 남은 M2 현장 범위: 실제 평가 데이터/라벨 구축, detector/segmenter 비교, 실기기 장시간 성능 측정
+- M1 의존 경계: ARCore CPU image·pose·depth·Recording/Playback 입력 어댑터
+- 현장 데이터 수집·라벨·개인정보 원칙은 [M2 오프라인 AI 평가 계획](ai_offline_evaluation_plan.md)에 고정
 
 - 먼저 녹화 영상으로 offline inference harness 구축
 - Scene Semantics 또는 범용 detector/segmenter baseline 비교

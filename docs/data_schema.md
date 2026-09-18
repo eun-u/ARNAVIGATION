@@ -47,6 +47,36 @@ pending | approved | rejected | needs_more_evidence
 
 후보의 `confidence`는 AI 후보 신뢰도일 뿐 통과 가능 확률이나 검증 완료를 의미하지 않습니다. Android 수동 현장 제보는 AI 추정값이 아니므로 `source=manual_camera`, `confidence=null`, `status=pending`, `verified=false`로 저장합니다.
 
+## 공간데이터 Graph 반영 후보
+
+자동 공간평가 결과는 기존 `ObservationCandidate`와 같은 승인 경계를 따르되, 공유 Graph와 분리된 sidecar에 먼저 기록합니다.
+
+```text
+candidate_id
+edge_id
+type
+priority
+routing_impact
+mapping_quality
+proposed_changes
+current_values
+evidence[]
+status=pending
+verified=false
+graph_update_allowed=false
+requires_human_review=true
+```
+
+현재 후보 유형은 다음과 같습니다.
+
+- `stairs_attribute_candidate`: 공식 수치지형도 계단 객체가 unique 매칭된 Edge에 `stairs=true`를 제안합니다. 승인 전에는 실제 Edge 필드를 바꾸지 않습니다.
+- `pedestrian_area_evidence`: 보도/보행공간 geometry 근거이며 통과 가능 판정이 아닙니다.
+- `crosswalk_geometry_evidence`: 횡단보도 위치 근거이며 턱 낮춤이나 접근 가능 판정이 아닙니다.
+- `curb_presence_evidence`: 연석 존재 근거이며 `curb_height`를 생성하지 않습니다.
+- `grade_separated_crossing_evidence`: 육교 등 구조물 근거이며 계단 또는 통행 불가로 단정하지 않습니다.
+
+`data/processed/evaluation/graph_enrichment/anyang_accessibility_graph.candidate.geojson`은 각 Edge에 `candidate_enrichments` 주석만 붙인 비실행 사본입니다. `stairs`, `slope`, `curb_height`, `blocked` 등 Routing 필드는 기준 Graph와 동일하며 기본 `NAVI_GRAPH_PATH`로 사용하지 않습니다.
+
 Route session의 `temporary_blocked_edges_json`은 해당 사용자의 즉시 우회에만 사용합니다. 공용 `edge_state`를 변경하지 않으며 세션이 만료되면 공유 상태로 승격되지 않습니다.
 
 ## 프로필

@@ -97,7 +97,9 @@ data class DetectedRegion(
     val trackId: String? = null,
 ) {
     init {
+        require(label.isNotBlank()) { "label must not be blank" }
         require(confidence in 0f..1f) { "confidence must be between 0 and 1" }
+        require(trackId == null || trackId.isNotBlank()) { "trackId must not be blank" }
     }
 }
 
@@ -106,7 +108,12 @@ data class PerceptionResult(
     val modelVersion: String,
     val inferenceMillis: Long,
     val detections: List<DetectedRegion>,
-)
+) {
+    init {
+        require(modelVersion.isNotBlank()) { "modelVersion must not be blank" }
+        require(inferenceMillis >= 0) { "inferenceMillis must be non-negative" }
+    }
+}
 
 data class ObservationEvidence(
     val labels: List<String>,

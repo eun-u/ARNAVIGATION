@@ -1,0 +1,4 @@
+elapsed_realtime_ms,tracking_quality,depth_active,route_aligned,tracking_loss_count,last_recovery_ms,frame_time_ms,message
+100000,TRACKING,true,true,0,,16.667,synthetic emulator fixture
+100300,TRACKING,true,true,0,,16.667,
+100600,TRACKING,true,true,0,,16.667,end

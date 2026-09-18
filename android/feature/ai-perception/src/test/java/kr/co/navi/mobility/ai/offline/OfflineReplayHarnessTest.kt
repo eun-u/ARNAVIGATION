@@ -105,6 +105,67 @@ class OfflineReplayHarnessTest {
         assertTrue(frame.closed)
     }
 
+    @Test
+    fun `stratifies context size and track identity metrics`() = runBlocking {
+        val first = fakeFrame(20)
+        val second = fakeFrame(21)
+        val cases = listOf(
+            OfflineFrameCase(
+                caseId = "tracked-1",
+                openFrame = { first },
+                expected = listOf(
+                    GroundTruthRegion("person", box(0f, 0f, 0.1f, 0.1f), "person-1"),
+                ),
+                context = OfflineFrameContext(
+                    sessionId = "session-a",
+                    trackingQuality = "TRACKING",
+                    depthActive = true,
+                    routeAligned = true,
+                ),
+            ),
+            OfflineFrameCase(
+                caseId = "tracked-2",
+                openFrame = { second },
+                expected = listOf(
+                    GroundTruthRegion("person", box(0f, 0f, 0.2f, 0.2f), "person-1"),
+                ),
+                context = OfflineFrameContext(
+                    sessionId = "session-a",
+                    trackingQuality = "PAUSED",
+                    depthActive = false,
+                    routeAligned = false,
+                ),
+            ),
+        )
+        val engine = resultEngine(
+            mapOf(
+                20L to result(
+                    first.stamp,
+                    latency = 5,
+                    detection("person", box(0f, 0f, 0.1f, 0.1f), "track-1"),
+                ),
+                21L to result(
+                    second.stamp,
+                    latency = 5,
+                    detection("person", box(0f, 0f, 0.2f, 0.2f), "track-2"),
+                ),
+            ),
+        )
+
+        val report = OfflineReplayHarness().evaluate(cases, engine)
+
+        assertEquals(DetectionMetrics(2, 0, 0), report.byContext["session:session-a"])
+        assertEquals(DetectionMetrics(1, 0, 0), report.byContext["depth_active:true"])
+        assertEquals(DetectionMetrics(1, 0, 0), report.byObjectSize["small"])
+        assertEquals(DetectionMetrics(1, 0, 0), report.byObjectSize["medium"])
+        assertEquals(1, report.tracking.annotatedInstances)
+        assertEquals(2, report.tracking.matchedObservations)
+        assertEquals(1, report.tracking.idSwitches)
+        assertEquals(2, report.tracking.uniquePredictedTracks)
+        assertEquals(2, report.frames.size)
+        assertTrue(report.frames.all { it.status == "success" })
+    }
+
     private fun case(
         id: String,
         frame: FakeFrameLease,
@@ -113,10 +174,15 @@ class OfflineReplayHarnessTest {
 
     private fun truth(label: String, bounds: NormalizedRegion) = GroundTruthRegion(label, bounds)
 
-    private fun detection(label: String, bounds: NormalizedRegion) = DetectedRegion(
+    private fun detection(
+        label: String,
+        bounds: NormalizedRegion,
+        trackId: String? = null,
+    ) = DetectedRegion(
         label = label,
         confidence = 0.9f,
         bounds = bounds,
+        trackId = trackId,
     )
 
     private fun result(

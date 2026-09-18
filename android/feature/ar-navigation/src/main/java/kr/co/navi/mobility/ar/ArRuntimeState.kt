@@ -10,6 +10,14 @@ enum class ArRuntimeMode {
     UNAVAILABLE,
 }
 
+enum class ArDatasetMode {
+    LIVE,
+    RECORDING,
+    PLAYBACK,
+    PLAYBACK_FINISHED,
+    ERROR,
+}
+
 data class ArRuntimeState(
     val mode: ArRuntimeMode = ArRuntimeMode.CHECKING,
     val trackingQuality: TrackingQuality = TrackingQuality.WAITING,
@@ -20,6 +28,9 @@ data class ArRuntimeState(
     val lastRecoveryMillis: Long? = null,
     val frameTimeMillis: Float? = null,
     val message: String? = null,
+    val datasetMode: ArDatasetMode = ArDatasetMode.LIVE,
+    val latestDatasetName: String? = null,
+    val datasetMessage: String? = null,
 ) {
     val shouldUse2dFallback: Boolean
         get() = mode != ArRuntimeMode.TRACKING || !routeAligned
