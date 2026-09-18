@@ -357,7 +357,7 @@ docs/graph_enrichment_candidate_report.md
 
 리뷰 큐는 역할별 최대 30개를 결정론적으로 뽑은 414개 표본이며 전부 `pending`입니다. 실행 전후 Graph SHA-256은 `b6c746a47c80d516bc506473335e0177eade52d82b8b635d1cb0f8ce2d9cac78`로 동일합니다. 모든 평가 산출물은 `derived=true`, `verified=false`, `graph_update_allowed=false`입니다.
 
-사람 판독 전 단계로 Graph 반영 후보도 생성합니다. unique 매칭과 교차 출처 합치만 기계적으로 선별한 결과는 235개 후보/192개 Edge입니다. 이 중 경로 조건 변경 가능 후보는 기존 `stairs=false` Edge 5개에 대한 `stairs=true` 제안이고, 나머지 230개는 근거 전용입니다. candidate Graph 사본은 Routing 필드를 바꾸지 않으며 일반 1081.9m·휠체어 1302.5m 데모 경로가 기준 Graph와 동일함을 회귀검증합니다. 별도 시뮬레이션 사본에 다섯 제안을 적용했을 때 후보 Edge 양 끝점 경로는 모두 바뀌었고, 3개는 각각 +114.1m, +1,205.8m, +275.2m 우회하며 2개는 접근 가능 경로가 사라졌습니다. 이 영향 때문에 자동 적용 대신 후보 상태를 유지합니다.
+사람 판독 전 단계로 Graph 반영 후보도 생성합니다. unique 매칭과 교차 출처 합치, DEM 품질 gate를 기계적으로 적용한 결과는 247개 후보/196개 Edge입니다. 기존 `stairs=false` Edge 5개에는 `stairs=true` 승인 가능 제안이 있고, 90m DEM 임계치 초과 Edge 12개는 경로 민감도만 보는 `approval_eligible=false` 진단 후보입니다. 나머지 230개는 근거 전용입니다. candidate Graph 사본은 Routing 필드를 바꾸지 않으며 일반 1081.9m·휠체어 1302.5m 데모 경로가 기준 Graph와 동일함을 회귀검증합니다. 시뮬레이션은 요청 한정 overlay에서만 수행하고 모든 247개 후보에는 정사영상 도엽·pixel QA 참조를 연결했습니다. 독립 기준점 RMSE가 없으므로 이 참조로 geometry를 자동 보정하지 않습니다.
 
 ## 9. 남은 작업과 소요 구분
 
@@ -368,6 +368,6 @@ docs/graph_enrichment_candidate_report.md
 1. 리뷰 큐 414개 중 우선순위 표본 판독 및 승인/기각: 사람 기준 약 4~8시간
 2. 정사영상 독립 기준점 최소 20개 선정과 RMSE 계산: 사람 기준 약 1~2시간
 3. 현장 또는 로드뷰로 계단·횡단부·턱 후보 확인: 범위에 따라 반나절 이상
-4. 승인된 관측만 verified observation으로 변환하고 5개 계단 후보의 경로 영향을 재계산: 위 검수 후 별도 구현
+4. 승인된 관측만 verified observation으로 변환하고 5개 계단 후보를 재검증: 위 검수 후 별도 구현
 
-따라서 다음 단계는 새 데이터를 더 받는 일이 아니라 `review_queue`를 사람이 판독하고, 정사영상 기준점 RMSE를 확보하는 일입니다.
+자동화 범위에서는 DEM 경사 민감도, 근거 전용 지도 레이어, 후보별 정사영상 참조까지 완료했습니다. 다음 데이터 승격 gate는 `review_queue` 사람 판독과 정사영상 독립 기준점 RMSE 확보이며, 그 전에는 어떤 진단 후보도 verified Graph 값으로 바꾸지 않습니다.

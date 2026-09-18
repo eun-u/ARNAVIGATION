@@ -21,6 +21,7 @@ NaVi는 스마트폰 카메라와 접근성 경로 엔진을 결합해 휠체어
 - 계단, 차단, 엘리베이터, 경사, 폭, 턱 Hard Constraint
 - Kotlin + Jetpack Compose 기반 Android 전용 시민 앱
 - MapLibre 지도에서 일반·접근 가능·재탐색 경로 비교
+- Android 후보 지도에서 계단 5건과 DEM 진단 12건의 요청 한정 전·후 경로 시뮬레이션
 - CameraX 실시간 미리보기 위 Prismatic Wayfinding 2D HUD
 - 시작 → 경로 계획 → 비교 → 판단 근거 → 지도/카메라 안내 → 현장 제보 → 재탐색 흐름
 - 현장 제보 → 현재 세션 임시 차단 → 즉시 재탐색
@@ -65,6 +66,8 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 
 Android Studio에서는 `android/` 폴더를 프로젝트로 열어 `app` 구성을 실행합니다.
 
+경로 비교 화면의 `후보 지도와 경로 영향 보기`에서 공간평가 후보를 확인할 수 있습니다. Android 화면은 `영향 시험 / 보행공간 / 횡단시설 / 연석` 지도 레이어를 분리합니다. 영향 시험에는 계단 후보 5건과 90m DEM 경사 민감도 후보 12건이 포함되며, DEM 후보는 실제 보도 경사나 승인 가능한 Graph 값이 아닙니다. 근거 후보 상세에는 25cm 정사영상의 도엽·pixel QA 참조가 표시됩니다. 모든 계산과 조회는 `graph_mutated=false`, `database_mutated=false`이며 후보 승인이나 공용 Graph 변경을 수행하지 않습니다.
+
 ## 데이터 재생성
 
 저장소에는 재현 가능한 OSM 스냅샷과 빌드 결과가 포함됩니다. 네트워크를 다시 내려받을 때만 첫 명령이 필요합니다.
@@ -92,7 +95,8 @@ Android Studio에서는 `android/` 폴더를 프로젝트로 열어 `app` 구성
 - `data/processed/evaluation/metrics.json`: 원본 무결성, CRS, Graph coverage, 경고와 hold 사유
 - `data/processed/evaluation/evaluation_summary.json`: 수치지형도·DEM·정사영상·정밀도로지도 교차평가와 채택 판정
 - `data/processed/evaluation/review_queue.geojson`, `review_queue.csv`: 역할별 최대 30개의 결정론적 Human Review 표본
-- `data/processed/evaluation/graph_enrichment/`: 기존 Routing 필드를 바꾸지 않은 Graph 반영 후보 235개와 candidate Graph 사본
+- `data/processed/evaluation/graph_enrichment/`: 기존 Routing 필드를 바꾸지 않은 후보 247개(계단 5, DEM 진단 12, 근거 전용 230)와 candidate Graph 사본
+- `data/processed/evaluation/orthophoto/qa_evidence_manifest.json`: 후보별 정사영상 도엽·pixel 시각 QA 참조. 독립 기준점 RMSE 미측정으로 geometry 보정은 금지
 - `docs/spatial_data_evaluation_report.md`: 실제 평가 수치와 다음 검수 gate
 - `docs/graph_enrichment_candidate_report.md`: 경로 영향 후보와 제외 사유
 
@@ -121,6 +125,7 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 - [Android 아키텍처와 화면 흐름](docs/android_architecture.md)
 - [AR·AI 모듈화 및 개발 계획](docs/ar_ai_modularization_plan.md)
 - [Android 현장 검증 절차](docs/android_field_test.md)
+- [M1 전북대 정문 로컬 AR 정합 시험](docs/m1_local_field_route_jbnu.md)
 - [Prismatic Wayfinding 디자인 시스템](docs/frontend_design_system.md)
 - 기존 웹 IA·유즈케이스 문서는 초기 탐색 기록으로 `docs/frontend_ia.md`, `docs/use_cases.md`, `docs/page_structure.md`에 보존
 
@@ -139,14 +144,23 @@ Android 앱은 Graph 메타데이터의 `synthetic`, `verified=false` 고지를 
 - `GET /observations/candidates`
 - `POST /observations/candidates`
 - `POST /observations/candidates/{candidate_id}/review`
+- `GET /graph-enrichment/summary`
+- `GET /graph-enrichment/candidates?route_affecting=true|false`
+- `GET /graph-enrichment/candidates/{candidate_id}`
+- `POST /graph-enrichment/simulate`
 
 직접 Edge를 변경할 때 `verified=true`를 사용하려면 확인자 `actor`가 필수입니다. PoC 화면의 수동 차단 실험은 `verified=false`로 저장됩니다.
+
+공간평가 후보 API는 `candidate_bundle.json`을 읽기 전용으로 노출합니다. `POST /graph-enrichment/simulate`는 서버에 저장되고 `simulation_allowed=true`인 `candidate_id`만 받아 해당 요청의 Graph 사본에 제안 속성을 임시 적용합니다. 공용 Graph, SQLite, route session, graph revision은 변경하지 않습니다. 현재 시뮬레이션 가능한 후보는 `stairs=true` 제안 5개와 90m DEM 경사 민감도 진단 12개입니다. DEM 후보는 `approval_eligible=false`이고, 근거만 있는 230개 후보는 시뮬레이션이나 경로 사실로 사용할 수 없습니다.
+
+Android의 `공간데이터 후보` 화면은 시뮬레이션 가능 후보 17개를 자동 계산하고 `경로 단절 → 추가 우회거리 → 경로 구성 변경 → 변화 없음` 순으로 정렬합니다. `보행공간 / 횡단시설 / 연석` 필터는 근거 전용 객체를 별도 지도 레이어로 조회합니다. 선택 후보에서는 현재값과 제안값, 수치지형도 provenance, 정사영상 도엽·pixel 참조를 확인할 수 있습니다. 이 순위와 참조는 민감도·시각 QA 정보일 뿐, 후보의 진실성이나 승인 상태를 뜻하지 않습니다.
 
 ## 환경 변수
 
 ```text
 NAVI_GRAPH_PATH=data/processed/anyang_accessibility_graph.geojson
 NAVI_DB_PATH=data/runtime/navi.db
+NAVI_GRAPH_ENRICHMENT_PATH=data/processed/evaluation/graph_enrichment/candidate_bundle.json
 ```
 
 ## 데이터 신뢰도와 한계
@@ -161,4 +175,4 @@ NAVI_DB_PATH=data/runtime/navi.db
 - 현재 기본 Graph 범위 밖 위치는 Android 앱에서 경로 출발지로 사용하지 않으며, 다른 지역의 실제 경로 검증에는 해당 지역 Graph 빌드가 필요
 - 안양 Graph와 접근성 속성은 현장 실측 완료 데이터가 아니므로 실제 안전을 보장하지 않음
 
-전체 구조와 데이터 계약은 [architecture.md](docs/architecture.md), [data_schema.md](docs/data_schema.md), 실험 절차는 [experiment.md](docs/experiment.md)를 참고하세요.
+현재 작업 상태와 다음 시작점은 [프로젝트 마스터 계획](docs/project_master_plan.md)을 우선 확인하세요. 전체 구조와 데이터 계약은 [architecture.md](docs/architecture.md), [data_schema.md](docs/data_schema.md), 실험 절차는 [experiment.md](docs/experiment.md)를 참고하세요.

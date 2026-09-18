@@ -2,6 +2,10 @@ package kr.co.navi.mobility.data.remote
 
 import java.net.URLEncoder
 import kr.co.navi.mobility.data.model.GraphResponseDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentCandidateListDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentSimulationRequestDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentSimulationResponseDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentSummaryDto
 import kr.co.navi.mobility.data.model.ObservationCandidateCreateDto
 import kr.co.navi.mobility.data.model.ObservationCandidateDto
 import kr.co.navi.mobility.data.model.RouteComparisonDto
@@ -54,6 +58,27 @@ class NaviApiClient(
         body = request,
         serializer = ObservationCandidateCreateDto.serializer(),
         deserializer = ObservationCandidateDto.serializer(),
+    )
+
+    suspend fun getGraphEnrichmentSummary(): GraphEnrichmentSummaryDto = get(
+        "/graph-enrichment/summary",
+        GraphEnrichmentSummaryDto.serializer(),
+    )
+
+    suspend fun getGraphCandidates(
+        routeAffecting: Boolean,
+    ): GraphEnrichmentCandidateListDto = get(
+        "/graph-enrichment/candidates?route_affecting=$routeAffecting&limit=250",
+        GraphEnrichmentCandidateListDto.serializer(),
+    )
+
+    suspend fun simulateGraphCandidate(
+        request: GraphEnrichmentSimulationRequestDto,
+    ): GraphEnrichmentSimulationResponseDto = post(
+        path = "/graph-enrichment/simulate",
+        body = request,
+        serializer = GraphEnrichmentSimulationRequestDto.serializer(),
+        deserializer = GraphEnrichmentSimulationResponseDto.serializer(),
     )
 
     private suspend fun <T> get(path: String, deserializer: DeserializationStrategy<T>): T =

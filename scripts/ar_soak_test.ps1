@@ -72,7 +72,7 @@ if (-not $pidText) {
 Invoke-DeviceCommand @('logcat', '-c') | Out-Null
 $logFile = Join-Path $runDirectory 'navi-ar-logcat.txt'
 $logErrorFile = Join-Path $runDirectory 'navi-ar-logcat-stderr.txt'
-$logArguments = @('-s', $Serial, 'logcat', '-v', 'threadtime', 'NaViAR:I', 'AndroidRuntime:E', '*:S')
+$logArguments = @('-s', $Serial, 'logcat', '-v', 'threadtime', 'NaViAR:I', 'AndroidRuntime:E', 'native:E', '*:S')
 $logProcess = Start-Process `
     -FilePath $AdbPath `
     -ArgumentList $logArguments `
@@ -102,7 +102,10 @@ try {
         $battery = Invoke-DeviceCommand @('shell', 'dumpsys', 'battery')
         $thermal = Invoke-DeviceCommand @('shell', 'dumpsys', 'thermalservice')
         $memory = Invoke-DeviceCommand @('shell', 'dumpsys', 'meminfo', $packageName)
-        $cpu = Invoke-DeviceCommand @('shell', 'dumpsys', 'cpuinfo')
+        # dumpsys cpuinfo can return a rolling value that remains unchanged for
+        # several samples. top gives a per-snapshot process value, which is more
+        # useful for comparing two short AR runs under the same conditions.
+        $cpu = Invoke-DeviceCommand @('shell', 'top', '-b', '-n', '1', '-p', $pidText)
 
         $batteryLevel = [int](Get-RegexValue $battery '^\s*level:\s*(\d+)')
         $batteryTemperature = [double](Get-RegexValue $battery '^\s*temperature:\s*(\d+)') / 10.0
@@ -111,7 +114,7 @@ try {
         $skinTemperatureValue = Get-RegexValue $thermal 'Temperature\{mValue=([-0-9.]+),\s*mType=3,\s*mName=SKIN'
         $totalPssValue = Get-RegexValue $memory 'TOTAL PSS:\s*(\d+)'
         $totalRssValue = Get-RegexValue $memory 'TOTAL RSS:\s*(\d+)'
-        $cpuPattern = '([0-9.]+)%\s+\d+/' + [regex]::Escape($packageName)
+        $cpuPattern = '^\s*\d+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+([0-9.]+)\s+[0-9.]+\s+\S+\s+' + [regex]::Escape($packageName) + '\s*$'
         $cpuValue = Get-RegexValue $cpu $cpuPattern
 
         $sample = [pscustomobject]@{
@@ -172,13 +175,20 @@ $logText = if (Test-Path -LiteralPath $logFile) { Get-Content -LiteralPath $logF
 $fatalCount = ([regex]::Matches($logText, 'FATAL EXCEPTION')).Count
 $telemetryMatches = [regex]::Matches(
     $logText,
-    'tracking=(\w+) depth=(\w+) route_aligned=(\w+) losses=(\d+) recovery_ms=(-?\d+) frame_ms=([0-9.]+) dataset=(\w+)',
+    'tracking=(\w+) depth=(\w+) route_aligned=(\w+) failure=(\w+) losses=(\d+) unexpected_losses=(\d+) expected_losses=(\d+) recovery_ms=(-?\d+) frame_ms=([0-9.]+) dataset=(\w+) lifecycle=(\w+) interactive=(\w+) generation=(\d+) transition=(\w+) expected_transition=(\w+)',
     [System.Text.RegularExpressions.RegexOptions]::Multiline
 )
-$frameValues = @($telemetryMatches | ForEach-Object { [double]$_.Groups[6].Value })
+$frameValues = @($telemetryMatches | ForEach-Object { [double]$_.Groups[9].Value })
 $trackingSamples = @($telemetryMatches | ForEach-Object { $_.Groups[1].Value })
 $depthSamples = @($telemetryMatches | ForEach-Object { $_.Groups[2].Value })
-$lossValues = @($telemetryMatches | ForEach-Object { [int]$_.Groups[4].Value })
+$failureReasons = @($telemetryMatches | ForEach-Object { $_.Groups[4].Value })
+$lossValues = @($telemetryMatches | ForEach-Object { [int]$_.Groups[5].Value })
+$unexpectedLossValues = @($telemetryMatches | ForEach-Object { [int]$_.Groups[6].Value })
+$expectedLossValues = @($telemetryMatches | ForEach-Object { [int]$_.Groups[7].Value })
+$sphericalRectifierWarningCount = ([regex]::Matches($logText, 'spherical_rectifier\.cc:161')).Count
+$cameraImuDesyncWarningCount = ([regex]::Matches($logText, 'FEATURE_DSP_CAM_IMU_DESYNC')).Count
+$poseTimestampQueryErrorCount = ([regex]::Matches($logText, 'Failed to query IMU integrated pose')).Count
+$vioPredictTimestampErrorCount = ([regex]::Matches($logText, 'VIO_PREDICT_TO_SENSOR_TIMESTAMP_FAIL')).Count
 $completedSeconds = if ($samples.Count -gt 0) { $samples[-1].elapsed_seconds } else { 0 }
 
 $summary = [ordered]@{
@@ -197,8 +207,18 @@ $summary = [ordered]@{
     degraded_sample_count = @($trackingSamples | Where-Object { $_ -ne 'TRACKING' }).Count
     depth_active_sample_count = @($depthSamples | Where-Object { $_ -eq 'true' }).Count
     max_tracking_loss_count = if ($lossValues.Count) { ($lossValues | Measure-Object -Maximum).Maximum } else { $null }
+    max_unexpected_tracking_loss_count = if ($unexpectedLossValues.Count) { ($unexpectedLossValues | Measure-Object -Maximum).Maximum } else { $null }
+    max_expected_transition_loss_count = if ($expectedLossValues.Count) { ($expectedLossValues | Measure-Object -Maximum).Maximum } else { $null }
+    tracking_failure_reasons = @($failureReasons | Sort-Object -Unique)
     frame_time_ms_average = if ($frameValues.Count) { [Math]::Round(($frameValues | Measure-Object -Average).Average, 3) } else { $null }
     frame_time_ms_p95 = Get-Percentile $frameValues 0.95
+    cpu_measurement = 'top_snapshot'
+    cpu_pct_average = if ($samples.Count) { [Math]::Round(($samples.cpu_pct | Measure-Object -Average).Average, 3) } else { $null }
+    cpu_pct_max = if ($samples.Count) { ($samples.cpu_pct | Measure-Object -Maximum).Maximum } else { $null }
+    arcore_spherical_rectifier_warning_count = $sphericalRectifierWarningCount
+    arcore_camera_imu_desync_warning_count = $cameraImuDesyncWarningCount
+    arcore_pose_timestamp_query_error_count = $poseTimestampQueryErrorCount
+    arcore_vio_predict_timestamp_error_count = $vioPredictTimestampErrorCount
     battery_level_start_pct = if ($samples.Count) { $samples[0].battery_level_pct } else { $null }
     battery_level_end_pct = if ($samples.Count) { $samples[-1].battery_level_pct } else { $null }
     battery_temperature_start_c = if ($samples.Count) { $samples[0].battery_temperature_c } else { $null }
@@ -208,6 +228,8 @@ $summary = [ordered]@{
     thermal_status_max = if ($samples.Count) { ($samples.thermal_status | Measure-Object -Maximum).Maximum } else { $null }
     total_pss_start_kb = if ($samples.Count) { $samples[0].total_pss_kb } else { $null }
     total_pss_end_kb = if ($samples.Count) { $samples[-1].total_pss_kb } else { $null }
+    total_pss_average_kb = if ($samples.Count) { [Math]::Round(($samples.total_pss_kb | Measure-Object -Average).Average, 0) } else { $null }
+    total_rss_average_kb = if ($samples.Count) { [Math]::Round(($samples.total_rss_kb | Measure-Object -Average).Average, 0) } else { $null }
     output_directory = $runDirectory
 }
 

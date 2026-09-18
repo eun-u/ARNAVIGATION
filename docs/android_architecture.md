@@ -15,6 +15,7 @@ Android App
 ├─ Compose UI
 │  ├─ 경로 설정 / 비교 / 판단 근거
 │  ├─ MapLibre 지도 안내
+│  ├─ 공간데이터 후보 지도 / 경로 영향 시뮬레이션
 │  └─ 현장 장애 제보 / 재탐색 결과
 ├─ ViewModel + NaviSessionStore
 ├─ NaviRepository
@@ -33,6 +34,7 @@ FastAPI
 ├─ Dijkstra Route Engine
 ├─ Route Session 임시 차단
 ├─ ObservationCandidate 검수 대기열
+├─ Graph Enrichment read-only 후보 카탈로그
 └─ SQLite 상태 / 이력
 ```
 
@@ -43,6 +45,8 @@ Android 앱의 기본 서버 주소는 에뮬레이터 호스트 별칭인 `http
 ```text
 경로 설정
   → 일반/접근 가능 경로 비교
+       → 공간데이터 후보 지도
+       → 후보 Edge 전·후 경로 시뮬레이션
   → 판단 근거
   → 지도 안내
        ↔ 카메라 HUD
@@ -63,6 +67,10 @@ Android 앱의 기본 서버 주소는 에뮬레이터 호스트 별칭인 `http
 
 두 번째 동작이 성공해도 공용 Graph의 `blocked` 값은 바뀌지 않는다. 관리자 검수에서 승인한 뒤에만 검증 데이터로 전환할 수 있다. 앱은 부분 실패도 구분한다. 재탐색이 성공하고 후보 저장이 실패하면 새 경로는 유지하되 제보 저장 실패를 명시한다.
 
+공간평가 후보 화면은 별도의 읽기 전용 경계다. `GET /graph-enrichment/summary`와 `GET /graph-enrichment/candidates`로 경로 민감도 후보와 근거 전용 후보를 함께 읽는다. 화면은 `영향 시험 / 보행공간 / 횡단시설 / 연석`으로 필터링하며 지도에는 선택 레이어의 전체 후보를 표시한다. 시뮬레이션이 허용된 17건만 각 Edge geometry의 양 끝점을 `POST /graph-enrichment/simulate`에 병렬 전달한다. 한 후보의 실패가 다른 후보 계산을 중단시키지 않으며 실패 건만 1회 자동 재시도한다. 완료 결과는 `경로 단절 → 추가 우회거리 → 경로 구성 변경 → 변화 없음` 순으로 정렬해 선택 시 재사용한다. 응답의 `baseline`과 `simulated`만 화면에 그리며 `GraphStore`, SQLite, route session을 갱신하지 않는다. 근거 전용 230건은 서버에서 시뮬레이션을 거부한다.
+
+후보 상세에는 `current_values`, `proposed_changes`, `mapping_status`, `mapping_quality`, `evidence[]`를 표시한다. 수치지형도 제작연도·도엽·객체코드·매칭 거리·매칭 점수는 출처 추적 정보이며, 접근성 사실이나 현장 검증 결과로 표현하지 않는다. DEM 경사 12건은 90m 셀 기반 민감도 진단이라 승인 대상이 아니며 실제 보도 종단경사로 표시하지 않는다. 모든 후보에는 2025 정사영상 도엽·pixel 시각 QA 참조가 연결되지만 독립 기준점 RMSE가 없으므로 geometry 자동 보정이나 Graph 반영에는 쓰지 않는다.
+
 ## 디자인 언어
 
 - Navy/blue/violet을 경로와 브랜드의 주 색으로 사용한다.
@@ -75,8 +83,9 @@ Android 앱의 기본 서버 주소는 에뮬레이터 호스트 별칭인 `http
 
 - `android/app/src/main/java/kr/co/navi/mobility/MainActivity.kt`: 앱 진입점과 MapLibre 초기화
 - `ui/NaviApp.kt`: 화면 Navigation과 공유 ViewModel 수명
-- `ui/screens/NaviScreens.kt`: 7개 시민 화면
-- `ui/components/RouteMap.kt`: MapLibre 경로 레이어와 오프라인 Canvas 폴백
+- `ui/screens/NaviScreens.kt`: 기본 여정 7개 시민 화면
+- `ui/screens/GraphCandidateScreen.kt`: 영향 시험·보행공간·횡단시설·연석 필터, 출처·정사영상 근거, 전·후 거리 및 비변경 고지
+- `ui/components/RouteMap.kt`: MapLibre 경로·후보 레이어와 오프라인 Canvas 폴백
 - `feature/ar-navigation/.../ui/CameraHud.kt`: CameraX 미리보기와 프리즘 경로 HUD
 - `feature/ar-navigation/.../sensors/HeadingTracker.kt`: 기존 방향 센서 fallback
 - `core/guidance-contract/`: AR·AI·융합 공통 모델과 순수 경로 수학

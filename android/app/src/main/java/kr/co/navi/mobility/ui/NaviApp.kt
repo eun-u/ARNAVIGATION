@@ -9,6 +9,7 @@ import kr.co.navi.mobility.NaviAppContainer
 import kr.co.navi.mobility.ui.screens.ArrivalScreen
 import kr.co.navi.mobility.ui.screens.CameraScreen
 import kr.co.navi.mobility.ui.screens.ExplainScreen
+import kr.co.navi.mobility.ui.screens.GraphCandidateScreen
 import kr.co.navi.mobility.ui.screens.NavigationScreen
 import kr.co.navi.mobility.ui.screens.PlanScreen
 import kr.co.navi.mobility.ui.screens.ReportScreen
@@ -18,6 +19,7 @@ private object NaviDestination {
     const val Plan = "plan"
     const val Route = "route"
     const val Explain = "explain"
+    const val GraphCandidates = "graph-candidates"
     const val Navigation = "navigation"
     const val Camera = "camera"
     const val Report = "report"
@@ -68,7 +70,23 @@ fun NaviApp(container: NaviAppContainer) {
                 viewModel = routeViewModel,
                 onBack = { navController.popBackStack() },
                 onExplain = { navController.navigate(NaviDestination.Explain) },
+                onCandidates = { navController.navigate(NaviDestination.GraphCandidates) },
                 onStart = { navController.navigate(NaviDestination.Navigation) },
+            )
+        }
+        composable(NaviDestination.GraphCandidates) {
+            val graphCandidateViewModel: GraphCandidateViewModel = viewModel(
+                key = "navi-graph-candidates",
+                factory = NaviViewModelFactory {
+                    GraphCandidateViewModel(
+                        repository = container.repository,
+                        sessionStore = container.sessionStore,
+                    )
+                },
+            )
+            GraphCandidateScreen(
+                viewModel = graphCandidateViewModel,
+                onBack = { navController.popBackStack() },
             )
         }
         composable(NaviDestination.Explain) {

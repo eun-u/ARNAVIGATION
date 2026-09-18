@@ -10,10 +10,35 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .database import Database
+from .graph_enrichment import (
+    GraphEnrichmentCandidateNotFoundError,
+    GraphEnrichmentCatalog,
+    GraphEnrichmentService,
+    GraphEnrichmentSimulationError,
+    GraphEnrichmentUnavailableError,
+)
 from .graph_store import EdgeNotFoundError, GraphStore
 from .profiles import ProfileRegistry
 from .routing import RouteEngine, RouteNotFoundError
-from .schemas import EdgeStatusResponse, EdgeStatusUpdate, ObservationCandidate, ObservationCandidateCreate, ObservationReviewRequest, ObservationReviewResponse, RouteComparison, RouteRequest, RouteResult, RouteSessionResponse, SessionRerouteRequest, SessionRerouteResponse
+from .schemas import (
+    EdgeStatusResponse,
+    EdgeStatusUpdate,
+    GraphEnrichmentCandidate,
+    GraphEnrichmentCandidateList,
+    GraphEnrichmentSimulationRequest,
+    GraphEnrichmentSimulationResponse,
+    GraphEnrichmentSummary,
+    ObservationCandidate,
+    ObservationCandidateCreate,
+    ObservationReviewRequest,
+    ObservationReviewResponse,
+    RouteComparison,
+    RouteRequest,
+    RouteResult,
+    RouteSessionResponse,
+    SessionRerouteRequest,
+    SessionRerouteResponse,
+)
 from .services import ObservationCandidateNotFoundError, RouteService, RouteSessionNotFoundError
 
 
@@ -23,14 +48,35 @@ SAMPLE_GRAPH_PATH = PROJECT_ROOT / "data" / "sample" / "navi_accessibility_graph
 DEFAULT_GRAPH_PATH = PROCESSED_GRAPH_PATH if PROCESSED_GRAPH_PATH.exists() else SAMPLE_GRAPH_PATH
 DEFAULT_DB_PATH = PROJECT_ROOT / "data" / "runtime" / "navi.db"
 DEFAULT_CANDIDATES_PATH = PROJECT_ROOT / "data" / "processed" / "review_candidates.json"
+DEFAULT_GRAPH_ENRICHMENT_PATH = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "evaluation"
+    / "graph_enrichment"
+    / "candidate_bundle.json"
+)
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
 
-def create_app(graph_path: Path | None = None, db_path: Path | None = None) -> FastAPI:
+def create_app(
+    graph_path: Path | None = None,
+    db_path: Path | None = None,
+    graph_enrichment_path: Path | None = None,
+) -> FastAPI:
     configured_graph = os.getenv("NAVI_GRAPH_PATH", "").strip()
     configured_db = os.getenv("NAVI_DB_PATH", "").strip()
+    configured_graph_enrichment = os.getenv("NAVI_GRAPH_ENRICHMENT_PATH", "").strip()
     selected_graph = graph_path or (Path(configured_graph) if configured_graph else DEFAULT_GRAPH_PATH)
     selected_db = db_path or (Path(configured_db) if configured_db else DEFAULT_DB_PATH)
+    if graph_enrichment_path is not None:
+        selected_graph_enrichment = graph_enrichment_path
+    elif configured_graph_enrichment:
+        selected_graph_enrichment = Path(configured_graph_enrichment)
+    elif selected_graph.resolve() == PROCESSED_GRAPH_PATH.resolve():
+        selected_graph_enrichment = DEFAULT_GRAPH_ENRICHMENT_PATH
+    else:
+        selected_graph_enrichment = None
 
     store = GraphStore(selected_graph)
     database = Database(selected_db)
@@ -39,11 +85,23 @@ def create_app(graph_path: Path | None = None, db_path: Path | None = None) -> F
             store.apply_edge_overlay(overlay["edge_id"], overlay["values"])
         except EdgeNotFoundError:
             pass
-    if DEFAULT_CANDIDATES_PATH.exists():
+    if DEFAULT_CANDIDATES_PATH.exists() and not bool(
+        store.metadata.get("field_test_only")
+    ):
         database.seed_candidates(json.loads(DEFAULT_CANDIDATES_PATH.read_text(encoding="utf-8")))
     profiles = ProfileRegistry()
     engine = RouteEngine(store, profiles)
     service = RouteService(store, engine, database)
+    graph_enrichment_catalog = GraphEnrichmentCatalog(
+        selected_graph_enrichment,
+        selected_graph,
+        store,
+    )
+    graph_enrichment_service = GraphEnrichmentService(
+        graph_enrichment_catalog,
+        engine,
+        database,
+    )
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
@@ -52,6 +110,8 @@ def create_app(graph_path: Path | None = None, db_path: Path | None = None) -> F
 
     app = FastAPI(title="NaVi Accessibility Routing PoC", version="0.2.0", description="OSM 보행망에서 일반 경로와 접근 가능 경로를 비교하고, 검수된 현장 상태 변화 후 세션별 경로를 재계산하는 PoC", lifespan=lifespan)
     app.state.graph_store, app.state.database, app.state.route_service = store, database, service
+    app.state.graph_enrichment_catalog = graph_enrichment_catalog
+    app.state.graph_enrichment_service = graph_enrichment_service
 
     @app.exception_handler(RouteNotFoundError)
     async def route_not_found_handler(_request: Request, exc: RouteNotFoundError) -> JSONResponse:
@@ -69,9 +129,40 @@ def create_app(graph_path: Path | None = None, db_path: Path | None = None) -> F
     async def candidate_not_found_handler(_request: Request, exc: ObservationCandidateNotFoundError) -> JSONResponse:
         return JSONResponse(status_code=404, content={"status": "candidate_not_found", "candidate_id": exc.args[0]})
 
+    @app.exception_handler(GraphEnrichmentCandidateNotFoundError)
+    async def graph_enrichment_candidate_not_found_handler(
+        _request: Request, exc: GraphEnrichmentCandidateNotFoundError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "status": "graph_enrichment_candidate_not_found",
+                "candidate_id": exc.args[0],
+            },
+        )
+
+    @app.exception_handler(GraphEnrichmentUnavailableError)
+    async def graph_enrichment_unavailable_handler(
+        _request: Request, exc: GraphEnrichmentUnavailableError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "graph_enrichment_unavailable", "message": str(exc)},
+        )
+
+    @app.exception_handler(GraphEnrichmentSimulationError)
+    async def graph_enrichment_simulation_error_handler(
+        _request: Request, exc: GraphEnrichmentSimulationError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=422,
+            content={"status": "candidate_not_simulatable", "message": str(exc)},
+        )
+
     @app.get("/health")
     def health() -> dict:
-        return {"status": "ok", "service": "NaVi", "database": {"schema_version": database.SCHEMA_VERSION, "graph_revision": database.graph_revision}, "observations": {"pending": len(database.list_candidates("pending"))}, "graph": {"nodes": store.node_count, "edges": store.edge_count, "source": store.metadata.get("source"), "accessibility_attributes": store.metadata.get("accessibility_attributes")}}
+        enrichment_summary = graph_enrichment_catalog.summary()
+        return {"status": "ok", "service": "NaVi", "database": {"schema_version": database.SCHEMA_VERSION, "graph_revision": database.graph_revision}, "observations": {"pending": len(database.list_candidates("pending"))}, "graph": {"nodes": store.node_count, "edges": store.edge_count, "source": store.metadata.get("source"), "accessibility_attributes": store.metadata.get("accessibility_attributes")}, "graph_enrichment": {"available": enrichment_summary.available, "candidate_count": enrichment_summary.candidate_count, "route_affecting_candidate_count": enrichment_summary.route_affecting_candidate_count}}
 
     @app.get("/profiles")
     def list_profiles() -> list[dict]:
@@ -125,6 +216,47 @@ def create_app(graph_path: Path | None = None, db_path: Path | None = None) -> F
     @app.post("/observations/candidates/{candidate_id}/review", response_model=ObservationReviewResponse)
     def review_candidate(candidate_id: str, payload: ObservationReviewRequest) -> ObservationReviewResponse:
         return service.review_candidate(candidate_id, payload)
+
+    @app.get("/graph-enrichment/summary", response_model=GraphEnrichmentSummary)
+    def graph_enrichment_summary() -> GraphEnrichmentSummary:
+        return graph_enrichment_catalog.summary()
+
+    @app.get(
+        "/graph-enrichment/candidates",
+        response_model=GraphEnrichmentCandidateList,
+    )
+    def graph_enrichment_candidates(
+        candidate_type: str | None = Query(default=None, alias="type"),
+        priority: str | None = Query(default=None),
+        candidate_class: str | None = Query(default=None),
+        route_affecting: bool | None = Query(default=None),
+        offset: int = Query(default=0, ge=0),
+        limit: int = Query(default=50, ge=1, le=250),
+    ) -> GraphEnrichmentCandidateList:
+        return graph_enrichment_catalog.list_candidates(
+            candidate_type=candidate_type,
+            priority=priority,
+            candidate_class=candidate_class,
+            route_affecting=route_affecting,
+            offset=offset,
+            limit=limit,
+        )
+
+    @app.get(
+        "/graph-enrichment/candidates/{candidate_id}",
+        response_model=GraphEnrichmentCandidate,
+    )
+    def graph_enrichment_candidate(candidate_id: str) -> GraphEnrichmentCandidate:
+        return graph_enrichment_catalog.get_candidate(candidate_id)
+
+    @app.post(
+        "/graph-enrichment/simulate",
+        response_model=GraphEnrichmentSimulationResponse,
+    )
+    def simulate_graph_enrichment_candidate(
+        payload: GraphEnrichmentSimulationRequest,
+    ) -> GraphEnrichmentSimulationResponse:
+        return graph_enrichment_service.simulate(payload)
 
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 

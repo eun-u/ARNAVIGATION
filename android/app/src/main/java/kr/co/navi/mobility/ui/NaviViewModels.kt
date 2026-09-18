@@ -8,11 +8,17 @@ import kr.co.navi.mobility.ar.sensors.HeadingTracker
 import kr.co.navi.mobility.data.NaviSessionState
 import kr.co.navi.mobility.data.NaviSessionStore
 import kr.co.navi.mobility.data.model.CoordinateDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentCandidateDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentSimulationResponseDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentSummaryDto
 import kr.co.navi.mobility.data.model.ObservationCandidateDto
 import kr.co.navi.mobility.data.model.SessionRerouteResponseDto
 import kr.co.navi.mobility.data.repository.NaviRepository
 import kr.co.navi.mobility.location.LocationState
 import kr.co.navi.mobility.location.LocationTracker
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,6 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 data class PlanUiState(
     val loading: Boolean = true,
@@ -113,6 +120,295 @@ class RouteViewModel(
     sessionStore: NaviSessionStore,
 ) : ViewModel() {
     val sessionState: StateFlow<NaviSessionState> = sessionStore.state
+}
+
+data class GraphCandidateUiState(
+    val loading: Boolean = true,
+    val rankingLoading: Boolean = false,
+    val simulating: Boolean = false,
+    val summary: GraphEnrichmentSummaryDto? = null,
+    val candidates: List<GraphEnrichmentCandidateDto> = emptyList(),
+    val selectedFilter: GraphCandidateFilter = GraphCandidateFilter.IMPACT,
+    val simulationsByCandidateId: Map<String, GraphEnrichmentSimulationResponseDto> = emptyMap(),
+    val rankingFailedCandidateIds: Set<String> = emptySet(),
+    val selectedCandidateId: String? = null,
+    val simulation: GraphEnrichmentSimulationResponseDto? = null,
+    val error: String? = null,
+)
+
+enum class GraphCandidateFilter {
+    IMPACT,
+    PEDESTRIAN,
+    CROSSING,
+    CURB,
+}
+
+internal fun filterGraphCandidates(
+    candidates: List<GraphEnrichmentCandidateDto>,
+    filter: GraphCandidateFilter,
+): List<GraphEnrichmentCandidateDto> = candidates.filter { candidate ->
+    when (filter) {
+        GraphCandidateFilter.IMPACT -> candidate.simulationAllowed
+        GraphCandidateFilter.PEDESTRIAN -> candidate.type == "pedestrian_area_evidence"
+        GraphCandidateFilter.CROSSING -> candidate.type in setOf(
+            "crosswalk_geometry_evidence",
+            "grade_separated_crossing_evidence",
+        )
+        GraphCandidateFilter.CURB -> candidate.type == "curb_presence_evidence"
+    }
+}
+
+data class RankedGraphCandidateImpact(
+    val candidate: GraphEnrichmentCandidateDto,
+    val simulation: GraphEnrichmentSimulationResponseDto?,
+)
+
+internal fun rankGraphCandidateImpacts(
+    candidates: List<GraphEnrichmentCandidateDto>,
+    simulationsByCandidateId: Map<String, GraphEnrichmentSimulationResponseDto>,
+): List<RankedGraphCandidateImpact> = candidates
+    .map { candidate ->
+        RankedGraphCandidateImpact(candidate, simulationsByCandidateId[candidate.candidateId])
+    }
+    .sortedWith(
+        compareByDescending<RankedGraphCandidateImpact> { impactSeverity(it.simulation) }
+            .thenByDescending { it.simulation?.differenceM ?: Double.NEGATIVE_INFINITY }
+            .thenBy { it.candidate.candidateId },
+    )
+
+private fun impactSeverity(simulation: GraphEnrichmentSimulationResponseDto?): Int = when {
+    simulation == null -> 0
+    simulation.baseline != null && simulation.simulated == null -> 4
+    (simulation.differenceM ?: 0.0) > 0.0 -> 3
+    simulation.routeChanged -> 2
+    else -> 1
+}
+
+private data class CandidateSimulationAttempt(
+    val candidateId: String,
+    val simulation: GraphEnrichmentSimulationResponseDto? = null,
+    val error: Throwable? = null,
+)
+
+class GraphCandidateViewModel(
+    private val repository: NaviRepository,
+    private val sessionStore: NaviSessionStore,
+) : ViewModel() {
+    private val mutableUiState = MutableStateFlow(GraphCandidateUiState())
+    val uiState: StateFlow<GraphCandidateUiState> = mutableUiState.asStateFlow()
+    private var simulationRequestId = 0
+    private var catalogRequestId = 0
+
+    init {
+        loadCandidates()
+    }
+
+    fun loadCandidates() {
+        val requestId = ++catalogRequestId
+        simulationRequestId++
+        viewModelScope.launch {
+            mutableUiState.value = GraphCandidateUiState(loading = true)
+            val catalog = try {
+                repository.graphEnrichmentCatalog()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Throwable) {
+                if (requestId == catalogRequestId) {
+                    mutableUiState.value = GraphCandidateUiState(
+                        loading = false,
+                        error = error.userMessage("공간데이터 후보를 불러오지 못했습니다."),
+                    )
+                }
+                return@launch
+            }
+            if (requestId != catalogRequestId) return@launch
+
+            mutableUiState.value = GraphCandidateUiState(
+                loading = false,
+                rankingLoading = catalog.candidates.any { it.simulationAllowed },
+                summary = catalog.summary,
+                candidates = catalog.candidates,
+            )
+            val simulatableCandidates = catalog.candidates.filter { it.simulationAllowed }
+            if (simulatableCandidates.isEmpty()) return@launch
+
+            val initialAttempts = simulateCandidates(simulatableCandidates)
+            val retryCandidates = initialAttempts
+                .filter { it.error != null }
+                .mapNotNull { failed ->
+                    simulatableCandidates.firstOrNull { it.candidateId == failed.candidateId }
+                }
+            val retryAttempts = if (retryCandidates.isEmpty()) {
+                emptyList()
+            } else {
+                simulateCandidates(retryCandidates)
+            }
+            if (requestId != catalogRequestId) return@launch
+            val attempts = initialAttempts.associateByTo(mutableMapOf()) { it.candidateId }
+                .apply {
+                    retryAttempts.forEach { retry -> put(retry.candidateId, retry) }
+                }
+                .values
+            val simulations = attempts.mapNotNull { attempt ->
+                attempt.simulation?.let { attempt.candidateId to it }
+            }.toMap()
+            val failedIds = attempts.filter { it.error != null }.mapTo(mutableSetOf()) {
+                it.candidateId
+            }
+            val current = mutableUiState.value
+            val selectedSimulation = current.selectedCandidateId?.let(simulations::get)
+            mutableUiState.value = current.copy(
+                rankingLoading = false,
+                simulationsByCandidateId = simulations,
+                rankingFailedCandidateIds = failedIds,
+                simulation = selectedSimulation,
+                simulating = false,
+                error = if (current.selectedCandidateId in failedIds) {
+                    "선택한 후보의 경로 영향을 계산하지 못했습니다. 다시 선택해 재시도할 수 있습니다."
+                } else {
+                    current.error
+                },
+            )
+        }
+    }
+
+    fun selectCandidate(candidateId: String) {
+        val state = mutableUiState.value
+        val candidate = state.candidates.firstOrNull { it.candidateId == candidateId } ?: return
+        if (!candidate.simulationAllowed) {
+            simulationRequestId++
+            mutableUiState.value = state.copy(
+                selectedCandidateId = candidateId,
+                simulation = null,
+                simulating = false,
+                error = null,
+            )
+            return
+        }
+        val cachedSimulation = state.simulationsByCandidateId[candidateId]
+        if (cachedSimulation != null) {
+            simulationRequestId++
+            mutableUiState.value = state.copy(
+                selectedCandidateId = candidateId,
+                simulation = cachedSimulation,
+                simulating = false,
+                error = null,
+            )
+            return
+        }
+        if (state.rankingLoading) {
+            mutableUiState.value = state.copy(
+                selectedCandidateId = candidateId,
+                simulation = null,
+                simulating = true,
+                error = null,
+            )
+            return
+        }
+
+        simulateSelectedCandidate(candidate)
+    }
+
+    fun selectFilter(filter: GraphCandidateFilter) {
+        val state = mutableUiState.value
+        if (filter == state.selectedFilter) return
+        simulationRequestId++
+        mutableUiState.value = state.copy(
+            selectedFilter = filter,
+            selectedCandidateId = null,
+            simulation = null,
+            simulating = false,
+            error = null,
+        )
+    }
+
+    private fun simulateSelectedCandidate(candidate: GraphEnrichmentCandidateDto) {
+        val state = mutableUiState.value
+        val candidateId = candidate.candidateId
+        val geometry = sessionStore.state.value.bootstrap?.edgeGeometries?.get(candidate.edgeId)
+        val start = geometry?.firstOrNull()?.takeIf { it.size >= 2 }
+        val end = geometry?.lastOrNull()?.takeIf { it.size >= 2 }
+        if (start == null || end == null) {
+            mutableUiState.value = state.copy(
+                selectedCandidateId = candidateId,
+                simulation = null,
+                error = "후보 Edge의 경로 geometry를 찾을 수 없습니다.",
+            )
+            return
+        }
+
+        val requestId = ++simulationRequestId
+        mutableUiState.value = state.copy(
+            selectedCandidateId = candidateId,
+            simulation = null,
+            simulating = true,
+            error = null,
+        )
+        viewModelScope.launch {
+            val result = runCatching {
+                repository.simulateGraphCandidate(
+                    origin = CoordinateDto(lat = start[1], lon = start[0]),
+                    destination = CoordinateDto(lat = end[1], lon = end[0]),
+                    profile = sessionStore.state.value.profile,
+                    candidateId = candidateId,
+                )
+            }
+            if (requestId != simulationRequestId) return@launch
+            result.onSuccess { simulation ->
+                mutableUiState.value = mutableUiState.value.copy(
+                    simulating = false,
+                    simulation = simulation,
+                    simulationsByCandidateId = mutableUiState.value.simulationsByCandidateId +
+                        (candidateId to simulation),
+                    rankingFailedCandidateIds = mutableUiState.value.rankingFailedCandidateIds -
+                        candidateId,
+                )
+            }.onFailure {
+                mutableUiState.value = mutableUiState.value.copy(
+                    simulating = false,
+                    error = it.userMessage("후보 경로 영향을 계산하지 못했습니다."),
+                )
+            }
+        }
+    }
+
+    private suspend fun simulateCandidates(
+        candidates: List<GraphEnrichmentCandidateDto>,
+    ): List<CandidateSimulationAttempt> = supervisorScope {
+        candidates.map { candidate ->
+            async {
+                val geometry = sessionStore.state.value.bootstrap
+                    ?.edgeGeometries
+                    ?.get(candidate.edgeId)
+                val start = geometry?.firstOrNull()?.takeIf { it.size >= 2 }
+                val end = geometry?.lastOrNull()?.takeIf { it.size >= 2 }
+                if (start == null || end == null) {
+                    return@async CandidateSimulationAttempt(
+                        candidateId = candidate.candidateId,
+                        error = IllegalStateException("후보 Edge의 경로 geometry를 찾을 수 없습니다."),
+                    )
+                }
+                try {
+                    CandidateSimulationAttempt(
+                        candidateId = candidate.candidateId,
+                        simulation = repository.simulateGraphCandidate(
+                            origin = CoordinateDto(lat = start[1], lon = start[0]),
+                            destination = CoordinateDto(lat = end[1], lon = end[0]),
+                            profile = sessionStore.state.value.profile,
+                            candidateId = candidate.candidateId,
+                        ),
+                    )
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (error: Throwable) {
+                    CandidateSimulationAttempt(
+                        candidateId = candidate.candidateId,
+                        error = error,
+                    )
+                }
+            }
+        }.awaitAll()
+    }
 }
 
 data class ReportUiState(

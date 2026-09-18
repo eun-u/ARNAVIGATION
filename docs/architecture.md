@@ -44,6 +44,8 @@ AI Candidate(pending)
 - `GraphStore`: GeoJSON 로드, Edge ID 인덱스, 동시성 잠금, SQLite overlay 적용
 - `RouteEngine`: 좌표 스냅, 일반/접근 경로 탐색, 근거·출처 요약
 - `RouteService`: 세션 저장, 세션 임시 차단, Edge 변경, 후보 생성·검수
+- `GraphEnrichmentCatalog`: 공간평가 sidecar 무결성 검증, 후보 조회, 안전한 시뮬레이션 overlay 생성
+- `GraphEnrichmentService`: 현재 요청의 Graph 사본에서만 후보 적용 전·후 접근성 경로 비교
 - `Database`: Python `sqlite3`, WAL, 상태/이력/검수/세션 저장
 - `FastAPI`: Android용 JSON API와 관리자 검수 화면 제공
 - `android/`: Compose, MapLibre, CameraX 기반 시민 앱
@@ -52,6 +54,12 @@ AI Candidate(pending)
 기존 웹 시민 화면은 초기 프로토타입으로 보존하지만 현재 시민용 기준 구현은 Android 앱입니다. 현장 입력은 현재 route session에는 즉시 적용하고, 동시에 `pending`, `verified=false` 후보로 서버에 저장합니다. 후보 생성만으로 공용 Graph를 수정하지 않습니다.
 
 DB는 그래프 원본을 복제하지 않고 변경 overlay만 저장합니다. 재시작 시 GeoJSON을 먼저 읽고 저장된 overlay를 적용합니다.
+
+공간평가 후보 조회·시뮬레이션은 검수 DB 워크플로와 분리되어 있습니다. sidecar의 기준 Graph SHA-256이 현재 파일과 일치해야 하며, `POST /graph-enrichment/simulate`는 저장된 후보의 제안값을 `RouteEngine`의 요청 한정 snapshot에만 합성합니다. 이 경로에는 GraphStore 갱신, SQLite insert/update, session 저장 코드가 없습니다. 따라서 경로 영향은 시험할 수 있지만 후보가 승인되거나 공유 Graph 사실로 승격되지는 않습니다.
+
+Android 클라이언트의 영향 시험 순위는 각 후보 Edge의 양 끝점을 출발·도착으로 사용한 국소 민감도 비교입니다. `경로 단절`을 먼저, 같은 상태에서는 추가 거리를 큰 순서로 배치합니다. 계단 후보와 90m DEM 경사 진단 후보만 계산하며, 후자는 `approval_eligible=false`라 Graph 승인 경로가 없습니다. 이 값은 대표 여정 전체의 위험도나 후보 정확도 점수가 아닙니다.
+
+보행공간·횡단시설·연석 후보는 별도 지도 레이어로 조회합니다. 이 객체들은 위치/존재 근거만 표현하고 Routing 값을 만들지 않습니다. 각 후보에는 2025 정사영상 도엽과 pixel 위치를 가리키는 시각 QA 참조가 붙지만, 독립 기준점 RMSE가 없으므로 자동 geometry 보정은 계속 보류합니다. Android 화면의 레이어 필터와 이미지 참조 표시는 조회 전용이며 SQLite 또는 GraphStore 쓰기 경로와 연결되지 않습니다.
 
 ## 세션
 

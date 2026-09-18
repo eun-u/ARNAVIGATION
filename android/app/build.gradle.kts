@@ -49,6 +49,13 @@ android {
                 "proguard-rules.pro",
             )
         }
+        create("benchmark") {
+            initWith(getByName("release"))
+            // Local performance comparison only. The production release type remains unsigned.
+            signingConfig = signingConfigs.getByName("debug")
+            manifestPlaceholders["usesCleartextTraffic"] = "true"
+            matchingFallbacks += listOf("release")
+        }
     }
 
     buildFeatures {

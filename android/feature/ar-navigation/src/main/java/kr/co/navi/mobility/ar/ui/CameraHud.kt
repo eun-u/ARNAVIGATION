@@ -33,6 +33,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kr.co.navi.mobility.ar.ArCoreNavigationView
 import kr.co.navi.mobility.ar.ArDatasetController
+import kr.co.navi.mobility.ar.ArLifecycleState
 import kr.co.navi.mobility.ar.ArRuntimeMode
 import kr.co.navi.mobility.ar.ArRuntimeState
 import kr.co.navi.mobility.guidance.contract.GeoCoordinate
@@ -108,19 +109,33 @@ private fun ArCorePreview(
         datasetController?.attach(view)
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_RESUME -> view.resumeSession()
-                Lifecycle.Event.ON_PAUSE -> view.pauseSession()
-                Lifecycle.Event.ON_DESTROY -> view.closeSession()
+                Lifecycle.Event.ON_CREATE -> view.updateLifecycleState(ArLifecycleState.CREATED)
+                Lifecycle.Event.ON_START -> view.updateLifecycleState(ArLifecycleState.STARTED)
+                Lifecycle.Event.ON_RESUME -> {
+                    view.updateLifecycleState(ArLifecycleState.RESUMED)
+                    view.resumeSession()
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    view.updateLifecycleState(ArLifecycleState.PAUSED)
+                    view.pauseSession()
+                }
+                Lifecycle.Event.ON_STOP -> view.updateLifecycleState(ArLifecycleState.STOPPED)
+                Lifecycle.Event.ON_DESTROY -> {
+                    view.updateLifecycleState(ArLifecycleState.DESTROYED)
+                    view.closeSession()
+                }
                 else -> Unit
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            view.updateLifecycleState(ArLifecycleState.RESUMED)
             view.resumeSession()
         }
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
             datasetController?.detach(view)
+            view.updateLifecycleState(ArLifecycleState.DISPOSED)
             view.closeSession()
         }
     }

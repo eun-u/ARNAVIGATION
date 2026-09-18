@@ -8,6 +8,7 @@ import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
+import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
 import android.view.Surface
@@ -50,7 +51,9 @@ class ArCoreNavigationView(
     private val activity: Activity,
     onStateChanged: (ArRuntimeState) -> Unit,
 ) : GLSurfaceView(context) {
-    private val renderer = ArCoreRenderer(::onFrameTelemetry)
+    private val diagnostics = ArTrackingDiagnosticsStore.process
+    private val renderer = ArCoreRenderer(diagnostics, ::onFrameTelemetry)
+    private val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
     private var stateListener = onStateChanged
     private var session: Session? = null
     private var installRequested = false
@@ -65,6 +68,12 @@ class ArCoreNavigationView(
     private var activeDataset: File? = null
     private var latestDataset: File? = null
     private var lastDiagnosticLogAt = 0L
+    private var lastDiagnosticKey: String? = null
+    private var pendingSessionCreationReason = if (diagnostics.snapshot().sessionGeneration == 0) {
+        ArSessionTransitionReason.INITIAL_SESSION
+    } else {
+        ArSessionTransitionReason.VIEW_RECREATE
+    }
 
     init {
         setEGLContextClientVersion(2)
@@ -74,8 +83,21 @@ class ArCoreNavigationView(
         preserveEGLContextOnPause = true
         keepScreenOn = true
         latestDataset = findLatestDataset()
-        lastState = lastState.copy(latestDatasetName = latestDataset?.name)
+        lastState = lastState
+            .copy(latestDatasetName = latestDataset?.name)
+            .withDiagnostics(diagnostics.snapshot())
         publish(lastState)
+    }
+
+    fun updateLifecycleState(state: ArLifecycleState) {
+        val transition = when (state) {
+            ArLifecycleState.PAUSED -> ArSessionTransitionReason.LIFECYCLE_PAUSE
+            ArLifecycleState.DISPOSED -> ArSessionTransitionReason.VIEW_DISPOSE
+            else -> null
+        }
+        val snapshot = diagnostics.updateLifecycle(state, transition, SystemClock.elapsedRealtime())
+        logDiagnosticEvent("lifecycle", snapshot)
+        publish(lastState.withDiagnostics(snapshot))
     }
 
     fun setStateListener(listener: (ArRuntimeState) -> Unit) {
@@ -109,6 +131,11 @@ class ArCoreNavigationView(
 
     fun resumeSession() {
         if (resumed) return
+        val transition = diagnostics.beginExpectedTransition(
+            ArSessionTransitionReason.LIFECYCLE_RESUME,
+            SystemClock.elapsedRealtime(),
+        )
+        logDiagnosticEvent("session_resume", transition)
         val current = session ?: createSession() ?: return
         try {
             current.resume()
@@ -121,16 +148,24 @@ class ArCoreNavigationView(
         }
     }
 
-    fun pauseSession() {
+    fun pauseSession(
+        reason: ArSessionTransitionReason = ArSessionTransitionReason.LIFECYCLE_PAUSE,
+    ) {
         if (!resumed) return
+        val transition = diagnostics.beginExpectedTransition(reason, SystemClock.elapsedRealtime())
+        logDiagnosticEvent("session_pause", transition)
         if (datasetMode == ArDatasetMode.RECORDING) stopDatasetRecording()
         super.onPause()
         session?.pause()
         resumed = false
     }
 
-    fun closeSession() {
-        pauseSession()
+    fun closeSession(
+        reason: ArSessionTransitionReason = ArSessionTransitionReason.VIEW_DISPOSE,
+    ) {
+        val transition = diagnostics.beginExpectedTransition(reason, SystemClock.elapsedRealtime())
+        logDiagnosticEvent("session_close", transition)
+        pauseSession(reason)
         metricsRecorder.stop()
         renderer.session = null
         session?.close()
@@ -207,6 +242,11 @@ class ArCoreNavigationView(
         }
 
         runCatching {
+            val transition = diagnostics.beginExpectedTransition(
+                ArSessionTransitionReason.PLAYBACK_START,
+                SystemClock.elapsedRealtime(),
+            )
+            logDiagnosticEvent("playback_start", transition)
             if (resumed) {
                 super.onPause()
                 current.pause()
@@ -230,7 +270,8 @@ class ArCoreNavigationView(
 
     fun returnToLiveSession() {
         if (datasetMode == ArDatasetMode.LIVE) return
-        closeSession()
+        pendingSessionCreationReason = ArSessionTransitionReason.PLAYBACK_TO_LIVE
+        closeSession(ArSessionTransitionReason.PLAYBACK_TO_LIVE)
         datasetMode = ArDatasetMode.LIVE
         datasetMessage = "실시간 카메라로 전환됨"
         publishDatasetState()
@@ -273,6 +314,12 @@ class ArCoreNavigationView(
                     }
                     created.configure(config)
                     session = created
+                    val transition = diagnostics.onSessionCreated(
+                        pendingSessionCreationReason,
+                        SystemClock.elapsedRealtime(),
+                    )
+                    pendingSessionCreationReason = ArSessionTransitionReason.VIEW_RECREATE
+                    logDiagnosticEvent("session_created", transition)
                     publish(
                         lastState.copy(
                             mode = ArRuntimeMode.DEGRADED,
@@ -280,7 +327,7 @@ class ArCoreNavigationView(
                             depthSupported = depthSupported,
                             routeAligned = routeAligned,
                             message = "ARCore가 주변 공간을 인식하는 중",
-                        ),
+                        ).withDiagnostics(transition),
                     )
                     created
                 }
@@ -309,30 +356,60 @@ class ArCoreNavigationView(
                 }
             }
             if (datasetMode == ArDatasetMode.RECORDING) {
+                val diagnosticsSnapshot = telemetry.diagnostics
                 metricsRecorder.append(
                     ArTelemetrySample(
                         elapsedRealtimeMillis = SystemClock.elapsedRealtime(),
                         trackingQuality = telemetry.trackingQuality.name,
                         depthActive = telemetry.depthActive,
                         routeAligned = routeAligned,
-                        trackingLossCount = telemetry.trackingLossCount,
-                        lastRecoveryMillis = telemetry.lastRecoveryMillis,
+                        trackingLossCount = diagnosticsSnapshot.totalTrackingLossCount,
+                        unexpectedTrackingLossCount = diagnosticsSnapshot.unexpectedTrackingLossCount,
+                        expectedTransitionLossCount = diagnosticsSnapshot.expectedTransitionLossCount,
+                        lastRecoveryMillis = diagnosticsSnapshot.lastRecoveryMillis,
                         frameTimeMillis = telemetry.frameTimeMillis,
                         message = telemetry.message,
+                        trackingFailureReason = diagnosticsSnapshot.trackingFailureReason,
+                        lifecycleState = diagnosticsSnapshot.lifecycleState.name,
+                        displayInteractive = powerManager.isInteractive,
+                        sessionGeneration = diagnosticsSnapshot.sessionGeneration,
+                        datasetMode = datasetMode.name,
+                        transitionReason = diagnosticsSnapshot.transitionReason.name,
+                        expectedSessionTransition = diagnosticsSnapshot.expectedSessionTransition,
                     ),
                 )
             }
             val now = SystemClock.elapsedRealtime()
-            if (now - lastDiagnosticLogAt >= DIAGNOSTIC_LOG_INTERVAL_MILLIS) {
+            val diagnosticsSnapshot = telemetry.diagnostics
+            val diagnosticKey = listOf(
+                telemetry.trackingQuality.name,
+                diagnosticsSnapshot.trackingFailureReason,
+                diagnosticsSnapshot.lifecycleState.name,
+                diagnosticsSnapshot.sessionGeneration,
+                datasetMode.name,
+                diagnosticsSnapshot.transitionReason.name,
+                diagnosticsSnapshot.expectedSessionTransition,
+                diagnosticsSnapshot.totalTrackingLossCount,
+            ).joinToString("|")
+            if (now - lastDiagnosticLogAt >= DIAGNOSTIC_LOG_INTERVAL_MILLIS || diagnosticKey != lastDiagnosticKey) {
                 lastDiagnosticLogAt = now
+                lastDiagnosticKey = diagnosticKey
                 Log.i(
                     DIAGNOSTIC_LOG_TAG,
                     "tracking=${telemetry.trackingQuality.name} " +
                         "depth=${telemetry.depthActive} route_aligned=$routeAligned " +
-                        "losses=${telemetry.trackingLossCount} " +
-                        "recovery_ms=${telemetry.lastRecoveryMillis ?: -1L} " +
+                        "failure=${diagnosticsSnapshot.trackingFailureReason ?: "NONE"} " +
+                        "losses=${diagnosticsSnapshot.totalTrackingLossCount} " +
+                        "unexpected_losses=${diagnosticsSnapshot.unexpectedTrackingLossCount} " +
+                        "expected_losses=${diagnosticsSnapshot.expectedTransitionLossCount} " +
+                        "recovery_ms=${diagnosticsSnapshot.lastRecoveryMillis ?: -1L} " +
                         "frame_ms=${String.format(Locale.US, "%.3f", telemetry.frameTimeMillis)} " +
-                        "dataset=${datasetMode.name}",
+                        "dataset=${datasetMode.name} " +
+                        "lifecycle=${diagnosticsSnapshot.lifecycleState.name} " +
+                        "interactive=${powerManager.isInteractive} " +
+                        "generation=${diagnosticsSnapshot.sessionGeneration} " +
+                        "transition=${diagnosticsSnapshot.transitionReason.name} " +
+                        "expected_transition=${diagnosticsSnapshot.expectedSessionTransition}",
                 )
             }
             val mode = when (telemetry.trackingQuality) {
@@ -349,8 +426,16 @@ class ArCoreNavigationView(
                     depthSupported = depthSupported,
                     depthActive = telemetry.depthActive,
                     routeAligned = routeAligned,
-                    trackingLossCount = telemetry.trackingLossCount,
-                    lastRecoveryMillis = telemetry.lastRecoveryMillis,
+                    trackingLossCount = diagnosticsSnapshot.totalTrackingLossCount,
+                    unexpectedTrackingLossCount = diagnosticsSnapshot.unexpectedTrackingLossCount,
+                    expectedTransitionLossCount = diagnosticsSnapshot.expectedTransitionLossCount,
+                    lastRecoveryMillis = diagnosticsSnapshot.lastRecoveryMillis,
+                    trackingFailureReason = diagnosticsSnapshot.trackingFailureReason,
+                    lifecycleState = diagnosticsSnapshot.lifecycleState,
+                    displayInteractive = powerManager.isInteractive,
+                    sessionGeneration = diagnosticsSnapshot.sessionGeneration,
+                    transitionReason = diagnosticsSnapshot.transitionReason,
+                    expectedSessionTransition = diagnosticsSnapshot.expectedSessionTransition,
                     frameTimeMillis = telemetry.frameTimeMillis,
                     message = telemetry.message,
                     datasetMode = datasetMode,
@@ -377,7 +462,7 @@ class ArCoreNavigationView(
                 datasetMode = datasetMode,
                 latestDatasetName = latestDataset?.name,
                 datasetMessage = datasetMessage,
-            ),
+            ).withDiagnostics(diagnostics.snapshot()),
         )
     }
 
@@ -411,6 +496,37 @@ class ArCoreNavigationView(
         }
     }
 
+    private fun ArRuntimeState.withDiagnostics(
+        snapshot: ArTrackingDiagnosticsSnapshot,
+    ): ArRuntimeState = copy(
+        trackingLossCount = snapshot.totalTrackingLossCount,
+        unexpectedTrackingLossCount = snapshot.unexpectedTrackingLossCount,
+        expectedTransitionLossCount = snapshot.expectedTransitionLossCount,
+        lastRecoveryMillis = snapshot.lastRecoveryMillis,
+        trackingFailureReason = snapshot.trackingFailureReason,
+        lifecycleState = snapshot.lifecycleState,
+        displayInteractive = powerManager.isInteractive,
+        sessionGeneration = snapshot.sessionGeneration,
+        transitionReason = snapshot.transitionReason,
+        expectedSessionTransition = snapshot.expectedSessionTransition,
+    )
+
+    private fun logDiagnosticEvent(
+        event: String,
+        snapshot: ArTrackingDiagnosticsSnapshot,
+    ) {
+        Log.i(
+            DIAGNOSTIC_LOG_TAG,
+            "event=$event lifecycle=${snapshot.lifecycleState.name} " +
+                "interactive=${powerManager.isInteractive} generation=${snapshot.sessionGeneration} " +
+                "dataset=${datasetMode.name} transition=${snapshot.transitionReason.name} " +
+                "expected_transition=${snapshot.expectedSessionTransition} " +
+                "losses=${snapshot.totalTrackingLossCount} " +
+                "unexpected_losses=${snapshot.unexpectedTrackingLossCount} " +
+                "expected_losses=${snapshot.expectedTransitionLossCount}",
+        )
+    }
+
     private data class GuidanceInput(
         val route: List<GeoCoordinate>,
         val user: GeoCoordinate?,
@@ -427,8 +543,7 @@ class ArCoreNavigationView(
 private data class FrameTelemetry(
     val trackingQuality: TrackingQuality,
     val depthActive: Boolean,
-    val trackingLossCount: Int,
-    val lastRecoveryMillis: Long?,
+    val diagnostics: ArTrackingDiagnosticsSnapshot,
     val frameTimeMillis: Float,
     val message: String?,
     val recordingStatus: RecordingStatus,
@@ -436,6 +551,7 @@ private data class FrameTelemetry(
 )
 
 private class ArCoreRenderer(
+    private val diagnostics: ArTrackingDiagnostics,
     private val onTelemetry: (FrameTelemetry) -> Unit,
 ) : GLSurfaceView.Renderer {
     @Volatile
@@ -450,10 +566,7 @@ private class ArCoreRenderer(
     private var textureSession: Session? = null
     private var viewportWidth = 1
     private var viewportHeight = 1
-    private var wasTracking = false
-    private var trackingLossStartedAt: Long? = null
-    private var trackingLossCount = 0
-    private var lastRecoveryMillis: Long? = null
+    private var lastTrackingState: Boolean? = null
     private var lastTelemetryAt = 0L
 
     fun setGuidance(path: ForwardGuidancePath?, headingDegrees: Float?) {
@@ -504,7 +617,12 @@ private class ArCoreRenderer(
         cameraRenderer.draw(frame)
         val camera = frame.camera
         val tracking = camera.trackingState == TrackingState.TRACKING
-        updateTrackingMetrics(tracking)
+        val failureReason = if (tracking) null else camera.trackingFailureReason.name
+        val diagnosticsSnapshot = diagnostics.onTrackingObservation(
+            tracking = tracking,
+            failureReason = failureReason,
+            elapsedRealtimeMillis = SystemClock.elapsedRealtime(),
+        )
         val depthActive = if (tracking) frame.hasDepthImage() else false
         if (tracking) {
             ribbonRenderer.draw(
@@ -517,42 +635,34 @@ private class ArCoreRenderer(
         }
 
         val now = SystemClock.elapsedRealtime()
-        if (now - lastTelemetryAt >= TELEMETRY_INTERVAL_MILLIS || tracking != wasTracking) {
+        if (now - lastTelemetryAt >= TELEMETRY_INTERVAL_MILLIS || tracking != lastTrackingState) {
             lastTelemetryAt = now
             onTelemetry(
                 FrameTelemetry(
                     trackingQuality = if (tracking) TrackingQuality.TRACKING else TrackingQuality.DEGRADED,
                     depthActive = depthActive,
-                    trackingLossCount = trackingLossCount,
-                    lastRecoveryMillis = lastRecoveryMillis,
+                    diagnostics = diagnosticsSnapshot,
                     frameTimeMillis = (System.nanoTime() - frameStartedAt) / 1_000_000f,
-                    message = if (tracking) null else camera.trackingFailureReason.name,
+                    message = failureReason,
                     recordingStatus = activeSession.recordingStatus,
                     playbackStatus = activeSession.playbackStatus,
                 ),
             )
         }
-        wasTracking = tracking
-    }
-
-    private fun updateTrackingMetrics(tracking: Boolean) {
-        val now = SystemClock.elapsedRealtime()
-        if (wasTracking && !tracking) {
-            trackingLossCount += 1
-            trackingLossStartedAt = now
-        } else if (!wasTracking && tracking) {
-            trackingLossStartedAt?.let { lastRecoveryMillis = now - it }
-            trackingLossStartedAt = null
-        }
+        lastTrackingState = tracking
     }
 
     private fun publishUnavailableTelemetry(frameStartedAt: Long) {
+        val diagnosticsSnapshot = diagnostics.onTrackingObservation(
+            tracking = false,
+            failureReason = "CAMERA_NOT_AVAILABLE",
+            elapsedRealtimeMillis = SystemClock.elapsedRealtime(),
+        )
         onTelemetry(
             FrameTelemetry(
                 trackingQuality = TrackingQuality.UNAVAILABLE,
                 depthActive = false,
-                trackingLossCount = trackingLossCount,
-                lastRecoveryMillis = lastRecoveryMillis,
+                diagnostics = diagnosticsSnapshot,
                 frameTimeMillis = (System.nanoTime() - frameStartedAt) / 1_000_000f,
                 message = "CAMERA_NOT_AVAILABLE",
                 recordingStatus = RecordingStatus.NONE,

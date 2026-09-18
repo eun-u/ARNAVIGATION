@@ -229,7 +229,7 @@ def _markdown_report(summary: dict[str, Any]) -> str:
 | 데이터 | 판정 | 현재 허용 용도 | 금지/보류 |
 |---|---|---|---|
 | 수치지형도 | 조건부 채택 | 보도·횡단보도·계단 등 공간 검수 후보 | 자동 Graph 편입 |
-| 공개 DEM 90m | 부분 채택 | 거시 지형 맥락 | Edge 경사 hard constraint |
+| 공개 DEM 90m | 부분 채택 | 거시 지형 맥락·승인 불가 경로 민감도 진단 | Edge 경사 hard constraint·verified 값 승격 |
 | 정사영상 25cm | 부분 채택 | 시각 QA | 기준점 RMSE 전 자동 좌표 보정 |
 | 정밀도로지도 | 부분 채택 | 보도·횡단보도·연석 geometry QA | 연석 높이·통과 가능성 추론 |
 | 안양시 횡단보도 | 부분 채택 | 위치 교차검증 | 빈 접근성 값을 false로 간주 |
@@ -257,7 +257,7 @@ def _markdown_report(summary: dict[str, Any]) -> str:
 - Edge coverage: {dem_metrics['valid_edge_length_pct']}%
 - 3개 미만 DEM cell을 사용하는 Edge: {dem_metrics['fewer_than_three_cells_edge_count']} / {dem_metrics['evaluated_edge_count']}
 - hard constraint 적용 가능 Edge: {dem_metrics['hard_constraint_eligible_edge_count']}개
-- 판정: 지형 맥락에는 사용 가능하나 보도 Edge 경사 판정에는 부적합
+- 판정: 지형 맥락과 `approval_eligible=false` 경로 민감도 진단에는 사용 가능하나 보도 Edge 경사 판정에는 부적합
 
 ## 정사영상
 

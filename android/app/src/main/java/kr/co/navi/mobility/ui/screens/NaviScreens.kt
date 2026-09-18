@@ -65,6 +65,7 @@ import kr.co.navi.mobility.ar.sensors.HeadingState
 import kr.co.navi.mobility.ar.ui.CameraHud
 import kr.co.navi.mobility.data.NaviSessionState
 import kr.co.navi.mobility.data.model.CoordinateDto
+import kr.co.navi.mobility.data.model.NaviBootstrap
 import kr.co.navi.mobility.data.model.RouteComparisonDto
 import kr.co.navi.mobility.data.model.RouteResultDto
 import kr.co.navi.mobility.location.LocationState
@@ -171,7 +172,7 @@ fun PlanScreen(
             } else if (session.bootstrap != null) {
                 val bootstrap = requireNotNull(session.bootstrap)
                 TrustBanner(
-                    text = "${bootstrap.areaName} PoC · OSM 보행망과 synthetic 접근성 속성을 사용합니다. 현장 실측·검증 데이터가 아닙니다.",
+                    text = bootstrapTrustText(bootstrap),
                 )
                 Spacer(Modifier.height(NaviDimens.Space20))
                 Text(
@@ -251,11 +252,25 @@ fun PlanScreen(
     }
 }
 
+internal fun bootstrapTrustText(bootstrap: NaviBootstrap): String {
+    val sourceLabel = when (bootstrap.source) {
+        "OpenStreetMap local snapshot" -> "OSM 로컬 스냅샷"
+        else -> bootstrap.source
+    }
+    val accessibilityLabel = when (bootstrap.accessibilityAttributes) {
+        "unknown_unverified" -> "접근성 속성 미확인·미검증"
+        "synthetic" -> "synthetic 접근성 속성"
+        else -> "접근성 속성: ${bootstrap.accessibilityAttributes}"
+    }
+    return "${bootstrap.areaName} PoC · $sourceLabel · $accessibilityLabel. ${bootstrap.disclaimer}"
+}
+
 @Composable
 fun RouteScreen(
     viewModel: RouteViewModel,
     onBack: () -> Unit,
     onExplain: () -> Unit,
+    onCandidates: () -> Unit,
     onStart: () -> Unit,
 ) {
     val session by viewModel.sessionState.collectAsStateWithLifecycle()
@@ -323,7 +338,31 @@ fun RouteScreen(
                     modifier = Modifier.semantics { heading() },
                 )
                 Spacer(Modifier.height(NaviDimens.Space12))
-                TrustBanner("PoC · synthetic 속성 포함 · 현장 미검증 경로")
+                TrustBanner(
+                    session.bootstrap?.let(::bootstrapTrustText)
+                        ?: "PoC · 데이터 출처와 현장 검증 상태를 확인하세요.",
+                )
+                Spacer(Modifier.height(NaviDimens.Space16))
+                SectionCard {
+                    Column(verticalArrangement = Arrangement.spacedBy(NaviDimens.Space8)) {
+                        Text(
+                            "공간데이터 Graph 반영 후보",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = NaviInk,
+                        )
+                        Text(
+                            "검토 전 후보를 실제로 반영하지 않고 경로 영향만 시험할 수 있습니다.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = NaviInkMuted,
+                        )
+                        OutlinedButton(
+                            onClick = onCandidates,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("후보 지도와 경로 영향 보기")
+                        }
+                    }
+                }
                 Spacer(Modifier.height(NaviDimens.Space16))
                 RouteMetricRow(
                     standard = comparison.standard,

@@ -15,7 +15,7 @@
 | M1 AR | 기술 스파이크 완료 | ARCore session, pose/depth, route ribbon, fallback, Recording/Playback, telemetry | live CPU image lease와 pose/depth timestamp 정렬 |
 | M2 AI | device-free 범위 완료 | MP4 replay, EfficientDet-Lite0, tracker, 회귀 보고서, 에뮬레이터 자동 실행 | 실제 현장 라벨 세트와 모델 비교 |
 | 공간자료 평가 | 자동평가 완료·검수 대기 | 원본/CRS/coverage 검증, 414개 review queue 생성 | Human Review 승인 |
-| Graph enrichment | 후보 bundle 완료 | 235개 후보/192개 Edge, route 영향 후보 5개 | 승인 전 기준 Graph 반영 금지 |
+| Graph enrichment | 후보 bundle 확장 완료 | 247개 후보/196개 Edge, 시뮬레이션 17개·근거 전용 230개 | 승인 전 기준 Graph 반영 금지 |
 | 서비스 Graph | 유지 | 504 Node, 723 Edge, 평가 전후 SHA-256 동일 | 검증된 observation만 별도 승격 |
 
 ## M1 AR 기술 스파이크
@@ -55,7 +55,7 @@
 - 공공 횡단보도 context 후보 402개, HD map 20m 이내 대응 12개
 - Human Review queue 414개, 전부 `pending`, `verified=false`, `graph_update_allowed=false`
 
-Graph enrichment bundle은 235개 후보를 192개 Edge에 연결했다. 이 중 5개는 `stairs=true`를 제안하는 route 영향 후보이고 나머지 230개는 geometry/evidence 전용이다. 5개 제안을 적용한 별도 시뮬레이션 사본에서는 후보 Edge별 우회 증가 또는 접근 가능 경로 없음이 발생하므로 현장 확인 전 적용하지 않는다.
+Graph enrichment bundle은 247개 후보를 196개 Edge에 연결했다. 이 중 5개는 `stairs=true`를 제안하는 승인 가능 후보, 12개는 90m DEM 경사를 적용해 민감도만 보는 승인 불가 진단 후보, 나머지 230개는 geometry/evidence 전용이다. 시뮬레이션 17건은 요청 한정 overlay에서만 계산하며 기준 Graph와 SQLite를 바꾸지 않는다. 모든 247개 후보에는 정사영상 도엽·pixel 참조가 연결되지만 독립 기준점 RMSE 전에는 geometry 보정이나 Graph 반영에 사용할 수 없다.
 
 재배포 제한이 있는 NGII 원자료와 그 geometry 파생 산출물은 로컬 전용이다. `data/processed/evaluation/`은 Git에서 제외하고, 저장소에는 재현 스크립트와 집계 보고서만 보관한다.
 
@@ -85,16 +85,17 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 
 실기기 M1 결과와 device-free M2 E2E 결과는 각각 [M1 실행 기록](m1_ar_spike.md), [M2 실행 문서](m2_device_free_harness.md)에 기록한다.
 
-이번 체크포인트 직전 재검증 결과는 다음과 같다.
+이번 체크포인트의 현재 작업트리 재검증 결과는 다음과 같다.
 
-- Python: 46 tests passed
-- Android/JVM unit: 30 tests passed, failure 0
-- Android app debug APK와 androidTest APK assemble 성공
-- AI perception Android lint 성공
+- Python: 56 tests passed
+- Android app JVM unit: 11 tests passed, failure 0
+- AR navigation JVM unit: 9 tests passed, failure 0
+- Android app·AR navigation lint 성공
+- Android app debug·benchmark APK와 androidTest APK assemble 성공
 
 ## 다음 우선순위
 
-1. 414개 공간 review queue와 route 영향 후보 5개를 사람이 검수한다.
+1. 414개 공간 review queue와 승인 가능 계단 후보 5개를 사람이 검수한다.
 2. 실제 촬영 MP4를 비식별화하고 최소 현장 annotation 세트를 만든다.
 3. detector/segmenter 후보를 동일 manifest에서 비교해 초기 회귀 기준을 고정한다.
 4. ARCore camera image·pose·depth를 동일 frame 계약으로 연결해 M3 spatial fusion을 시작한다.

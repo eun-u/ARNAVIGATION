@@ -1,5 +1,7 @@
 package kr.co.navi.mobility.data.remote
 
+import kr.co.navi.mobility.data.model.CoordinateDto
+import kr.co.navi.mobility.data.model.GraphEnrichmentSimulationRequestDto
 import kr.co.navi.mobility.data.model.ObservationCandidateCreateDto
 import kr.co.navi.mobility.data.model.SessionRerouteRequestDto
 import kotlinx.coroutines.test.runTest
@@ -10,6 +12,154 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class NaviApiClientTest {
+    @Test
+    fun `graph enrichment endpoints expose pending candidates and read only simulation`() = runTest {
+        val captured = mutableListOf<HttpRequest>()
+        val transport = HttpTransport { request ->
+            captured += request
+            when {
+                request.url.endsWith("/graph-enrichment/summary") -> HttpResponse(
+                    200,
+                    """{
+                        "available":true,
+                        "candidate_count":247,
+                        "candidate_edge_count":196,
+                        "route_affecting_candidate_count":17,
+                        "evidence_only_candidate_count":230,
+                        "diagnostic_candidate_count":12,
+                        "approval_eligible_candidate_count":235,
+                        "orthophoto_referenced_candidate_count":247,
+                        "all_pending":true,
+                        "all_unverified":true,
+                        "graph_update_allowed":false
+                    }""".trimIndent(),
+                )
+                request.url.contains("/graph-enrichment/candidates?") -> HttpResponse(
+                    200,
+                    """{
+                        "available":true,
+                        "total":1,
+                        "offset":0,
+                        "limit":250,
+                        "candidates":[{
+                            "candidate_id":"GEC-01",
+                            "edge_id":"E15",
+                            "type":"stairs_attribute_candidate",
+                            "source":"spatial_evaluation_candidate",
+                            "status":"pending",
+                            "verified":false,
+                            "graph_update_allowed":false,
+                            "requires_human_review":true,
+                            "priority":"high",
+                            "routing_impact":"wheelchair_edge_exclusion_after_approval",
+                            "mapping_status":"unique",
+                            "mapping_quality":"single_source_unique_match",
+                            "candidate_class":"routing_attribute",
+                            "simulation_allowed":true,
+                            "approval_eligible":true,
+                            "quality_flags":[],
+                            "proposed_changes":{"stairs":true},
+                            "current_values":{"stairs":false},
+                            "evidence_count":1,
+                            "source_types":["ngii_topographic_map"],
+                            "evidence":[{
+                                "source_type":"ngii_topographic_map",
+                                "source_dataset_id":"ngii_digital_topographic_map_anyang_corridor_20260917",
+                                "source_feature_id":"1000037612047C03910000000000000111",
+                                "source_feature_code":"C0390000",
+                                "mapping_status":"unique",
+                                "mapping_distance_m":2.771062,
+                                "mapping_score":0.395665,
+                                "source_sheet_id":"37612047",
+                                "source_year":2025
+                            }],
+                            "visual_evidence_refs":[{
+                                "reference_id":"ORTHO-GEC-01-37612047",
+                                "source_dataset_id":"ngii_orthophoto_2025_anyang_corridor_20260917",
+                                "sheet_id":"37612047",
+                                "pixel_row":100,
+                                "pixel_col":200,
+                                "pixel_size_m":[0.25,0.25],
+                                "reference_status":"visual_qa_only_provisional_georeferencing",
+                                "allowed_use":"human_visual_spatial_qa",
+                                "control_point_count":0,
+                                "control_point_rmse_m":null,
+                                "geometry_correction_allowed":false,
+                                "graph_update_allowed":false,
+                                "verified":false
+                            }],
+                            "lat":37.4,
+                            "lon":126.9,
+                            "created_at":"2026-09-18T09:26:23+09:00"
+                        }]
+                    }""".trimIndent(),
+                )
+                request.url.endsWith("/graph-enrichment/simulate") -> HttpResponse(
+                    200,
+                    """{
+                        "status":"ok",
+                        "candidate_ids":["GEC-01"],
+                        "applied_edge_ids":["E15"],
+                        "baseline_candidate_edge_ids":["E15"],
+                        "baseline":{
+                            "distance_m":98.1,
+                            "estimated_minutes":2,
+                            "route_type":"accessible",
+                            "profile":"wheelchair",
+                            "origin_node":"A",
+                            "destination_node":"B",
+                            "edge_ids":["E15"],
+                            "geometry":[[126.9,37.4],[126.901,37.401]],
+                            "provenance":{}
+                        },
+                        "simulated":{
+                            "distance_m":212.2,
+                            "estimated_minutes":4,
+                            "route_type":"accessible",
+                            "profile":"wheelchair",
+                            "origin_node":"A",
+                            "destination_node":"B",
+                            "edge_ids":["E20"],
+                            "geometry":[[126.9,37.4],[126.901,37.401]],
+                            "provenance":{}
+                        },
+                        "route_changed":true,
+                        "difference_m":114.1,
+                        "graph_revision":7,
+                        "graph_mutated":false,
+                        "database_mutated":false
+                    }""".trimIndent(),
+                )
+                else -> error("Unexpected request: ${request.url}")
+            }
+        }
+        val client = NaviApiClient("http://127.0.0.1:8000", transport)
+
+        val summary = client.getGraphEnrichmentSummary()
+        val candidates = client.getGraphCandidates(routeAffecting = true)
+        val simulation = client.simulateGraphCandidate(
+            GraphEnrichmentSimulationRequestDto(
+                origin = CoordinateDto(37.4, 126.9),
+                destination = CoordinateDto(37.401, 126.901),
+                candidateIds = listOf("GEC-01"),
+            ),
+        )
+
+        assertEquals(17, summary.routeAffectingCandidateCount)
+        assertEquals(12, summary.diagnosticCandidateCount)
+        assertEquals("pending", candidates.candidates.single().status)
+        assertFalse(candidates.candidates.single().verified)
+        assertEquals("unique", candidates.candidates.single().mappingStatus)
+        assertEquals(2025, candidates.candidates.single().evidence.single()["source_year"]?.toString()?.toInt())
+        assertFalse(candidates.candidates.single().currentValues["stairs"].toString().toBoolean())
+        assertEquals("37612047", candidates.candidates.single().visualEvidenceRefs.single().sheetId)
+        assertEquals(114.1, simulation.differenceM ?: 0.0, 0.001)
+        assertFalse(simulation.graphMutated)
+        assertFalse(simulation.databaseMutated)
+        assertTrue(captured[1].url.endsWith("route_affecting=true&limit=250"))
+        assertTrue(captured[2].body.orEmpty().contains("\"candidate_ids\":[\"GEC-01\"]"))
+    }
+
     @Test
     fun `manual observation remains pending and unverified`() = runTest {
         var captured: HttpRequest? = null

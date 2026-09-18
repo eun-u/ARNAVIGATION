@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import numpy as np
 from affine import Affine
+from pyproj import Transformer
 from shapely.geometry import LineString, box
 
 from scripts.evaluate_cross_sources import _decode_legacy_name
@@ -11,6 +13,7 @@ from scripts.evaluate_dem import bilinear_sample, sample_distances
 from scripts.evaluate_orthophoto import parse_official_extent
 from scripts.evaluate_topographic_map import classify_feature_match, parse_layer_member
 from scripts.build_graph_enrichment_candidates import (
+    _build_orthophoto_qa_manifest,
     _preview_graph,
     _routing_projection,
     _simulation_graph,
@@ -277,3 +280,122 @@ def test_graph_enrichment_promotes_only_safe_pending_candidates() -> None:
     assert baseline_edge["properties"]["stairs"] is False
     assert simulated_edge["properties"]["stairs"] is True
     assert simulation["metadata"]["candidate_simulation"]["runtime_use_allowed"] is False
+
+
+def test_dem_candidates_are_diagnostic_only_and_threshold_gated() -> None:
+    graph = {
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [[126.92, 37.39], [126.921, 37.391]],
+                },
+                "properties": {
+                    "feature_type": "edge",
+                    "edge_id": "E1",
+                    "slope": None,
+                },
+            }
+        ]
+    }
+    rows = [
+        {
+            "edge_id": "E1",
+            "quality_flag": "coarse_context_only",
+            "slope_pct_abs_candidate": "9.25",
+            "slope_pct_signed_candidate": "-9.25",
+            "dem_resolution_m": "90",
+            "distinct_cell_count": "3",
+            "nearest_bilinear_endpoint_max_diff_m": "4.2",
+        }
+    ]
+
+    candidates, skipped = derive_candidates(
+        graph,
+        {"features": []},
+        {"features": []},
+        {"features": []},
+        rows,
+        created_at="2026-09-18T00:00:00+09:00",
+        dataset_ids={"topographic": "TOPO", "hdmap": "HD", "crosswalk": "CW", "dem": "DEM"},
+    )
+
+    assert skipped == {}
+    assert len(candidates) == 1
+    candidate = candidates[0]
+    assert candidate["type"] == "dem_slope_diagnostic_candidate"
+    assert candidate["proposed_changes"] == {"slope": 9.25}
+    assert candidate["candidate_class"] == "diagnostic_sensitivity"
+    assert candidate["simulation_allowed"] is True
+    assert candidate["approval_eligible"] is False
+    assert candidate["graph_update_allowed"] is False
+    assert candidate["evidence"][0]["hard_constraint_eligible"] is False
+
+
+def test_orthophoto_manifest_attaches_visual_only_pixel_reference(tmp_path: Path) -> None:
+    evaluation_root = tmp_path / "data/processed/evaluation"
+    orthophoto_dir = evaluation_root / "orthophoto"
+    sidecar_dir = orthophoto_dir / "georeferencing"
+    sidecar_dir.mkdir(parents=True)
+    x, y = Transformer.from_crs("EPSG:4326", "EPSG:5179", always_xy=True).transform(
+        126.92,
+        37.39,
+    )
+    bounds = [x - 100, y - 100, x + 100, y + 100]
+    affine = Affine.translation(bounds[0], bounds[3]) * Affine.scale(0.25, -0.25)
+    (orthophoto_dir / "metrics.json").write_text(
+        json.dumps(
+            {
+                "dataset_id": "ORTHO",
+                "metrics": {
+                    "pixel_size_m_min": 0.25,
+                    "pixel_size_m_max": 0.25,
+                    "control_point_count": 0,
+                    "control_point_rmse_m": None,
+                    "graph_coverage": {"intersected_edge_pct": 100.0},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (sidecar_dir / "T1.json").write_text(
+        json.dumps(
+            {
+                "sheet_id": "T1",
+                "bounds": bounds,
+                "affine_gdal_order": list(affine.to_gdal()),
+                "raster": "data/raw/test.tif",
+                "raster_sha256": "a" * 64,
+                "pixel_size_m": [0.25, 0.25],
+                "control_point_count": 0,
+                "control_point_rmse_m": None,
+            }
+        ),
+        encoding="utf-8",
+    )
+    candidates = [
+        {
+            "candidate_id": "GEC-1",
+            "lat": 37.39,
+            "lon": 126.92,
+            "visual_evidence_refs": [],
+        }
+    ]
+
+    manifest = _build_orthophoto_qa_manifest(
+        tmp_path,
+        evaluation_root,
+        candidates,
+        created_at="2026-09-18T00:00:00+09:00",
+        baseline_sha256="b" * 64,
+    )
+
+    assert manifest["status"] == "visual_qa_only"
+    assert manifest["quality_gate"]["control_point_rmse_m"] is None
+    assert manifest["metrics"]["referenced_candidate_count"] == 1
+    reference = candidates[0]["visual_evidence_refs"][0]
+    assert reference["sheet_id"] == "T1"
+    assert reference["geometry_correction_allowed"] is False
+    assert reference["graph_update_allowed"] is False
+    assert reference["verified"] is False

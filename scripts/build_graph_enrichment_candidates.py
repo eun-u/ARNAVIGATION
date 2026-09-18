@@ -12,12 +12,16 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 import sys
 from collections import Counter, defaultdict
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
+from affine import Affine
+from pyproj import Transformer
+from rasterio.transform import rowcol
 from shapely.geometry import shape
 
 try:
@@ -45,6 +49,10 @@ except ModuleNotFoundError:  # Direct execution from scripts/
 EVALUATION_ROOT = Path("data/processed/evaluation")
 DEFAULT_OUTPUT_DIR = EVALUATION_ROOT / "graph_enrichment"
 REPORT_PATH = Path("docs/graph_enrichment_candidate_report.md")
+DEM_CANDIDATE_PATH = EVALUATION_ROOT / "dem" / "edge_slope_candidates.csv"
+ORTHOPHOTO_DIR = EVALUATION_ROOT / "orthophoto"
+ORTHOPHOTO_MANIFEST_PATH = ORTHOPHOTO_DIR / "qa_evidence_manifest.json"
+EXPERIMENTAL_WHEELCHAIR_MAX_SLOPE_PCT = 8.0
 ROUTING_FIELDS = (
     "stairs",
     "slope",
@@ -67,7 +75,11 @@ CANDIDATE_CSV_FIELDS = (
     "priority",
     "routing_impact",
     "mapping_quality",
+    "candidate_class",
+    "simulation_allowed",
+    "approval_eligible",
     "evidence_count",
+    "visual_evidence_reference_count",
     "source_types",
     "proposed_changes_json",
     "current_values_json",
@@ -117,14 +129,29 @@ def _add_evidence(
     group["evidence"].append(evidence)
 
 
+def _read_csv_rows(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _as_float(value: Any) -> float | None:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
+
+
 def derive_candidates(
     graph: dict[str, Any],
     topographic: dict[str, Any],
     hdmap: dict[str, Any],
     public_crosswalks: dict[str, Any],
+    dem_rows: list[dict[str, Any]] | None = None,
     *,
     created_at: str,
     dataset_ids: dict[str, str],
+    experimental_max_slope_pct: float = EXPERIMENTAL_WHEELCHAIR_MAX_SLOPE_PCT,
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     """Derive candidates using only deterministic, pre-declared gates."""
 
@@ -273,6 +300,54 @@ def derive_candidates(
             },
         )
 
+    for row in dem_rows or []:
+        edge_id = str(row.get("edge_id") or "")
+        if edge_id not in edges:
+            skipped["dem_edge_missing"] += 1
+            continue
+        if str(row.get("quality_flag") or "") != "coarse_context_only":
+            skipped["dem_insufficient_resolution"] += 1
+            continue
+        slope_pct = _as_float(row.get("slope_pct_abs_candidate"))
+        if slope_pct is None:
+            skipped["dem_slope_missing"] += 1
+            continue
+        if slope_pct <= experimental_max_slope_pct:
+            skipped["dem_below_experimental_threshold"] += 1
+            continue
+        if edges[edge_id]["properties"].get("slope") is not None:
+            skipped["dem_existing_slope_preserved"] += 1
+            continue
+        _add_evidence(
+            groups,
+            edge_id=edge_id,
+            candidate_type="dem_slope_diagnostic_candidate",
+            priority="medium",
+            routing_impact="diagnostic_wheelchair_sensitivity_only",
+            proposed_changes={"slope": round(slope_pct, 6)},
+            evidence={
+                "source_type": "ngii_dem",
+                "source_dataset_id": dataset_ids["dem"],
+                "evaluation_role": "coarse_slope_sensitivity",
+                "mapping_status": "edge_sampled",
+                "mapping_distance_m": 0.0,
+                "slope_pct_abs_candidate": round(slope_pct, 6),
+                "slope_pct_signed_candidate": _as_float(
+                    row.get("slope_pct_signed_candidate")
+                ),
+                "dem_resolution_m": _as_float(row.get("dem_resolution_m")),
+                "distinct_cell_count": int(row.get("distinct_cell_count") or 0),
+                "nearest_bilinear_endpoint_max_diff_m": _as_float(
+                    row.get("nearest_bilinear_endpoint_max_diff_m")
+                ),
+                "quality_flag": "coarse_context_only",
+                "hard_constraint_eligible": False,
+                "derived": True,
+                "verified": False,
+                "allowed_use": "route_impact_sensitivity_test_only",
+            },
+        )
+
     candidates: list[dict[str, Any]] = []
     for (edge_id, candidate_type), group in sorted(groups.items()):
         edge_feature = edges[edge_id]
@@ -287,6 +362,23 @@ def derive_candidates(
         source_types = sorted({str(item["source_type"]) for item in evidence})
         centroid = shape(edge_feature["geometry"]).centroid
         proposed = dict(group["proposed_changes"])
+        diagnostic_only = candidate_type == "dem_slope_diagnostic_candidate"
+        candidate_class = (
+            "diagnostic_sensitivity"
+            if diagnostic_only
+            else "routing_attribute"
+            if proposed
+            else "evidence_only"
+        )
+        mapping_quality = (
+            "coarse_dem_context"
+            if diagnostic_only
+            else (
+                "cross_source_consensus"
+                if len(source_types) >= 2
+                else "single_source_unique_match"
+            )
+        )
         candidates.append(
             {
                 "candidate_id": _candidate_id(edge_id, candidate_type),
@@ -300,11 +392,15 @@ def derive_candidates(
                 "requires_human_review": True,
                 "priority": group["priority"],
                 "routing_impact": group["routing_impact"],
-                "mapping_status": "unique",
-                "mapping_quality": (
-                    "cross_source_consensus"
-                    if len(source_types) >= 2
-                    else "single_source_unique_match"
+                "mapping_status": "edge_sampled" if diagnostic_only else "unique",
+                "mapping_quality": mapping_quality,
+                "candidate_class": candidate_class,
+                "simulation_allowed": bool(proposed),
+                "approval_eligible": not diagnostic_only,
+                "quality_flags": (
+                    ["coarse_90m_dem", "not_hard_constraint_eligible"]
+                    if diagnostic_only
+                    else []
                 ),
                 "proposed_changes": proposed,
                 "current_values": {
@@ -313,12 +409,115 @@ def derive_candidates(
                 "evidence_count": len(evidence),
                 "source_types": source_types,
                 "evidence": evidence,
+                "visual_evidence_refs": [],
                 "lat": round(float(centroid.y), 8),
                 "lon": round(float(centroid.x), 8),
                 "created_at": created_at,
             }
         )
     return candidates, dict(sorted(skipped.items()))
+
+
+def _build_orthophoto_qa_manifest(
+    project_root: Path,
+    evaluation_root: Path,
+    candidates: list[dict[str, Any]],
+    *,
+    created_at: str,
+    baseline_sha256: str,
+) -> dict[str, Any]:
+    """Attach provisional image locators without claiming geometry validation."""
+
+    orthophoto_dir = evaluation_root / "orthophoto"
+    metrics = load_json(orthophoto_dir / "metrics.json")
+    sidecars = [
+        load_json(path)
+        for path in sorted((orthophoto_dir / "georeferencing").glob("*.json"))
+    ]
+    if not sidecars:
+        raise RuntimeError("orthophoto georeferencing sidecars are required")
+
+    to_5179 = Transformer.from_crs("EPSG:4326", "EPSG:5179", always_xy=True)
+    candidate_references: dict[str, list[dict[str, Any]]] = {}
+    unreferenced_candidate_ids: list[str] = []
+    reference_count = 0
+    for candidate in candidates:
+        x, y = to_5179.transform(float(candidate["lon"]), float(candidate["lat"]))
+        refs: list[dict[str, Any]] = []
+        for sidecar in sidecars:
+            min_x, min_y, max_x, max_y = [float(value) for value in sidecar["bounds"]]
+            if not (min_x <= x <= max_x and min_y <= y <= max_y):
+                continue
+            affine = Affine.from_gdal(*sidecar["affine_gdal_order"])
+            pixel_row, pixel_col = rowcol(affine, x, y)
+            sheet_id = str(sidecar["sheet_id"])
+            ref = {
+                "reference_id": f"ORTHO-{candidate['candidate_id']}-{sheet_id}",
+                "source_type": "ngii_orthophoto",
+                "source_dataset_id": metrics.get("dataset_id"),
+                "sheet_id": sheet_id,
+                "raster": sidecar.get("raster"),
+                "raster_sha256": sidecar.get("raster_sha256"),
+                "georeferencing_sidecar": (
+                    orthophoto_dir
+                    / "georeferencing"
+                    / f"{sheet_id}.json"
+                ).relative_to(project_root).as_posix(),
+                "pixel_row": int(pixel_row),
+                "pixel_col": int(pixel_col),
+                "pixel_size_m": sidecar.get("pixel_size_m"),
+                "reference_status": "visual_qa_only_provisional_georeferencing",
+                "allowed_use": "human_visual_spatial_qa",
+                "control_point_count": sidecar.get("control_point_count", 0),
+                "control_point_rmse_m": sidecar.get("control_point_rmse_m"),
+                "geometry_correction_allowed": False,
+                "graph_update_allowed": False,
+                "verified": False,
+            }
+            refs.append(ref)
+        refs.sort(key=lambda item: str(item["sheet_id"]))
+        candidate["visual_evidence_refs"] = refs
+        if refs:
+            candidate_references[candidate["candidate_id"]] = refs
+            reference_count += len(refs)
+        else:
+            unreferenced_candidate_ids.append(candidate["candidate_id"])
+
+    graph_coverage = metrics.get("metrics", {}).get("graph_coverage") or {}
+    return {
+        "schema_version": "1.1",
+        "created_at": created_at,
+        "status": "visual_qa_only",
+        "dataset_id": metrics.get("dataset_id"),
+        "baseline_graph_sha256": baseline_sha256,
+        "source_manifest": "data/raw/ngii/orthophoto/2025/source_manifest.json",
+        "quality_gate": {
+            "pixel_size_m_min": metrics.get("metrics", {}).get("pixel_size_m_min"),
+            "pixel_size_m_max": metrics.get("metrics", {}).get("pixel_size_m_max"),
+            "control_point_count": metrics.get("metrics", {}).get("control_point_count", 0),
+            "control_point_rmse_m": metrics.get("metrics", {}).get("control_point_rmse_m"),
+            "graph_covered_edge_pct": graph_coverage.get("intersected_edge_pct"),
+            "automatic_geometry_correction": "hold",
+            "reason": "independent control-point RMSE has not been measured",
+        },
+        "metrics": {
+            "candidate_count": len(candidates),
+            "referenced_candidate_count": len(candidate_references),
+            "unreferenced_candidate_count": len(unreferenced_candidate_ids),
+            "reference_count": reference_count,
+            "tile_count": len(sidecars),
+        },
+        "candidate_references": candidate_references,
+        "unreferenced_candidate_ids": unreferenced_candidate_ids,
+        "policy": {
+            "derived": True,
+            "verified": False,
+            "graph_update_allowed": False,
+            "routing_graph_mutated": False,
+            "raw_tiff_mutated": False,
+            "allowed_use": "human_visual_spatial_qa_only",
+        },
+    }
 
 
 def _preview_graph(
@@ -373,24 +572,32 @@ def _simulation_graph(
     """Apply proposed fields to an isolated graph used only for impact tests."""
 
     simulation = deepcopy(graph)
-    proposals = {
-        item["edge_id"]: item
-        for item in candidates
-        if item.get("proposed_changes")
-    }
+    proposals: dict[str, dict[str, Any]] = {}
+    proposal_ids: dict[str, list[str]] = defaultdict(list)
+    for item in candidates:
+        if not item.get("proposed_changes"):
+            continue
+        edge_id = str(item["edge_id"])
+        edge_changes = proposals.setdefault(edge_id, {})
+        for field, value in item["proposed_changes"].items():
+            if field in edge_changes and edge_changes[field] != value:
+                raise ValueError(f"conflicting {field} proposals for edge {edge_id}")
+            edge_changes[field] = deepcopy(value)
+        proposal_ids[edge_id].append(str(item["candidate_id"]))
     for feature in simulation.get("features") or []:
         properties = feature.get("properties") or {}
         edge_id = str(properties.get("edge_id") or "")
-        candidate = proposals.get(edge_id)
-        if candidate is None:
+        changes = proposals.get(edge_id)
+        if changes is None:
             continue
-        properties.update(deepcopy(candidate["proposed_changes"]))
-        properties["candidate_simulation_ids"] = [candidate["candidate_id"]]
+        properties.update(deepcopy(changes))
+        properties["candidate_simulation_ids"] = sorted(proposal_ids[edge_id])
         properties["candidate_simulation_only"] = True
     simulation.setdefault("metadata", {})["candidate_simulation"] = {
         "created_at": created_at,
         "baseline_graph_sha256": baseline_sha256,
-        "applied_candidate_count": len(proposals),
+        "applied_candidate_count": sum(len(ids) for ids in proposal_ids.values()),
+        "applied_edge_count": len(proposals),
         "runtime_use_allowed": False,
         "shared_graph_updated": False,
         **PROVENANCE_FLAGS,
@@ -472,11 +679,18 @@ def _route_impact_simulation(
         request: RouteRequest,
         *,
         accessible: bool,
+        after_overlays: dict[str, dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
-        def one(engine: RouteEngine) -> dict[str, Any]:
+        def one(
+            engine: RouteEngine,
+            overlays: dict[str, dict[str, Any]] | None = None,
+        ) -> dict[str, Any]:
             try:
                 route = (
-                    engine.find_accessible_route(request)
+                    engine.find_accessible_route(
+                        request,
+                        edge_attribute_overlays=overlays,
+                    )
                     if accessible
                     else engine.find_shortest_route(request)
                 )
@@ -489,7 +703,7 @@ def _route_impact_simulation(
                 return {"status": exc.status, "distance_m": None, "edge_ids": []}
 
         before = one(before_engine)
-        after = one(after_engine)
+        after = one(after_engine, after_overlays)
         return {
             "before": before,
             "after": after,
@@ -529,7 +743,13 @@ def _route_impact_simulation(
             destination=Coordinate(lat=destination["lat"], lon=destination["lon"]),
             profile="wheelchair",
         )
-        impact = calculate(before_engine, after_engine, request, accessible=True)
+        impact = calculate(
+            before_engine,
+            before_engine,
+            request,
+            accessible=True,
+            after_overlays={candidate["edge_id"]: candidate["proposed_changes"]},
+        )
         impact.update(
             {
                 "candidate_id": candidate["candidate_id"],
@@ -555,7 +775,13 @@ def _route_impact_simulation(
 def _report(metrics: dict[str, Any]) -> str:
     counts = metrics["metrics"]["candidate_counts_by_type"]
     impact_rows = "\n".join(
-        "| {edge} | {before} | {after} | {difference} |".format(
+        "| {candidate} | {kind} | {edge} | {before} | {after} | {difference} |".format(
+            candidate=item["candidate_id"],
+            kind=(
+                "DEM 경사 진단"
+                if "slope" in item["proposed_changes"]
+                else "계단 제안"
+            ),
             edge=item["edge_id"],
             before=(
                 f"{item['before']['distance_m']}m"
@@ -584,26 +810,31 @@ def _report(metrics: dict[str, Any]) -> str:
 현재 자동평가만으로 공유 Graph에 확정 반영한 값은 없습니다. 대신 기존 routing 필드를 유지한 candidate Graph 사본과 Edge별 반영 제안을 생성했습니다.
 
 - 전체 후보: {metrics['metrics']['candidate_count']}개 / {metrics['metrics']['candidate_edge_count']}개 Edge
-- 경로 조건 변경 가능 후보: {metrics['metrics']['route_affecting_candidate_count']}개
+- 경로 영향 시뮬레이션 후보: {metrics['metrics']['route_affecting_candidate_count']}개
+- 이 중 90m DEM 경사 민감도 진단: {metrics['metrics']['diagnostic_candidate_count']}개 (`approval_eligible=false`)
 - 근거 전용 후보: {metrics['metrics']['evidence_only_candidate_count']}개
+- 정사영상 QA 참조가 연결된 후보: {metrics['metrics']['orthophoto_referenced_candidate_count']}개
 - 후보 유형: `{json.dumps(counts, ensure_ascii=False, sort_keys=True)}`
 - 기준 Graph 변경: `{str(not metrics['safety']['baseline_graph_unchanged']).lower()}`
 - candidate Graph 경로 회귀 동일: `{str(metrics['safety']['route_regression_identical']).lower()}`
-- 5개 계단 제안 시뮬레이션에서 영향을 받은 후보 Edge OD: {metrics['simulation']['candidate_edge_route_changed_count']}개
+- 국소 Edge OD에서 경로가 달라진 시뮬레이션: {metrics['simulation']['candidate_edge_route_changed_count']}개
 
-## 자동 제안 가능한 필드
+## 후보 유형과 사용 경계
 
-수치지형도 계단 객체가 unique 매칭되고 기존 OSM Edge에 `stairs=true`가 없는 5개 Edge에만 `stairs=true`를 제안했습니다. 이 값은 아직 적용되지 않았으며 승인 전에는 wheelchair 경로에서 제외되지 않습니다.
+- 수치지형도 계단 객체 5건은 `stairs=true` 제안이며 사람 검토 전에는 반영되지 않습니다.
+- DEM 12건은 `slope` 값을 가정해 경로 민감도만 계산합니다. 90m 격자이므로 현장 보도 종단경사로 승인하거나 Hard Constraint에 자동 반영할 수 없습니다.
+- 보행공간·횡단시설·연석 230건은 위치/존재 근거이며 Routing 속성을 만들지 않습니다.
+- 모든 후보는 `pending`, `verified=false`, `graph_update_allowed=false`입니다.
 
 ### 후보 적용 시뮬레이션
 
-대표 데모 OD의 일반 경로 1081.9m와 휠체어 경로 1302.5m는 다섯 후보를 적용해도 변하지 않았습니다. 후보 Edge 양 끝점을 각각 시험하면 다음과 같습니다.
+각 후보 Edge의 양 끝점을 출발·도착으로 두고 후보 하나만 요청 한정 overlay로 적용했습니다. 아래 결과는 후보가 사실이라는 판정이 아니라 영향 크기를 보는 진단입니다.
 
-| Edge | 적용 전 휠체어 경로 | 후보 적용 후 | 변화 |
-|---|---:|---:|---:|
+| 후보 ID | 유형 | Edge | 적용 전 휠체어 경로 | 후보 적용 후 | 변화 |
+|---|---|---|---:|---:|---:|
 {impact_rows}
 
-이는 실제 계단이라는 확정 결과가 아니라, 후보가 승인될 경우 예상되는 Graph 영향입니다. 특히 두 Edge는 대체 경로가 없어 현장 확인 없이 적용하면 접근 가능한 구역을 잘못 단절할 수 있습니다.
+`no_accessible_route` 결과가 다수이므로, 특히 자동 반영하면 접근 가능한 구역을 잘못 단절할 위험이 큽니다. DEM 행은 승인 대상조차 아니며 더 정밀한 고도자료 또는 현장 측정의 우선순위를 정하는 데만 사용합니다.
 
 ## 근거로만 유지한 객체
 
@@ -612,7 +843,9 @@ def _report(metrics: dict[str, Any]) -> str:
 - 정밀도로지도 연석: 연석 존재 근거만 기록하고 높이는 생성하지 않음
 - 육교/입체횡단: 구조물 근거만 기록하고 계단 또는 통과 불가로 단정하지 않음
 
-DEM 경사는 90m 해상도 gate 때문에 후보에서 제외했고, 정사영상 geometry 보정은 기준점 RMSE가 없어 제외했습니다. 공공 횡단보도 접근성의 빈 값은 계속 `unknown`입니다.
+## 정사영상 QA 참조
+
+25cm 정사영상의 임시 도엽 affine을 이용해 후보별 `sheet_id`, `pixel_row`, `pixel_col` 참조를 만들었습니다. 전 후보가 적어도 한 도엽에 연결됐지만 독립 기준점 RMSE는 `null`입니다. 따라서 이미지는 사람의 시각 QA 위치 찾기에만 쓰고 geometry 자동 보정이나 Graph 반영에는 쓰지 않습니다.
 
 ## 산출물
 
@@ -623,10 +856,11 @@ DEM 경사는 90m 해상도 gate 때문에 후보에서 제외했고, 정사영�
 - `data/processed/evaluation/graph_enrichment/anyang_accessibility_graph.candidate_simulation.geojson`
 - `data/processed/evaluation/graph_enrichment/route_impact_simulation.json`
 - `data/processed/evaluation/graph_enrichment/metrics.json`
+- `data/processed/evaluation/orthophoto/qa_evidence_manifest.json`
 
 candidate Graph는 기본 실행 Graph가 아니며 `candidate_enrichments` 주석만 추가합니다. 승인 절차가 생기기 전에는 이 파일을 `NAVI_GRAPH_PATH`로 사용하지 않습니다.
 
-`anyang_accessibility_graph.candidate_simulation.geojson`은 5개 `stairs=true` 제안을 별도 사본에 적용한 영향 시험 전용 파일입니다. 이 파일 역시 실행 Graph나 검증 데이터가 아닙니다.
+`anyang_accessibility_graph.candidate_simulation.geojson`은 계단 5건과 DEM 진단 12건을 별도 사본에 적용한 영향 시험 전용 파일입니다. 이 파일 역시 실행 Graph나 검증 데이터가 아닙니다.
 """
 
 
@@ -653,6 +887,7 @@ def run_graph_enrichment_candidates(
     public_crosswalks = load_json(
         evaluation_root / "cross_sources" / "crosswalk_correspondence.geojson"
     )
+    dem_rows = _read_csv_rows(project_root / DEM_CANDIDATE_PATH)
     datasets = {
         "topographic": str(
             evaluation_summary["results"]["topographic_map"].get("dataset_id")
@@ -663,15 +898,25 @@ def run_graph_enrichment_candidates(
         "crosswalk": str(
             evaluation_summary["results"]["cross_sources"]["dataset_ids"][1]
         ),
+        "dem": str(evaluation_summary["results"]["dem"].get("dataset_id")),
     }
     candidates, skipped = derive_candidates(
         graph,
         topographic,
         hdmap,
         public_crosswalks,
+        dem_rows,
         created_at=timestamp,
         dataset_ids=datasets,
     )
+    orthophoto_manifest = _build_orthophoto_qa_manifest(
+        project_root,
+        evaluation_root,
+        candidates,
+        created_at=timestamp,
+        baseline_sha256=baseline_sha,
+    )
+    write_json(project_root / ORTHOPHOTO_MANIFEST_PATH, orthophoto_manifest)
     preview = _preview_graph(
         graph,
         candidates,
@@ -682,6 +927,10 @@ def run_graph_enrichment_candidates(
         raise RuntimeError("candidate preview changed one or more routing fields")
 
     route_affecting = [item for item in candidates if item["proposed_changes"]]
+    diagnostics = [
+        item for item in candidates if item["candidate_class"] == "diagnostic_sensitivity"
+    ]
+    approval_eligible = [item for item in candidates if item["approval_eligible"]]
     simulation = _simulation_graph(
         graph,
         route_affecting,
@@ -711,7 +960,7 @@ def run_graph_enrichment_candidates(
         item["mapping_quality"] == "cross_source_consensus" for item in candidates
     )
     metrics = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "created_at": timestamp,
         "status": "candidate_bundle_ready",
         "baseline_graph": {
@@ -724,14 +973,19 @@ def run_graph_enrichment_candidates(
             "candidate_edge_count": len({item["edge_id"] for item in candidates}),
             "route_affecting_candidate_count": len(route_affecting),
             "evidence_only_candidate_count": len(candidates) - len(route_affecting),
+            "diagnostic_candidate_count": len(diagnostics),
+            "approval_eligible_candidate_count": len(approval_eligible),
+            "orthophoto_referenced_candidate_count": orthophoto_manifest["metrics"][
+                "referenced_candidate_count"
+            ],
             "cross_source_consensus_candidate_count": source_consensus_count,
             "candidate_counts_by_type": dict(sorted(type_counts.items())),
             "candidate_counts_by_priority": dict(sorted(priority_counts.items())),
             "skipped_counts": skipped,
         },
         "excluded_sources": {
-            "dem_slope": "rejected_for_edge_update_90m_resolution",
-            "orthophoto_geometry": "hold_missing_control_point_rmse",
+            "dem_slope_graph_update": "rejected_90m_resolution_diagnostic_simulation_only",
+            "orthophoto_geometry_correction": "hold_missing_control_point_rmse_visual_reference_only",
             "public_crosswalk_accessibility_nulls": "preserved_unknown",
             "ambiguous_or_unmatched_geometry": "not_promoted",
         },
@@ -748,14 +1002,19 @@ def run_graph_enrichment_candidates(
             "shared_graph_updated": False,
             "candidate_preview_is_runtime_default": False,
             "human_review_required_before_apply": True,
+            "dem_diagnostic_candidates_approval_eligible": False,
+            "orthophoto_geometry_correction_allowed": False,
         },
         "policy": {**PROVENANCE_FLAGS, "routing_graph_mutated": False},
     }
     bundle = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "created_at": timestamp,
         "baseline_graph_sha256": baseline_sha,
         "status": "pending",
+        "evidence_manifests": {
+            "orthophoto_qa": ORTHOPHOTO_MANIFEST_PATH.as_posix(),
+        },
         **PROVENANCE_FLAGS,
         "candidates": candidates,
     }
@@ -770,7 +1029,11 @@ def run_graph_enrichment_candidates(
             "priority": item["priority"],
             "routing_impact": item["routing_impact"],
             "mapping_quality": item["mapping_quality"],
+            "candidate_class": item["candidate_class"],
+            "simulation_allowed": item["simulation_allowed"],
+            "approval_eligible": item["approval_eligible"],
             "evidence_count": item["evidence_count"],
+            "visual_evidence_reference_count": len(item["visual_evidence_refs"]),
             "source_types": "|".join(item["source_types"]),
             "proposed_changes_json": json.dumps(
                 item["proposed_changes"], ensure_ascii=False, sort_keys=True

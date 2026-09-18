@@ -123,6 +123,106 @@ data class ObservationCandidateDto(
 )
 
 @Serializable
+data class GraphEnrichmentSummaryDto(
+    val available: Boolean,
+    @SerialName("candidate_count") val candidateCount: Int,
+    @SerialName("candidate_edge_count") val candidateEdgeCount: Int,
+    @SerialName("route_affecting_candidate_count") val routeAffectingCandidateCount: Int,
+    @SerialName("evidence_only_candidate_count") val evidenceOnlyCandidateCount: Int,
+    @SerialName("diagnostic_candidate_count") val diagnosticCandidateCount: Int = 0,
+    @SerialName("approval_eligible_candidate_count") val approvalEligibleCandidateCount: Int = 0,
+    @SerialName("orthophoto_referenced_candidate_count") val orthophotoReferencedCandidateCount: Int = 0,
+    @SerialName("all_pending") val allPending: Boolean,
+    @SerialName("all_unverified") val allUnverified: Boolean,
+    @SerialName("graph_update_allowed") val graphUpdateAllowed: Boolean,
+)
+
+@Serializable
+data class OrthophotoEvidenceRefDto(
+    @SerialName("reference_id") val referenceId: String,
+    @SerialName("source_dataset_id") val sourceDatasetId: String? = null,
+    @SerialName("sheet_id") val sheetId: String,
+    val raster: String? = null,
+    @SerialName("pixel_row") val pixelRow: Int,
+    @SerialName("pixel_col") val pixelCol: Int,
+    @SerialName("pixel_size_m") val pixelSizeM: List<Double> = emptyList(),
+    @SerialName("reference_status") val referenceStatus: String,
+    @SerialName("allowed_use") val allowedUse: String,
+    @SerialName("control_point_count") val controlPointCount: Int = 0,
+    @SerialName("control_point_rmse_m") val controlPointRmseM: Double? = null,
+    @SerialName("geometry_correction_allowed") val geometryCorrectionAllowed: Boolean = false,
+    @SerialName("graph_update_allowed") val graphUpdateAllowed: Boolean = false,
+    val verified: Boolean = false,
+)
+
+@Serializable
+data class GraphEnrichmentCandidateDto(
+    @SerialName("candidate_id") val candidateId: String,
+    @SerialName("edge_id") val edgeId: String,
+    val type: String,
+    val source: String,
+    val status: String,
+    val verified: Boolean,
+    @SerialName("graph_update_allowed") val graphUpdateAllowed: Boolean,
+    @SerialName("requires_human_review") val requiresHumanReview: Boolean,
+    val priority: String,
+    @SerialName("routing_impact") val routingImpact: String,
+    @SerialName("mapping_status") val mappingStatus: String,
+    @SerialName("mapping_quality") val mappingQuality: String,
+    @SerialName("candidate_class") val candidateClass: String = "evidence_only",
+    @SerialName("simulation_allowed") val simulationAllowed: Boolean = false,
+    @SerialName("approval_eligible") val approvalEligible: Boolean = true,
+    @SerialName("quality_flags") val qualityFlags: List<String> = emptyList(),
+    @SerialName("proposed_changes") val proposedChanges: JsonObject = JsonObject(emptyMap()),
+    @SerialName("current_values") val currentValues: JsonObject = JsonObject(emptyMap()),
+    @SerialName("evidence_count") val evidenceCount: Int,
+    @SerialName("source_types") val sourceTypes: List<String> = emptyList(),
+    val evidence: List<JsonObject> = emptyList(),
+    @SerialName("visual_evidence_refs") val visualEvidenceRefs: List<OrthophotoEvidenceRefDto> = emptyList(),
+    val lat: Double,
+    val lon: Double,
+    @SerialName("created_at") val createdAt: String,
+)
+
+@Serializable
+data class GraphEnrichmentCandidateListDto(
+    val available: Boolean,
+    val total: Int,
+    val offset: Int,
+    val limit: Int,
+    val candidates: List<GraphEnrichmentCandidateDto> = emptyList(),
+)
+
+data class GraphEnrichmentCatalogDto(
+    val summary: GraphEnrichmentSummaryDto,
+    val candidates: List<GraphEnrichmentCandidateDto>,
+)
+
+@Serializable
+data class GraphEnrichmentSimulationRequestDto(
+    val origin: CoordinateDto,
+    val destination: CoordinateDto,
+    val profile: String = "wheelchair",
+    @SerialName("candidate_ids") val candidateIds: List<String>,
+)
+
+@Serializable
+data class GraphEnrichmentSimulationResponseDto(
+    val status: String,
+    @SerialName("candidate_ids") val candidateIds: List<String>,
+    @SerialName("applied_edge_ids") val appliedEdgeIds: List<String>,
+    @SerialName("baseline_candidate_edge_ids") val baselineCandidateEdgeIds: List<String>,
+    val baseline: RouteResultDto? = null,
+    val simulated: RouteResultDto? = null,
+    @SerialName("route_changed") val routeChanged: Boolean,
+    @SerialName("difference_m") val differenceM: Double? = null,
+    @SerialName("graph_revision") val graphRevision: Int,
+    @SerialName("graph_mutated") val graphMutated: Boolean,
+    @SerialName("database_mutated") val databaseMutated: Boolean,
+    val warnings: List<String> = emptyList(),
+)
+
+@Serializable
 data class GraphResponseDto(
     val type: String,
     val metadata: GraphMetadataDto,
@@ -175,6 +275,7 @@ data class NaviBootstrap(
     val blockEdgeId: String,
     val blockEdgeGeometry: List<List<Double>>,
     val coverageBounds: CoverageBounds,
+    val edgeGeometries: Map<String, List<List<Double>>> = emptyMap(),
 )
 
 data class CoverageBounds(
@@ -218,12 +319,16 @@ fun GraphResponseDto.toBootstrap(): NaviBootstrap {
         )
     }
 
-    val blockFeature = requireNotNull(edges[demoConfig.blockEdge]) {
+    fun edgeGeometry(feature: GraphFeatureDto): List<List<Double>> =
+        feature.geometry.coordinates.jsonArray.map { point ->
+            point.jsonArray.map { requireNotNull(it.jsonPrimitive.doubleOrNull) }
+        }
+
+    requireNotNull(edges[demoConfig.blockEdge]) {
         "Graph edge ${demoConfig.blockEdge} is missing"
     }
-    val blockGeometry = blockFeature.geometry.coordinates.jsonArray.map { point ->
-        point.jsonArray.map { requireNotNull(it.jsonPrimitive.doubleOrNull) }
-    }
+    val edgeGeometries = edges.mapValues { (_, feature) -> edgeGeometry(feature) }
+    val blockGeometry = requireNotNull(edgeGeometries[demoConfig.blockEdge])
 
     return NaviBootstrap(
         areaName = metadata.area,
@@ -240,6 +345,7 @@ fun GraphResponseDto.toBootstrap(): NaviBootstrap {
             maxLat = nodeCoordinates.maxOf { it.lat },
             maxLon = nodeCoordinates.maxOf { it.lon },
         ),
+        edgeGeometries = edgeGeometries,
     )
 }
 

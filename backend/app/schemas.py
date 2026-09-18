@@ -225,3 +225,94 @@ class RouteSessionResponse(BaseModel):
     route: RouteResult | None = None
     comparison: RouteComparison | None = None
     temporary_blocked_edge_ids: list[str] = Field(default_factory=list)
+
+
+class GraphEnrichmentCandidate(BaseModel):
+    candidate_id: str
+    edge_id: str
+    type: str
+    source: str
+    confidence: float | None = Field(default=None, ge=0, le=1)
+    status: Literal["pending"] = "pending"
+    verified: Literal[False] = False
+    graph_update_allowed: Literal[False] = False
+    requires_human_review: Literal[True] = True
+    priority: Literal["high", "medium", "low"]
+    routing_impact: str
+    mapping_status: str
+    mapping_quality: str
+    candidate_class: Literal[
+        "routing_attribute", "diagnostic_sensitivity", "evidence_only"
+    ] = "evidence_only"
+    simulation_allowed: bool = False
+    approval_eligible: bool = True
+    quality_flags: list[str] = Field(default_factory=list)
+    proposed_changes: dict[str, Any] = Field(default_factory=dict)
+    current_values: dict[str, Any] = Field(default_factory=dict)
+    evidence_count: int = Field(ge=1)
+    source_types: list[str] = Field(default_factory=list)
+    evidence: list[dict[str, Any]] = Field(default_factory=list)
+    visual_evidence_refs: list[dict[str, Any]] = Field(default_factory=list)
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
+    created_at: datetime
+
+
+class GraphEnrichmentSummary(BaseModel):
+    available: bool
+    schema_version: str | None = None
+    created_at: datetime | None = None
+    baseline_graph_sha256: str | None = None
+    baseline_matches_graph: bool
+    candidate_count: int
+    candidate_edge_count: int
+    route_affecting_candidate_count: int
+    evidence_only_candidate_count: int
+    diagnostic_candidate_count: int = 0
+    approval_eligible_candidate_count: int = 0
+    orthophoto_referenced_candidate_count: int = 0
+    candidate_counts_by_type: dict[str, int] = Field(default_factory=dict)
+    candidate_counts_by_priority: dict[str, int] = Field(default_factory=dict)
+    all_pending: bool
+    all_unverified: bool
+    graph_update_allowed: Literal[False] = False
+
+
+class GraphEnrichmentCandidateList(BaseModel):
+    available: bool
+    total: int
+    offset: int
+    limit: int
+    candidates: list[GraphEnrichmentCandidate] = Field(default_factory=list)
+
+
+class GraphEnrichmentSimulationRequest(BaseModel):
+    origin: Coordinate
+    destination: Coordinate
+    profile: Literal["default", "wheelchair"] = "wheelchair"
+    candidate_ids: list[str] = Field(min_length=1, max_length=20)
+
+    @field_validator("candidate_ids")
+    @classmethod
+    def validate_candidate_ids(cls, values: list[str]) -> list[str]:
+        normalized = [value.strip() for value in values]
+        if any(not value for value in normalized):
+            raise ValueError("candidate_id는 비어 있을 수 없습니다.")
+        if len(set(normalized)) != len(normalized):
+            raise ValueError("candidate_id는 중복될 수 없습니다.")
+        return normalized
+
+
+class GraphEnrichmentSimulationResponse(BaseModel):
+    status: Literal["ok", "no_accessible_route"]
+    candidate_ids: list[str]
+    applied_edge_ids: list[str]
+    baseline_candidate_edge_ids: list[str]
+    baseline: RouteResult | None = None
+    simulated: RouteResult | None = None
+    route_changed: bool
+    difference_m: float | None = None
+    graph_revision: int
+    graph_mutated: Literal[False] = False
+    database_mutated: Literal[False] = False
+    warnings: list[str] = Field(default_factory=list)

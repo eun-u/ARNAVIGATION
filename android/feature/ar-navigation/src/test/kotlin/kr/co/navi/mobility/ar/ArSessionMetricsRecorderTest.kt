@@ -20,9 +20,18 @@ class ArSessionMetricsRecorderTest {
                 depthActive = true,
                 routeAligned = false,
                 trackingLossCount = 2,
+                unexpectedTrackingLossCount = 1,
+                expectedTransitionLossCount = 1,
                 lastRecoveryMillis = 340L,
                 frameTimeMillis = 8.25f,
                 message = "stable,local",
+                trackingFailureReason = "EXCESSIVE_MOTION",
+                lifecycleState = "RESUMED",
+                displayInteractive = true,
+                sessionGeneration = 3,
+                datasetMode = "PLAYBACK",
+                transitionReason = "PLAYBACK_START",
+                expectedSessionTransition = false,
             ),
         )
         recorder.stop()
@@ -30,8 +39,12 @@ class ArSessionMetricsRecorderTest {
         val lines = file.readLines()
         assertEquals(2, lines.size)
         assertTrue(lines.first().startsWith("elapsed_realtime_ms"))
+        assertTrue(lines.first().contains("tracking_failure_reason"))
+        assertTrue(lines.first().contains("unexpected_tracking_loss_count"))
         assertTrue(lines.last().contains("8.250"))
         assertTrue(lines.last().contains("\"stable,local\""))
+        assertTrue(lines.last().contains("\"EXCESSIVE_MOTION\""))
+        assertTrue(lines.last().endsWith(",1,1"))
         assertTrue(file.delete())
         assertTrue(directory.delete())
     }

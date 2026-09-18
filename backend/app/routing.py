@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from math import asin, ceil, cos, radians, sin, sqrt
+from collections.abc import Mapping
 from typing import Any
 
 import networkx as nx
@@ -42,22 +43,27 @@ class RouteEngine:
         self,
         request: RouteRequest,
         excluded_edge_ids: set[str] | None = None,
+        *,
+        edge_attribute_overlays: Mapping[str, Mapping[str, Any]] | None = None,
     ) -> RouteResult:
         profile = self.profiles.get(request.profile)
         temporary_blocks = excluded_edge_ids or set()
+        attribute_overlays = edge_attribute_overlays or {}
         source = self.store.snapshot()
         origin_node, destination_node = self._snap_nodes(source, request)
         accessible = nx.MultiGraph()
         accessible.add_nodes_from(source.nodes(data=True))
         excluded: list[ExcludedEdge] = []
         for from_node, to_node, key, attrs in source.edges(data=True, keys=True):
-            reasons = edge_constraint_reasons(attrs, profile)
-            if str(attrs["edge_id"]) in temporary_blocks:
+            edge_id = str(attrs["edge_id"])
+            effective_attrs = {**attrs, **attribute_overlays.get(edge_id, {})}
+            reasons = edge_constraint_reasons(effective_attrs, profile)
+            if edge_id in temporary_blocks:
                 reasons = [*reasons, "session_blocked"]
             if reasons:
-                excluded.append(ExcludedEdge(edge_id=str(attrs["edge_id"]), name=str(attrs.get("name") or attrs["edge_id"]), reasons=reasons))
+                excluded.append(ExcludedEdge(edge_id=edge_id, name=str(effective_attrs.get("name") or edge_id), reasons=reasons))
             else:
-                accessible.add_edge(from_node, to_node, key=key, **attrs)
+                accessible.add_edge(from_node, to_node, key=key, **effective_attrs)
         try:
             nodes = nx.shortest_path(accessible, origin_node, destination_node, weight="length", method="dijkstra")
         except (nx.NetworkXNoPath, nx.NodeNotFound) as exc:
